@@ -9,7 +9,7 @@
 #'
 #' @export
 
-make_path_relative = function(path, base=getwd()) {
+path_relative = function(path, base=getwd()) {
   # based on Stackoverflow:
   # https://stackoverflow.com/questions/36726186/function-for-constructing-relative-paths-in-r
   common = sub('^([^|]*)[^|]*(?:\\|\\1[^|]*)$', '^\\1/?', paste0(base, '|', path))
