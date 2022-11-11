@@ -20,11 +20,11 @@ check_data_sources <- function(path=NULL){
   data_sources <- utils::read.csv (file.path(path,"/data/data_sources.csv"))
   # check that there are two columsn with correct names
   if (!all(c("directory","source","url") %in% names(data_sources))){
-    "data_sources.csv does not include the three mandatory columns: 'directory', 'sources' and 'url'"
+    "data_sources.csv does not include the three mandatory columns: 'directory', 'source' and 'url'"
   }
   if (any(is.na(data_sources$source), is.na(data_sources$url))){
     stop("in data_sources.csv, some sources/url are have been left blank; \n",
-         "all entries should be filled in, use 'local' in both source and url for dirs in which files that are synchronised with git")
+         "all entries should be filled in, use 'git' in both source and url for dirs in which files that are synchronised with git")
   }
   raw_dirs <- list.dirs(file.path(path,"data/raw"), full.names = FALSE, recursive=FALSE)
   raw_dirs <- paste0("/data/raw/",raw_dirs)
