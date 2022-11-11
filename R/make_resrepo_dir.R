@@ -19,5 +19,5 @@ make_datadir <- function(directory) {
   # now update gitignore
   gitignore_addition <- paste0("!",directory,"\n",directory,"/*",
                                "\n!",directory,"/.gitkeep")
-  write(line,file=file.path(git_root,".gitignore"),append=TRUE)
+  write(gitignore_addition,file=file.path(git_root,".gitignore"),append=TRUE)
 }
