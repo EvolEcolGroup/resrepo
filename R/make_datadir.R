@@ -12,6 +12,7 @@
 #' @export
 
 make_datadir <- function(directory) {
+  warning("this function is untested")
   git_root <- find_git_root()
   full_directory <- normalizePath(file.path(git_root,directory))
   dir.create(full_directory)
