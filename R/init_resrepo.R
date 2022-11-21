@@ -9,12 +9,10 @@
 
 init_resrepo <- function (path=".") {
   git_root <- find_git_root()
-  utils::unzip(system.file("/template/resrepo_template-main.zip", package="resrepo"),
-               exdir=tempdir(), overwrite = TRUE)
-  copy_results <- file.copy(from=dir(file.path(tempdir(), "resrepo_template-main"),
-                     full.names = TRUE),
+  template_dir <- "/home/andrea/R/x86_64-pc-linux-gnu-library/4.2/resrepo//template"
+  copy_results <- file.copy(from=template_dir,
             to = git_root, recursive = TRUE, overwrite = TRUE)
-  if (all(copy_results)){
+  if (copy_results){
     return(TRUE)
   } else {
     warning("something went wrong; not all files were included in the template")
