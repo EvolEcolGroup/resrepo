@@ -98,6 +98,17 @@ additional information on where the data come from.
 And now all checks will pass:
 ```{r}
 check_data_sources()
+
+
+```
+Now data sources have been arranged, commit changes for a clean repository.
+
+```{r}
+
+git2r::add(path="./data")
+git2r::commit(message="Added data sources", all=TRUE)
+
+git2r::status()
 ```
 
 No files should be stored directly in `/data/raw` or `/data/intermediate`, they should always be put in a first level sub-directory (otherwise we can not define the provenance in `data_sources.csv`). If you decide to remove the `/raw/default` subdir and use a custom directory, make sure that the `data_sources.csv` table is updated accordingly. If you are not generating any intermediate data, you can simply ignore it.
@@ -153,6 +164,60 @@ By default, the data are not tracked, so this file will not appear on your Git t
 ```{r}
 git2r::status()
 ```
+```{r process_raw_data}
+penguins_na_omit <- na.omit(penguins)
+                          
+```
+
+```{r save_intermediate_data}
+#save intermediate data to appropriate output directory in the intermediate data directory
+make_datadir("/data/intermediate/penguins")
+write.csv(penguins_na_omit, file.path(find_resrepo_dir("/data/intermediate/penguins"),"penguins_na_omit.csv"), row.names = FALSE)
+
+
+```
+
+Check files are in the correct location and not tracked.
+```{r}
+fs::dir_tree()
+git2r::status()
+
+```
+Read in intermediate data file that we created earlier.
+
+```{r read in data}
+#read in preprocessed data from intermediate data directory
+penguins_na_omit <- read.csv("../data/intermediate/penguins/penguins_na_omit.csv")
+```
+
+Plot body mass against flipper length.
+
+```{r make plot}
+#create plot from intermediate data
+penguins_plot <- plot(x = penguins_na_omit$body_mass_g, 
+                      y = penguins_na_omit$flipper_length_mm, 
+                      col= penguins_na_omit$species
+                      )
+
+dir.create(file.path(find_resrepo_dir("/results"), "penguins"))
+pdf(file.path(find_resrepo_dir("/results/penguins"), "penguins_plot.pdf"))
+
+print(penguins_plot)
+
+dev.off()
+
+```
+
+Now commit plot and check git status.
+```{r}
+
+git2r::add(path="./results/penguins")
+git2r::commit(message="Save plot", all=TRUE)
+
+git2r::status()
+```
+
+
 
 ## FAQ
 
