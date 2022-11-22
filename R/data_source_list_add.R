@@ -22,9 +22,7 @@ data_source_list_add<- function(path=NULL, directory=NULL, source = "NA", url = 
     stop("You need to specify a directory.")
   }
   
-  if(!data_source_list_find()){
-    stop("data_source_list.csv can not be found; are you in the root directory of your repository?")
-  }
+  data_source_list_find()
   
   original_sources <- read.csv("./data/data_source_list.csv")
   
