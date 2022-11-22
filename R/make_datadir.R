@@ -16,9 +16,9 @@ make_datadir <- function(directory) {
   git_root <- find_git_root()
   full_directory <- normalizePath(file.path(git_root,directory))
   dir.create(full_directory)
-  file.create(file.path(full_directory,".gitkeep"))
+  #file.create(file.path(full_directory,".gitkeep"))
   # now update gitignore
-  gitignore_addition <- paste0("!",directory,"\n",directory,"/*",
-                               "\n!",directory,"/.gitkeep")
-  write(gitignore_addition,file=file.path(git_root,".gitignore"),append=TRUE)
+  #gitignore_addition <- paste0("!",directory,"\n",directory,"/*",
+  #                             "\n!",directory,"/.gitkeep")
+  #write(gitignore_addition,file=file.path(git_root,".gitignore"),append=TRUE)
 }
