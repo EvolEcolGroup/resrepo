@@ -11,10 +11,11 @@
 #'
 #' @export
 
-make_datadir <- function(directory) {
+data_dir_make <- function(directory, source = NULL,
+                         URL = NULL, tacked = FALSE) {
   warning("this function is untested")
-  git_root <- find_git_root()
-  full_directory <- normalizePath(file.path(git_root,directory))
+  git_root <- normalizePath(find_git_root())
+  full_directory <- file.path(git_root,directory)
   dir.create(full_directory)
   #file.create(file.path(full_directory,".gitkeep"))
   # now update gitignore
