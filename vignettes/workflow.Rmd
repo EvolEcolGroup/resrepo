@@ -47,7 +47,7 @@ related to the files that go into that particular directory.
 If you created the repository with `init_resrepo`, it would be a good idea to commit the changes, so that you have a clean repository template as your first commit, and you
 can best document the changes that you make as you progress.
 
-```{r echo=FALSE, show=FALSE}
+```{r echo=FALSE, results=FALSE}
 git2r::add(path=".")
 git2r::commit(message="initialise resrepo template", all=TRUE)
 ```
@@ -126,19 +126,17 @@ of the RMarkdown document.
 ### ADD EXAMPLE YAML TO DO!
 
 ## Writing it all up
-Git is not really designed to handle Word or OpenOffice files. Having said that, 
-you can in principle track
-them in the `writing` directory, as they are rarely large enough to cause trouble. If you are writing
+Git is not really designed to handle Word or OpenOffice files. Ideally, text is 
+keps in markdown files, but that format does not let itself nicely to formatting
+for submission (e.g. bibliogrpahy from a reference manager). Having said that, 
+you could, in principle, track Word/Openoffice documents in the `writing` directory, as they are rarely large enough to cause trouble. If you are writing
 collaboratively, you are more likely to use GoogleDoc or shared Word documents.
-In that case, you can use the writing_README.md to store the paths to those documents. By doing
-so, it means that a collaborator who has the repository can also access the manuscript easily (i.e.
+In that case, you can use the README.md in the `writing` directory to store the paths to those documents. By doing
+so, it means that a collaborator who has access to the repository can also find the manuscript easily (i.e.
 everything is in one place).
 
 ## A step by step example
 We will now illustrate how to populate a `resrespo` for a simple project.
-
-
-
 
 
 ## FAQ
