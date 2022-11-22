@@ -9,7 +9,7 @@
 #' @export
 
 
-check_data_sources <- function(path=NULL){
+data_source_check <- function(path=NULL){
   if (is.null(path)){
     path = getwd()
   }
