@@ -7,19 +7,30 @@
 #' directories in `/data/raw` and `/data/intermediate`, making it easier to keep
 #' track of what data need downloading.
 #'
-#' @param directory directory within a resrepo
+#' @param path data path within a resrepo
 #'
 #' @export
 
-data_dir_make <- function(directory, source = NULL,
-                         URL = NULL, tacked = FALSE) {
-  warning("this function is untested")
+data_dir_make <- function(path, source = NULL,
+                         URL = NULL, tracked = FALSE) {
+  # check that path starts with the right prefix
+  path_is_data_dir(path)
+  # find the root of the git repository
   git_root <- normalizePath(find_git_root())
-  full_directory <- file.path(git_root,directory)
-  dir.create(full_directory)
+  # create the full path
+  full_path <- file.path(git_root,path)
+  if (dir.exists(full_path)){
+    stop(path," already exists!")
+  }
+  dir.create(full_path)
+  #data_source_add(path, source, url)
+  if (tracked) {
+    warning ("tracked not implemented as yet; in the future it should change .gitignore")
+  }
   #file.create(file.path(full_directory,".gitkeep"))
   # now update gitignore
   #gitignore_addition <- paste0("!",directory,"\n",directory,"/*",
   #                             "\n!",directory,"/.gitkeep")
   #write(gitignore_addition,file=file.path(git_root,".gitignore"),append=TRUE)
+  return(TRUE)
 }
