@@ -31,6 +31,8 @@ Alternatively, you can create a blank repository, clone it on your computer, and
 ```{r}
 library(resrepo)
 init_resrepo()
+# delete me when done
+getwd()
 ```
 
 Let us look at the content of our repository:
@@ -107,6 +109,7 @@ however, it is important to use relative paths in your scripts. So, from the `/c
 can be found as `../data/raw/default`. The other option is to use:
 ```{r}
 default_dir <- find_resrepo_dir("/data/raw/default")
+default_dir
 ```
 
 `find_resrespo_dir` allows the use of paths relative to the root of the git
@@ -137,7 +140,19 @@ everything is in one place).
 
 ## A step by step example
 We will now illustrate how to populate a `resrespo` for a simple project.
+The first step is to download some data and put them in `/data/raw/default`. We will use some data from the package XXX, and copy them into our repository:
+```{r}
+data("penguins", package = "palmerpenguins")
+write.csv(penguins,file.path(find_resrepo_dir("/data/raw/default"),
+                             "penguins.csv"))
 
+```
+
+By default, the data are not tracked, so this file will not appear on your Git tab on the right hand side of RStudio. 
+
+```{r}
+git2r::status()
+```
 
 ## FAQ
 

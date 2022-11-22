@@ -12,5 +12,6 @@ Suggests:
     fs,
     git2r,
     knitr,
+    palmerpenguins,
     rmarkdown
 VignetteBuilder: knitr
