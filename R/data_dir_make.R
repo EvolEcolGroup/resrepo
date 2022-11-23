@@ -8,6 +8,10 @@
 #' track of what data need downloading.
 #'
 #' @param path data path within a resrepo
+#' @param source optional string giving the source of this data directory (e.g. onedrive)
+#' @param URL optional string with the URL for the source
+#' @param tracked boolean definign whether the directory should be tracked in git (this
+#' will modify .gitignore appropriately)
 #'
 #' @export
 

@@ -3,7 +3,7 @@
 export(check_data_sources)
 export(data_dir_make)
 export(find_git_root)
-export(find_resrepo_dir)
 export(init_resrepo)
 export(knit_to_results)
 export(path_relative)
+export(path_resrepo)
