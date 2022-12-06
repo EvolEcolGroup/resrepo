@@ -16,7 +16,7 @@ data_source_list_add(
 \item{path}{option string giving the path for the root of the repository (NOT the data
 directory). If left NULL, then the current working directory is used.}
 
-\item{directory}{directory of the new entry.}
+\item{directory}{directory of the new entry. If directory does not exist, create it.}
 
 \item{source}{source for the new entry.}
 

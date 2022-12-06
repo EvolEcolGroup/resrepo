@@ -2,8 +2,8 @@
 
 export(data_dir_make)
 export(data_source_check)
+export(data_source_edit)
 export(data_source_list_add)
-export(data_sources_edit)
 export(find_git_root)
 export(init_resrepo)
 export(knit_to_results)

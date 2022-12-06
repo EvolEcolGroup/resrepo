@@ -1,59 +1,60 @@
-#' Check that data_sources are complete
+#' Edit the data_source file
 #'
-#' Check that all directories in /data/raw and /data/intermediate are found in data_sources.csv,
-#' and that their details are complete.
-#'
+#' Edit the existing lines of data_source file.
+#' 
+#' @param directory the directory you want to change; has to be already in the data_source.csv
 #' @param path option string giving the path for the root of the repository (NOT the data
 #' directory). If left NULL, then the current working directory is used.
-#'
+#' @param new_directory the new directory you want to give; if NULL then does not change.
+#' @param new_source the new source you want to give; if NULL then does not change.
+#' @param new_url the new url you want to give; if NULL then does not change.
+#' @param new_notes the new dnote you want to give; if NULL then does not change.
 #' @export
 
 
-data_sources_edit<- function(path=NULL, directory=NULL, new_directory = NULL, new_source = "NA", new_url = "NA", notes_text = "NA"){
+data_source_edit<- function(directory, path=NULL,  new_directory = NULL, new_source = NULL, new_url = NULL , new_notes = NULL){
   if (is.null(path)){
-    path = getwd()
+    path = path_resrepo("/")
   }
   
   if(is.null(directory)){
     stop("You need to specify a directory.")
   }
   
-  if(!file.exists(file.path(path,"/data/data_sources.csv"))){
+  if(!file.exists(file.path(path,"/data/data_source_list.csv"))){
     stop("data_sources.csv can not be found; are you in the root directory of your repository?")
   }
   
-  original_sources <- read.csv("./data/data_sources.csv")
-  
+  original_sources <- read.csv("./data/data_source_list.csv")
+  new_sources_list <- original_sources
   if(!(directory %in% original_sources$directory)){
-    temp_sources<-data.frame('directory' = NA, 'source' = NA, 'url' = NA, 'notes' = NA)
-    temp_sources$directory<-directory
-    temp_sources$source <- source
-    temp_sources$url <- url
-    temp_sources$notes<-notes_text
+    stop(directory," is not in the data_sources list.")
+  }else{
     
-    new_sources<-rbind(original_sources, temp_sources)
-  }
-  write.csv(new_sources, "./data/data_sources.csv",row.names = FALSE)
+    if(!is.null(new_source)){
+      new_sources_list$source[new_sources_list$directory==directory] <-new_source
+      new_sources_list$source<-as.character(new_sources_list$source)
+    }
+    
+    if(!is.null(new_url)){
+      new_sources_list$url[new_sources_list$directory==directory] <-new_url
+      new_sources_list$url<-as.character(new_sources_list$url)
+    }
+    
+    if (!is.null(new_notes)){
+      new_sources_list$notes[new_sources_list$directory==directory]<-new_notes
+      new_sources_list$notes<-as.character(new_sources_list$notes)
+    }
+    #change directory last otherwise all changes above won't work as they cannot find the original directory!
+    if(!is.null(new_directory)){
+      new_sources_list$directory[new_sources_list$directory==directory] <-new_directory
+      # use these to avoid bugs
+      new_sources_list$directory<-as.character(new_sources_list$directory)
+    }
+    print(class(new_sources_list))
+    
+    write.csv(new_sources_list, "./data/data_source_list.csv",row.names = FALSE)
+    }
   
-  data_sources <- utils::read.csv (file.path(path,"/data/data_sources.csv"))
-  # check that the three mandatory columns are present with correct names
-  if (!all(c("directory","source","url") %in% names(data_sources))){
-    "data_sources.csv does not include the three mandatory columns: 'directory', 'source' and 'url'"
-  }
-  if (any(is.na(data_sources$source), is.na(data_sources$url))){
-    stop("in data_sources.csv, some sources/url are have been left blank; \n",
-         "all entries should be filled in, use 'git' in both source and url for dirs in which files that are synchronised with git")
-  }
-  raw_dirs <- list.dirs(file.path(path,"data/raw"), full.names = FALSE, recursive=FALSE)
-  raw_dirs <- paste0("/data/raw/",raw_dirs)
-  intermediate_dirs <- list.dirs(file.path(path,"data/intermediate"), full.names = FALSE, recursive=FALSE)
-  
-  if (length(intermediate_dirs)>0){
-    intermediate_dirs <- paste0("/data/intermediate/",intermediate_dirs)
-  }
-  
-  if (!all(c(raw_dirs,intermediate_dirs) %in% data_sources$directory)){
-    stop("some directories are not listed in data_sources.csv")
-  }
   return(TRUE)
 }

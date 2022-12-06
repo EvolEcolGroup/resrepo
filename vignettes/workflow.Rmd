@@ -17,8 +17,12 @@ dir.create(example_dir)
 git2r::init(example_dir)
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
+
 ```
 
+```{r}
+getwd()
+```
 # resrepo: easy research on git
 
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. Scientific projects contain both code and data. `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, ensuring reproducible science and a tidy repository that can used for publication of your project.
@@ -76,7 +80,7 @@ for the analysis. There should be one source for each first-level subdirectory (
 
 We can check that all entries are present and complete with:
 ```{r, error=TRUE}
-check_data_sources()
+data_source_check()
 ```
 
 Since the table is incomplete, we get an error! If we decided to mirror our data
@@ -90,6 +94,11 @@ write.csv(temp_sources, "./data/data_source_list.csv",row.names = FALSE)
 
 ```{r}
 read.csv("./data/data_source_list.csv")
+```
+
+Or you can use the internal functions to do that:
+```{r}
+data_source_list_edit(directory = "/data/raw/default",new_url = "https://my_one_drive/link")
 ```
 Note that you will need the link to the OneDrive folder that contains the data that
 go into `/data/raw/default`. The notes are optional, but they allow you to add

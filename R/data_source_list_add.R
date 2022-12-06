@@ -5,7 +5,7 @@
 #'
 #' @param path option string giving the path for the root of the repository (NOT the data
 #' directory). If left NULL, then the current working directory is used.
-#' @param directory directory of the new entry. 
+#' @param directory directory of the new entry. If directory does not exist, create it.
 #' @param source source for the new entry.
 #' @param url url for the new entry.
 #' @param notes notes for the new entry.
@@ -15,20 +15,22 @@
 
 data_source_list_add<- function(path=NULL, directory=NULL, source = "NA", url = "NA", notes_text = "NA"){
   if (is.null(path)){
-    path = getwd()
+    path = path_resrepo("/")
   }
   
   if(is.null(directory)){
     stop("You need to specify a directory.")
   }
   
+  if(!file.exists(file.path(path,"/data/data_source_list.csv"))){
+    stop("data_sources.csv can not be found; are you in the root directory of your repository?")
+  }
   data_source_list_find()
   
-  original_sources <- read.csv("./data/data_source_list.csv")
+  original_sources <- read.csv(paste0(path,"/data/data_source_list.csv"))
   
   temp_sources<-data.frame('directory' =NA, 'source' = NA, 'url' = NA, 'notes'=NA)
   
-  new_sources<-rbind(original_sources, temp_sources)
   #check a directory exists or not; if not, creates it
   if(dir.exists(directory)==FALSE){
     # create output directory
@@ -41,7 +43,8 @@ data_source_list_add<- function(path=NULL, directory=NULL, source = "NA", url = 
   temp_sources$url <- url
   temp_sources$notes<-notes_text
   
-  write.csv(new_sources, "./data/data_source_list.csv",row.names = FALSE)
+  new_sources<-rbind(original_sources, temp_sources)
+  write.csv(new_sources, paste0(path, "./data/data_source_list.csv"),row.names = FALSE)
   
   return(TRUE)
 }
