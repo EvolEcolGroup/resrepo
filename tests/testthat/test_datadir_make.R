@@ -14,6 +14,11 @@ git2r::add(path = ".")
 git2r::commit(message="init repo", all=TRUE)
 
 test_that("make a data directory",{
+  # check that git is clean
+  my_status <- git2r::status()
+  expect_true(data_dir_make("/data/raw/new_dir"))
+  expect_error(data_dir_make("/data/raw/new_dir"),
+               "/data/raw/new_dir")
   
 })
 
