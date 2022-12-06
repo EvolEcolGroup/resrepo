@@ -5,6 +5,12 @@ date: "2022-12-06"
 output: html_document
 ---
 
+```{r devtools, include = FALSE}
+# load functions with 
+# devtools::load_all()
+```
+
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -28,6 +34,7 @@ A **symbolic link** (also known as symlink or soft link) is a used to point to a
 # Create the example project structure
 
 ```{r}
+
 # set up the temporary directories
 temp_dir_onedrive <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
 temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
@@ -64,6 +71,7 @@ We are now going to create a symbolic link that the system sees as "tempdir_mydr
 
 ```{r}
 # create the new directory
+setwd(temp_dir_git)
 dir.create(file.path(temp_dir_onedrive,"data_input"))
 
 # create the linked path
