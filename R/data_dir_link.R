@@ -17,14 +17,6 @@ data_dir_link <- function (data_path, linked_path) {
   if(!dir.exists(linked_path)){
     stop("the linked_path ", linked_path," does not exist!")
   }
-  if (.Platform$OS.type=="unix"){
-    system2("ln",paste0("-s ",linked_path," ",abs_data_path))
-  } else if (.Platform$OS.type=="windows"){
-    message("Symbolic links in windows require pasting the following command\n",
-            "in a Command Prompt started as Admistrator:\n",
-            paste0("mklink /J '",abs_data_path,"' '", linked_path ,"'"))
-  } else {
-    stop("Your operating system is not supported")
-  }
+  fs::link_create(linked_path,abs_data_path, symbolic = TRUE)
   return(TRUE)
 }
