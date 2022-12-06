@@ -11,14 +11,35 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-# create Onedrive folder
+# set up the temporary directories
 temp_dir_onedrive <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
+temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
+unlink (file.path(temp_dir_onedrive,"*"), recursive = TRUE)
+unlink (file.path(temp_dir_onedrive,".*"), recursive = TRUE)
+unlink (file.path(temp_dir_git,"*"), recursive = TRUE)
+unlink (file.path(temp_dir_git,".*"), recursive = TRUE)
+
+# create the folders
 dir.create(temp_dir_onedrive, recursive=TRUE)
+dir.create(temp_dir_git, recursive=TRUE)
+
+test_dir <- file.path(tempdir(),"resrepo_test")
+mirror_dir <- file.path(tempdir(),"mirror/resrepo_test")
+
+
 
 # create git folder
 temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
 dir.create(temp_dir_git, recursive=TRUE)
 git2r::init(temp_dir_git)
+# initialise the template resrepo
+library(resrepo)
+init_resrepo()
+git2r::add(path=".")  # add all the new files to git
+git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
+
+fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
+
 vignette_dir <- getwd()
 
 knitr::opts_knit$set(root.dir = temp_dir_git)
