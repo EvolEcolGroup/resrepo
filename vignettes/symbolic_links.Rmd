@@ -1,0 +1,71 @@
+---
+title: "Using symbolic links"
+author: "Michela Leonardi, Paul Whitelaw"
+date: "2022-12-06"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+# create Onedrive folder
+temp_dir_onedrive <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
+dir.create(temp_dir_onedrive, recursive=TRUE)
+
+# create git folder
+temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
+dir.create(temp_dir_git, recursive=TRUE)
+git2r::init(temp_dir_git)
+vignette_dir <- getwd()
+
+knitr::opts_knit$set(root.dir = temp_dir_git)
+
+```
+
+# Using symbolic links in resrepo
+
+This vignette shows how to use symbolic links within *resrepo*. `git` is designed to manage software code, but it is not suited to track large data files. 
+
+By default, the git repository does not track data files (as they are often too large for git), and each sub-directory should have a remote source that will allow others using the repository to get the data. There should be one source for each first level subdirectory (e.g. /data/raw/defaults or /data/intermediates/rnaseq); you are then free to further structure (or not) your data within multiple, higher level sub-directories within each first level sub-dir. If your datasets are small and stored as text files, you might decide to track them within your git repository. In that case, set the "source"" and "url"" as "git" in the data_sources.csv table for that sub-directory, and edit appropriately .gitignore.
+
+When integrating `git` with cloud systems such as *OneDrive*, *Google Drive* issues can arise (**EXAMPLE LINK 1 EXAMPLE LINK 2**), so we encourage to place the directory from your computer linked to the github project in a location that is not backed up, and then store the data separately in a backed-up directory.
+
+# What are symbolic links
+
+A **symbolic link** (also known as symlink or soft link) is a used to point to a file or directory (called the "target") by specifying the path in the file itself (=*target*). The system sees the symlink as a file or (especially in this case) a directory in which data can be written, but when it tries to access the location it is directly redirected to the target path. This allows to keep functional absolute paths within the git project while at the same time writing data into a mirrored directory outside of it.
+
+
+# Project structure
+
+In this vignette we have created a project structure as follows:
+
+```{r}
+fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
+```
+```{r}
+library(resrepo)
+
+
+```
+
+with ./git being the directory linked to github and ./onedrive being the directory mirrored on the cloud.
+
+We are now going to create a symbolic link that the system sees as "tempdir_mydrive/git/project1" but points to "./tempdir_mydrive/onedrive/gitdata/project1".
+
+
+```{r}
+# symbolic link directory (should be seen as a directory but is actually a link)
+link_dir <- file.path(tempdir(),"tempdir_mydrive/git/project1")
+
+# target directory
+target_dir <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
+
+
+data_dir_link(link_dir, target_dir)
+```
+
+# How to create symbolic links in resrepo
+
