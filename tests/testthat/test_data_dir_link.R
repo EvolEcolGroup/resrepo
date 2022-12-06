@@ -20,8 +20,8 @@ test_that("create links for data directories",{
   git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
   # expect an error if the data_path already exists
   dir.create(path_resrepo("/data/raw/blah"))  # the local folder for my data (in git)
-  expect_error(data_dir_link(data_path = "/data/raw/blah",  # the data folder I will use
-                             linked_path = file.path(mirror_dir,"blah2")),"the data_path")  # where the actual data are stored
+  expect_error(data_dir_link(link_dir = "/data/raw/blah",  # the data folder I will use
+                             target_dir = file.path(mirror_dir,"blah2")),"the data_path")  # where the actual data are stored
   # remove the data_path to reset the test
   unlink(path_resrepo("/data/raw/blah"),recursive=TRUE)
   # expect an error if the link path does not exist
