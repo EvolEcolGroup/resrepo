@@ -22,7 +22,7 @@ data_dir_link <- function (data_path, linked_path) {
   } else if (.Platform$OS.type=="windows"){
     message("Symbolic links in windows require pasting the following command\n",
             "in a Command Prompt started as Admistrator:\n",
-            paste0("mklink /J ",linked_path," ", abs_data_path))
+            paste0("mklink /J '",linked_path,"' '", abs_data_path,"'"))
   } else {
     stop("Your operating system is not supported")
   }
