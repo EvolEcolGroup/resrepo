@@ -1,6 +1,6 @@
 ---
 title: "Using symbolic links"
-author: "Michela Leonardi, Paul Whitelaw"
+author: "Michela Leonardi, Paul Whitelaw, Margherita Colucci"
 date: "2022-12-06"
 output: html_document
 ---
@@ -10,47 +10,14 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-# set up the temporary directories
-temp_dir_onedrive <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
-temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
-unlink (file.path(temp_dir_onedrive,"*"), recursive = TRUE)
-unlink (file.path(temp_dir_onedrive,".*"), recursive = TRUE)
-unlink (file.path(temp_dir_git,"*"), recursive = TRUE)
-unlink (file.path(temp_dir_git,".*"), recursive = TRUE)
-
-# create the folders
-dir.create(temp_dir_onedrive, recursive=TRUE)
-dir.create(temp_dir_git, recursive=TRUE)
-
-test_dir <- file.path(tempdir(),"resrepo_test")
-mirror_dir <- file.path(tempdir(),"mirror/resrepo_test")
-
-
-
-# create git folder
-temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
-dir.create(temp_dir_git, recursive=TRUE)
-git2r::init(temp_dir_git)
-# initialise the template resrepo
-library(resrepo)
-init_resrepo()
-git2r::add(path=".")  # add all the new files to git
-git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
-
-fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
-
-vignette_dir <- getwd()
-
-knitr::opts_knit$set(root.dir = temp_dir_git)
-
 ```
+
 
 # Using symbolic links in resrepo
 
 This vignette shows how to use symbolic links within *resrepo*. `git` is designed to manage software code, but it is not suited to track large data files. 
 
-By default, the git repository does not track data files (as they are often too large for git), and each sub-directory should have a remote source that will allow others using the repository to get the data. There should be one source for each first level subdirectory (e.g. /data/raw/defaults or /data/intermediates/rnaseq); you are then free to further structure (or not) your data within multiple, higher level sub-directories within each first level sub-dir. If your datasets are small and stored as text files, you might decide to track them within your git repository. In that case, set the "source"" and "url"" as "git" in the data_sources.csv table for that sub-directory, and edit appropriately .gitignore.
+By default, the git repository does not track data files (as they are often too large for `git`), and each sub-directory should have a remote source that will allow others using the repository to get the data. There should be one source for each first level subdirectory (e.g. `/data/raw/defaults` or `/data/intermediates/rnaseq`); you are then free to further structure (or not) your data within multiple, higher level sub-directories within each first level sub-dir. If your datasets are small and stored as text files, you might decide to track them within your git repository. In that case, set the "source"" and "url"" as "git" in the data_sources.csv table for that sub-directory, and edit appropriately .gitignore.
 
 When integrating `git` with cloud systems such as *OneDrive*, *Google Drive* issues can arise (**EXAMPLE LINK 1 EXAMPLE LINK 2**), so we encourage to place the directory from your computer linked to the github project in a location that is not backed up, and then store the data separately in a backed-up directory.
 
@@ -58,35 +25,57 @@ When integrating `git` with cloud systems such as *OneDrive*, *Google Drive* iss
 
 A **symbolic link** (also known as symlink or soft link) is a used to point to a file or directory (called the "target") by specifying the path in the file itself (=*target*). The system sees the symlink as a file or (especially in this case) a directory in which data can be written, but when it tries to access the location it is directly redirected to the target path. This allows to keep functional absolute paths within the git project while at the same time writing data into a mirrored directory outside of it.
 
+# Create the example project structure
+
+```{r}
+# set up the temporary directories
+temp_dir_onedrive <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
+temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
+
+# create the folders
+dir.create(temp_dir_onedrive, recursive=TRUE)
+dir.create(temp_dir_git, recursive=TRUE)
+setwd(temp_dir_git)
+
+# initialise a git repository
+library(resrepo)
+
+git2r::init(temp_dir_git)
+init_resrepo()  # make all the resrepo folders
+git2r::add(path=".")  # add all the new files to git
+git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
+
+
+```
+
 
 # Project structure
 
 In this vignette we have created a project structure as follows:
 
 ```{r}
+# print the directory structure (the template structure has been added to the github repository)
 fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
 ```
+
+with ./git being the directory linked to github and ./onedrive being the directory mirrored on the cloud. The ./git `project1` contains the `resrepo` template, ./onedrive will contain the data for the ./git `project1` (they are unlinked)
+
+We are now going to create a symbolic link that the system sees as "tempdir_mydrive/git/project1" but points to "./tempdir_mydrive/onedrive/gitdata/project1". The symbolic link directory should be seen as a directory, but is actually a link.
+
 ```{r}
-library(resrepo)
+# create the new directory
+dir.create(file.path(temp_dir_onedrive,"data_input"))
+
+# create the linked path
+data_dir_link("/data/raw/data_input",
+                file.path(temp_dir_onedrive,"data_input"))
 
 
 ```
-
-with ./git being the directory linked to github and ./onedrive being the directory mirrored on the cloud.
-
-We are now going to create a symbolic link that the system sees as "tempdir_mydrive/git/project1" but points to "./tempdir_mydrive/onedrive/gitdata/project1".
-
+The folder and link are created:
 
 ```{r}
-# symbolic link directory (should be seen as a directory but is actually a link)
-link_dir <- file.path(tempdir(),"tempdir_mydrive/git/project1")
+fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
 
-# target directory
-target_dir <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
-
-
-data_dir_link(link_dir, target_dir)
 ```
-
-# How to create symbolic links in resrepo
 
