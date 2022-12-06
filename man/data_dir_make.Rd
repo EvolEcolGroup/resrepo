@@ -8,6 +8,13 @@ data_dir_make(path, source = NULL, URL = NULL, tracked = FALSE)
 }
 \arguments{
 \item{path}{data path within a resrepo}
+
+\item{source}{optional string giving the source of this data directory (e.g. onedrive)}
+
+\item{URL}{optional string with the URL for the source}
+
+\item{tracked}{boolean definign whether the directory should be tracked in git (this
+will modify .gitignore appropriately)}
 }
 \description{
 Make a directory within a resrepo with a short path from its root

@@ -22,7 +22,7 @@ code/*.rdb
 code/*.rdx
 
 ## Data directory
-## ignore everything in data, except for *.md (used for additional metadata documentation) and data_sources.csv
+## ignore everything in data, except for *.md (used for additional metadata documentation) and data_source_list.csv
 /data/raw/*
 !/data/raw/*.md
 /data/intermediate/*

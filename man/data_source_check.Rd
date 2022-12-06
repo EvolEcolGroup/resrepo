@@ -11,6 +11,6 @@ data_source_check(path = NULL)
 directory). If left NULL, then the current working directory is used.}
 }
 \description{
-Check that all directories in /data/raw and /data/intermediate are found in data_sources.csv,
+Check that all directories in /data/raw and /data/intermediate are found in data_source_list.csv,
 and that their details are complete.
 }

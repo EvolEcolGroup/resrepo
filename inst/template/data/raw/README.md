@@ -6,6 +6,6 @@ Examples of raw data: Fastq files of DNA/RNA-seq; Observational data; GPS data o
 
 All your files should be stored in one or more sub-directories within the `/data/raw`
 directory, not directly in `/data/raw`. There is a `default` directory for you to use,
-or you can remove it and replace it with other directories; make sure that you update the `data_sources.csv` table found under `/data`. 
+or you can remove it and replace it with other directories; make sure that you update the `data_source_list.csv` table found under `/data`. 
 
  
