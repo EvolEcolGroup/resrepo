@@ -27,12 +27,19 @@ data_source_list_add<- function(path=NULL, directory=NULL, source = "NA", url = 
   original_sources <- read.csv("./data/data_source_list.csv")
   
   temp_sources<-data.frame('directory' =NA, 'source' = NA, 'url' = NA, 'notes'=NA)
+  
+  new_sources<-rbind(original_sources, temp_sources)
+  #check a directory exists or not; if not, creates it
+  if(dir.exists(directory)==FALSE){
+    # create output directory
+    print(paste0(directory, " does not exist; create it now."))
+    dir.create(file.path(directory), recursive=TRUE)
+  }
+  
   temp_sources$directory<-directory
   temp_sources$source <- source
   temp_sources$url <- url
   temp_sources$notes<-notes_text
-  
-  new_sources<-rbind(original_sources, temp_sources)
   
   write.csv(new_sources, "./data/data_source_list.csv",row.names = FALSE)
   
