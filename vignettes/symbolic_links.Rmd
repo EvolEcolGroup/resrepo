@@ -77,6 +77,12 @@ directory mirrored on the cloud. Our project repository (initialised with
 directory `./onedrive`, we have created a `gitdata` directory, where we plan to store our project data in a sub-directory
 with the same name.
 
+The code in the rest of this vignette assumes that you have set the root of the git repository 
+`project1` as your working directory:
+```{r}
+getwd()
+```
+
 We start by initialising a mirror directory in `./onedrive/gitdata/`. The full path
 to that directory is stored in the variable `onedrive_dir`:
 ```{r}
