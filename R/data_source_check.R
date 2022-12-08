@@ -23,7 +23,7 @@ data_source_check <- function(path=NULL){
     "data_source_list.csv does not include the three mandatory columns: 'directory', 'source' and 'url'"
   }
   if (any(is.na(data_sources$source), is.na(data_sources$url))){
-    stop("in data_source_list.csv, some sources/url are have been left blank; \n",
+    stop("in data_source_list.csv, some sources/url have been left blank; \n",
          "all entries should be filled in, use 'git' in both source and url for dirs in which files that are synchronised with git")
   }
   raw_dirs <- list.dirs(file.path(path,"data/raw"), full.names = FALSE, recursive=FALSE)

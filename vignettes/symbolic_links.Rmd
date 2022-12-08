@@ -61,7 +61,7 @@ system.
 In this vignette, we have assume the following drive structure:
 
 ```{r echo=FALSE}
-fs::dir_tree(path=base_dir, recurse = 3)
+fs::dir_tree(path=base_dir)
 ```
 
 with `./git` being the directory that contains your git repositories (which are
@@ -76,6 +76,12 @@ The code in the rest of this vignette assumes that you have set the root of the 
 `project1` as your working directory:
 ```{r}
 getwd()
+```
+
+We don't want to use the `default` directory in `/data/raw`, so we remove it:
+```{r}
+## we don't have this, we need to use data_source_delete
+
 ```
 
 We start by initialising a mirror directory in `./onedrive/gitdata/`. The full path
@@ -99,7 +105,7 @@ To allow mirroring, we will actually create the directory not under
 `git/project1/data/raw/`, but rather in `mydrive/git/project1/data/raw`, and
 instead put a symlink pointing to it in `git/project1/data/raw/`.
 
-So, first, create the directory:
+So, first, create the directory in onedrive:
 
 ```{r}
 # create the new directory
@@ -122,7 +128,13 @@ fs::dir_tree(path=base_dir)
 ```
 
 We can see that we now have what looks like a directory called `data_input` in
-he git repository. In reality, this is a link to the directory with the same
+the git repository. Indeed, if we check whether it exists, we get a positive
+answer:
+```{r}
+dir.exists(path_resrepo("/data/raw/data_input"))
+```
+
+In reality, this is a link to the directory with the same
 name under one drive. If we write a file within our git repository, we can see
 that the file is actually stored on onedrive:
 
@@ -138,4 +150,13 @@ However, we can retrieve the file by targetting the directory within our `git`
 repository:
 ```{r}
 read.csv(path_resrepo("/data/raw/data_input/new_data_file.csv"))
+```
+
+Don't forget that we need to add a data source for this new directory:
+```{r}
+data_source_add(dir = "/data/raw/data_input",
+                source = "onedrive",
+                url = "https://my_one_drive/link_to_data_input")
+#data_source_check() # this currently fails as we can't delete the default
+# data source
 ```
