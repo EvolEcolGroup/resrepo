@@ -2,7 +2,9 @@
 title: "Using symbolic links"
 author: "Michela Leonardi, Paul Whitelaw, Margherita Colucci"
 date: "2022-12-06"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r devtools, include = FALSE}
@@ -16,24 +18,31 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-# define directories
+# define base directory
 base_dir <- file.path(tempdir(),"mydrive")
-onedrive_dir <- file.path(base_dir ,"onedrive/gitdata/project1")
+#clean it up if it already existed and had old content
+unlink (base_dir, recursive = TRUE)
+# define the directories
+onedrive_dir <- file.path(base_dir ,"onedrive/gitdata")
 git_dir <- file.path(base_dir ,"git/project1")
-# create directories
+# create them
 dir.create(onedrive_dir, recursive = TRUE)
 dir.create(git_dir, recursive = TRUE)
-# initialise a git repository for the project
-git2r::init(git_dir)
-resrepo::init_resrepo()  # make all the resrepo folders
-git2r::add(path=".")  # add all the new files to git
-git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
-
 vignette_dir<-getwd()
+# initialise the git repository
+git2r::init(path=git_dir)
 # set the working directory for markdown here
 knitr::opts_knit$set(root.dir = git_dir)
 ```
 
+
+```{r echo=FALSE, results="hide"}
+# now that that the working directory is in the git repository
+# we set up the resrepo for the project
+resrepo::init_resrepo()  # make all the resrepo folders
+git2r::add(path=".")  # add all the new files to git
+git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
+```
 
 # Using symbolic links in resrepo
 
@@ -47,59 +56,85 @@ When integrating `git` with cloud systems such as *OneDrive*, *Google Drive* iss
 
 A **symbolic link** (also known as symlink or soft link) is a used to point to a file or directory (called the "target") by specifying the path in the file itself (=*target*). The system sees the symlink as a file or (especially in this case) a directory in which data can be written, but when it tries to access the location it is directly redirected to the target path. This allows to keep functional absolute paths within the git project while at the same time writing data into a mirrored directory outside of it.
 
-# Create the example project structure
-
-```{r}
-
-# set up the temporary directories
-temp_dir_onedrive <- file.path(tempdir(),"mydrive/onedrive/gitdata/project1")
-temp_dir_git <- file.path(tempdir(),"mydrive/git/project1")
-
-# create the folders
-dir.create(temp_dir_onedrive, recursive=TRUE)
-dir.create(temp_dir_git, recursive=TRUE)
-setwd(temp_dir_git)
-
-# initialise a git repository
-library(resrepo)
-
-git2r::init(temp_dir_git)
-init_resrepo()  # make all the resrepo folders
-git2r::add(path=".")  # add all the new files to git
-git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
-
-
-```
-
-
 # Project structure
 
-In this vignette we have created a project structure as follows:
+We will be working in the temporary directory, where we have set up an example
+file system. In the vignette, we will use the variable `base_dir` as the root
+of our file system, but you will have to us the appropriate path on your own
+system.
 
-```{r}
-# print the directory structure (the template structure has been added to the github repository)
-fs::dir_tree(path=file.path(tempdir(),"mydrive/"))
+In this vignette, we have assume the following drive structure:
+
+```{r echo=FALSE}
+fs::dir_tree(path=base_dir, recurse = 3)
 ```
 
-with ./git being the directory linked to github and ./onedrive being the directory mirrored on the cloud. The ./git `project1` contains the `resrepo` template, ./onedrive will contain the data for the ./git `project1` (they are unlinked)
+with `./git` being the directory that contains your git repositories (which are
+likely connected to their GitHub or Gitlab remotes), and `./onedrive` being the
+directory mirrored on the cloud. Our project repository (initialised with
+`init_resrepo()` as shown in the main vignette) is found in
+`./git/project1`. In our mirrored
+directory `./onedrive`, we have created a `gitdata` directory, where we plan to store our project data in a sub-directory
+with the same name.
 
-We are now going to create a symbolic link that the system sees as "mydrive/git/project1" but points to "./mydrive/onedrive/gitdata/project1". The symbolic link directory should be seen as a directory, but is actually a link.
+We start by initialising a mirror directory in `./onedrive/gitdata/`. The full path
+to that directory is stored in the variable `onedrive_dir`:
+```{r}
+library(resrepo)
+onedrive_dir <- file.path(base_dir,"onedrive/gitdata")
+init_mirror(onedrive_dir)
+```
+
+We can see that we have created a `project1` directory in `./onedrive/gitdata/`.
+That directory contains all the data subdirectories found in our git project,
+but not the other subdirectories (i.e. code, results, writing):
+
+```{r echo=FALSE}
+fs::dir_tree(path=base_dir)
+```
+We now want to add a data subdirectory that will actually hold our data (i.e. 
+under /data/raw). We will call it `data_input` (so, `/data/raw/data_input`).
+To allow mirroring, we will actually create the directory not under
+`git/project1/data/raw/`, but rather in `mydrive/git/project1/data/raw`, and
+instead put a symlink pointing to it in `git/project1/data/raw/`.
+
+So, first, create the directory:
 
 ```{r}
 # create the new directory
-setwd(temp_dir_git)
-dir.create(file.path(temp_dir_onedrive,"data_input"))
-
-# create the linked path
-data_dir_link("/data/raw/data_input",
-                file.path(temp_dir_onedrive,"data_input"))
-
-
+dir.create(file.path(onedrive_dir,"project1/data/raw/data_input"))
 ```
-The folder and link are created:
+```{r echo=FALSE}
+fs::dir_tree(base_dir)
+```
+
+And now we create the symbolic link:
+```{r}
+
+
+data_dir_link(link_dir = "/data/raw/data_input",
+              target_dir = file.path(base_dir,"onedrive/gitdata/project1/data/raw/data_input"))
+```
+
+```{r echo=FALSE}
+fs::dir_tree(path=base_dir)
+```
+
+We can see that we now have what looks like a directory called `data_input` in
+he git repository. In reality, this is a link to the directory with the same
+name under one drive. If we write a file within our git repository, we can see
+that the file is actually stored on onedrive:
 
 ```{r}
-fs::dir_tree(path=file.path(tempdir(),"mydrive/"))
-
+write.csv("some content to put in the file",
+          path_resrepo("/data/raw/data_input/new_data_file.csv"))
 ```
 
+```{r echo=FALSE}
+fs::dir_tree(path=base_dir)
+```
+However, we can retrieve the file by targetting the directory within our `git`
+repository:
+```{r}
+read.csv(path_resrepo("/data/raw/data_input/new_data_file.csv"))
+```
