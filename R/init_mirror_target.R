@@ -18,7 +18,7 @@ init_mirror <- function (path) {
     dir.create(mirror_path)
   } else {
     if (length(list.files(mirror_path)!=0)){
-      stop("the mirror directory ", mirror_dir," already exists and contains
+      stop("the mirror directory ", mirror_path," already exists and contains
            files!")
     }
   }

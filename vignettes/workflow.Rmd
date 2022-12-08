@@ -13,16 +13,14 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 example_dir <- file.path(tempdir(),"resrepo_example")
-dir.create(example_dir)
+unlink(example_dir,recursive = TRUE)
+dir.create(example_dir, showWarnings = FALSE)
 git2r::init(example_dir)
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
 
 ```
 
-```{r}
-getwd()
-```
 # resrepo: easy research on git
 
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. Scientific projects contain both code and data. `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, ensuring reproducible science and a tidy repository that can used for publication of your project.
@@ -86,25 +84,26 @@ We can check that all entries are present and complete with:
 data_source_check()
 ```
 
-Since the table is incomplete, we get an error! If we decided to mirror our data
-on OneDrive, we could easily fill these elements in with a text editor or in Excel/OpenOffice):
-```{r, echo=FALSE, results='hide'}
-temp_sources <- read.csv("./data/data_source_list.csv")
-temp_sources$source <- "onedrive"
-temp_sources$url <- "https://my_one_drive/link"
-write.csv(temp_sources, "./data/data_source_list.csv",row.names = FALSE)
+If we decided to mirror our data
+on OneDrive, we can simply edit the information:
+
+```{r}
+data_source_edit(dir = "/data/raw/default",
+                 source = "onedrive",
+                 url = "https://my_one_drive/link_to_default_folder")
 ```
 
+Note that you will need the link to the OneDrive folder where you will keep a
+copy of the data. `resrepo` does not update the data files for you, so you
+will have to manually keep the cloud source up-to-date (but see the
+vignette on symbolic_links for a set up where mirroring is automatic).
+
+If we inspect the data_source_list.csv file, we have:
 ```{r}
 read.csv("./data/data_source_list.csv")
 ```
 
-Or you can use the internal functions to do that:
-```{r}
-data_source_edit(directory = "/data/raw/default",new_url = "https://my_one_drive/link")
-```
-Note that you will need the link to the OneDrive folder that contains the data that
-go into `/data/raw/default`. The notes are optional, but they allow you to add
+The notes are optional, but they allow you to add
 additional information on where the data come from.
 
 And now all checks will pass:
@@ -151,7 +150,7 @@ of the RMarkdown document.
 
 ## Writing it all up
 Git is not really designed to handle Word or OpenOffice files. Ideally, text is 
-keps in markdown files, but that format does not let itself nicely to formatting
+kept in markdown files, but that format does not let itself nicely to formatting
 for submission (e.g. bibliogrpahy from a reference manager). Having said that, 
 you could, in principle, track Word/Openoffice documents in the `writing` directory, as they are rarely large enough to cause trouble. If you are writing
 collaboratively, you are more likely to use GoogleDoc or shared Word documents.
@@ -186,9 +185,15 @@ write a simple script to put in code, and we will call it `s01-preprocess_pengui
 We want the script to save a new version of the dataset. This should go in `/raw/intermediate`,
 in a new directory. We first need to create this directory:
 ```{r}
-data_dir_make(path = "/data/intermediate/penguins")
+data_source_add(dir = "/data/intermediate/penguins",
+                source = "onedrive",
+                url = "https://my_one_drive/link_to_penguins_folder")
+```
+
+```{r echo=FALSE}
 fs::dir_tree()
 ```
+
 Now that we have a directory where we can store our intermediate dataset, we can
 create our script, which will include:
 ```{r process_raw_data}
@@ -199,9 +204,18 @@ write.csv(penguins_na_omit,
           row.names = FALSE)                          
 ```
 
-Check files are in the correct location and not tracked.
-```{r}
+We can confirm that the file is now in the right place:
+```{r echo=FALSE}
 fs::dir_tree()
+```
+And that the source list is fully valid:
+```{r}
+data_source_check()
+```
+
+The only file that should be tracked by git is the source list table, which
+has been updated, but not the data files that we created:
+```{r}
 git2r::status()
 
 ```

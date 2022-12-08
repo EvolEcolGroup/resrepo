@@ -1,8 +1,8 @@
-test_that("path_is_data_dir works correctly", {
+test_that("is_data_dir works correctly", {
   path <- "/data/raw/default"
-  expect_true(path_is_data_dir(path))
+  expect_true(is_data_dir(path))
   path <- "data/raw/default"
-  expect_error(path_is_data_dir(path), path)
+  expect_error(is_data_dir(path), path)
   path <- "/data/blah/default"
-  expect_error(path_is_data_dir(path), path)
+  expect_error(is_data_dir(path), path)
 })

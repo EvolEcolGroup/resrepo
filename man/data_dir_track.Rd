@@ -4,10 +4,10 @@
 \alias{data_dir_track}
 \title{Track a data directory with git}
 \usage{
-data_dir_track(path)
+data_dir_track(dir)
 }
 \arguments{
-\item{data_path}{the path of the data directory, given as relative to the root
+\item{dir}{the path of the data directory, given as relative to the root
 of the git repository (e.g. "/data/raw/my_new_dir")}
 }
 \description{

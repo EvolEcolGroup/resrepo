@@ -1,50 +1,58 @@
-#' Add one entry to existing data_source_list.csv
+#' Add a new data source
 #'
-#' Checks that data_source_list exists,
-#' and if so, add user_specified entry into this csv file.
+#' This function adds a data source to the data_source_list.csv file. If the
+#' directory does not exist yet, it will create one.
 #'
-#' @param path option string giving the path for the root of the repository (NOT the data
-#' directory). If left NULL, then the current working directory is used.
-#' @param directory directory of the new entry. If directory does not exist, create it.
-#' @param source source for the new entry.
-#' @param url url for the new entry.
+#' @param dir directory of the new entry. It should be given relative to
+#' the root of the git repository. If the directory does not exist, it will be
+#' created.
+#' @param source source for the new entry (e.g. zenodo, onedrive, dropbox, etc.).
+#' @param url url for the source.
 #' @param notes notes for the new entry.
-#' 
+#' @param git_path option string giving the path for the root of the repository (NOT the data
+#' directory). If left NULL, then the current working directory is used.
+#' @returns TRUE if successful
 #' @export
 
 
-data_source_list_add<- function(path=NULL, directory=NULL, source = "NA", url = "NA", notes_text = "NA"){
-  if (is.null(path)){
-    path = path_resrepo("/")
-  }
-  
-  if(is.null(directory)){
+data_source_add<- function(dir=NULL, source = NA, url = NA,
+                                notes = NA, git_path=NULL){
+  if(is.null(dir)){
     stop("You need to specify a directory.")
+  } 
+  is_data_dir(dir)
+
+  if (is.null(git_path)){
+    git_path = find_git_root()
   }
-  
-  if(!file.exists(file.path(path,"/data/data_source_list.csv"))){
-    stop("data_sources.csv can not be found; are you in the root directory of your repository?")
+    
+  if(!file.exists(file.path(git_path,"/data/data_source_list.csv"))){
+    stop("data_sources_list.csv can not be found;\n",
+    "are you in the root directory of your repository?")
   }
-  data_source_list_find()
-  
-  original_sources <- read.csv(paste0(path,"/data/data_source_list.csv"))
+
+  original_sources <- utils::read.csv(path_resrepo("/data/data_source_list.csv"))
+  if (dir %in% original_sources$directory){
+    stop(dir," already exists in data_source_list.csv;\n",
+         "use 'data_source_edit' to edit an entry.")
+  }
   
   temp_sources<-data.frame('directory' =NA, 'source' = NA, 'url' = NA, 'notes'=NA)
-  
+
   #check a directory exists or not; if not, creates it
-  if(dir.exists(directory)==FALSE){
+  if(!dir.exists(path_resrepo(dir))){
     # create output directory
-    print(paste0(directory, " does not exist; create it now."))
-    dir.create(file.path(directory), recursive=TRUE)
+    message(dir, " does not exist; create it now.")
+    dir.create(path_resrepo(dir))
   }
   
-  temp_sources$directory<-directory
+  temp_sources$directory<-dir
   temp_sources$source <- source
   temp_sources$url <- url
-  temp_sources$notes<-notes_text
+  temp_sources$notes<-notes
   
   new_sources<-rbind(original_sources, temp_sources)
-  write.csv(new_sources, paste0(path, "./data/data_source_list.csv"),row.names = FALSE)
+  utils::write.csv(new_sources, path_resrepo("./data/data_source_list.csv"),row.names = FALSE)
   
   return(TRUE)
 }
