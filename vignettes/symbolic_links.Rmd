@@ -80,14 +80,13 @@ getwd()
 
 We don't want to use the `default` directory in `/data/raw`, so we remove it:
 ```{r}
-## we don't have this, we need to use data_source_delete
-
+library(resrepo)
+data_source_delete("/data/raw/default")
 ```
 
 We start by initialising a mirror directory in `./onedrive/gitdata/`. The full path
 to that directory is stored in the variable `onedrive_dir`:
 ```{r}
-library(resrepo)
 onedrive_dir <- file.path(base_dir,"onedrive/gitdata")
 init_mirror(onedrive_dir)
 ```
@@ -117,10 +116,9 @@ fs::dir_tree(base_dir)
 
 And now we create the symbolic link:
 ```{r}
-
-
 data_dir_link(link_dir = "/data/raw/data_input",
-              target_dir = file.path(base_dir,"onedrive/gitdata/project1/data/raw/data_input"))
+              target_dir = file.path(base_dir,
+                                     "onedrive/gitdata/project1/data/raw/data_input"))
 ```
 
 ```{r echo=FALSE}
@@ -128,10 +126,20 @@ fs::dir_tree(path=base_dir)
 ```
 
 We can see that we now have what looks like a directory called `data_input` in
-the git repository. Indeed, if we check whether it exists, we get a positive
-answer:
+the git repository. Indeed, R thinks the directory exists:
 ```{r}
 dir.exists(path_resrepo("/data/raw/data_input"))
+```
+And we fail our check on data sources as we have not added it yet:
+```{r error=TRUE}
+data_source_check()
+```
+After adding it, all is well:
+```{r}
+data_source_add(dir = "/data/raw/data_input",
+                source = "onedrive",
+                url = "https://my_one_drive/link_to_data_input")
+data_source_check()
 ```
 
 In reality, this is a link to the directory with the same
@@ -146,17 +154,10 @@ write.csv("some content to put in the file",
 ```{r echo=FALSE}
 fs::dir_tree(path=base_dir)
 ```
-However, we can retrieve the file by targetting the directory within our `git`
+However, we can retrieve the file by targeting the directory within our `git`
 repository:
 ```{r}
 read.csv(path_resrepo("/data/raw/data_input/new_data_file.csv"))
 ```
 
-Don't forget that we need to add a data source for this new directory:
-```{r}
-data_source_add(dir = "/data/raw/data_input",
-                source = "onedrive",
-                url = "https://my_one_drive/link_to_data_input")
-#data_source_check() # this currently fails as we can't delete the default
-# data source
-```
+
