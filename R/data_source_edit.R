@@ -51,7 +51,7 @@ data_source_edit<- function(directory, path=NULL,  new_directory = NULL, new_sou
       # use these to avoid bugs
       new_sources_list$directory<-as.character(new_sources_list$directory)
     }
-    print(class(new_sources_list))
+    #print(class(new_sources_list))
     
     write.csv(new_sources_list, "./data/data_source_list.csv",row.names = FALSE)
     }

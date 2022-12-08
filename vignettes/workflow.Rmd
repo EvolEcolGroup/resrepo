@@ -31,12 +31,15 @@ The aim of `resrepo` is to encourage and facilitate good practices when setting 
 
 Start by creating a repository for your project using the `resrepo_template` repository as a template. Within the EvolEcolGroup GitHub, if you click `New` to create a new project repository you will be offered the chance to use a `Repository template; Start your repository with a template repository's contents`. Here there is a dropdown box where you can select this template `resrepo_template`.
 
-Alternatively, you can create a blank repository, clone it on your computer, and use `resrepo` to initialise it. So, after setting our working directory within the `git` repository
+Alternatively, you can create a blank repository, clone it on your computer, and use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
+```{r}
+getwd()
+```
+
+We can now initialise the repository:
 ```{r}
 library(resrepo)
 init_resrepo()
-# delete me when done
-getwd()
 ```
 
 Let us look at the content of our repository:
@@ -98,7 +101,7 @@ read.csv("./data/data_source_list.csv")
 
 Or you can use the internal functions to do that:
 ```{r}
-data_source_list_edit(directory = "/data/raw/default",new_url = "https://my_one_drive/link")
+data_source_edit(directory = "/data/raw/default",new_url = "https://my_one_drive/link")
 ```
 Note that you will need the link to the OneDrive folder that contains the data that
 go into `/data/raw/default`. The notes are optional, but they allow you to add
@@ -106,11 +109,11 @@ additional information on where the data come from.
 
 And now all checks will pass:
 ```{r}
-#check_data_sources()
+data_source_check()
 ```
 Now data sources have been arranged, commit changes for a clean repository.
 
-```{r}
+```{r echo=FALSE, results="hide"}
 
 git2r::add(path="./data")
 git2r::commit(message="Added data sources", all=TRUE)
@@ -118,7 +121,7 @@ git2r::commit(message="Added data sources", all=TRUE)
 git2r::status()
 ```
 
-No files should be stored directly in `/data/raw` or `/data/intermediate`, they should always be put in a first level sub-directory (otherwise we can not define the provenance in `data_source_list.csv`). If you decide to remove the `/raw/default` subdir and use a custom directory, make sure that the `data_source_list.csv` table is updated accordingly. If you are not generating any intermediate data, you can simply ignore it.
+No files should be stored directly in `/data/raw` or `/data/intermediate`, they should always be put in a first level sub-directory (otherwise we can not define the provenance in `data_source_list.csv`). If you decide to remove the `/raw/default` subdir and use a custom directory, make sure that the `data_source_list.csv` table is updated accordingly. If you are not generating any intermediate data, you can simply ignore the `/data/intermediate` directory.
 
 ## Adding some code and generating results
 
@@ -163,10 +166,15 @@ The first step is to download some data and put them in `/data/raw/default`. We 
 data("penguins", package = "palmerpenguins")
 write.csv(x = penguins,
           file = path_resrepo("/data/raw/default/penguins.csv"))
+```
+
+```{r echo=FALSE}
 fs::dir_tree()
 ```
 
-By default, the data are not tracked, so this file will not appear on your Git tab on the right hand side of RStudio.
+By default, the data are not tracked, so this file will not appear on your Git 
+tab on the right hand side of RStudio. We can use a command from the `git2r` library
+to check this (but you won't need it, you can just check the Git tab in Rstudio):
 
 ```{r}
 git2r::status()
