@@ -25,6 +25,9 @@ find_git_root <- function(path="."){
   if (!root_found){
     stop("not a git repository (and none found in any of the parent directories)")
   }
+  if (basename(normalizePath(path))=="resrepo"){
+    stop("You are in a git repository called resrepo; this name is reserved\n")
+  }
   return(path)
 }
 

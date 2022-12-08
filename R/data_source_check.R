@@ -9,11 +9,11 @@
 #' @export
 
 
-check_data_sources <- function(path=NULL){
+data_source_check <- function(path=NULL){
   if (is.null(path)){
     path = getwd()
   }
-  if(!file.exists(file.path(path,"/data/data_source_list.csv"))){
+  if(!file.exists(file.path(path,"./data/data_source_list.csv"))){
     stop("data_source_list.csv can not be found; are you in the root directory of your repository?")
   }
   
@@ -32,7 +32,9 @@ check_data_sources <- function(path=NULL){
   if (length(intermediate_dirs)>0){
     intermediate_dirs <- paste0("/data/intermediate/",intermediate_dirs)
   }
+
   if (!all(c(raw_dirs,intermediate_dirs) %in% data_sources$directory)){
+    missing_dir<-
     stop("some directories are not listed in data_source_list.csv")
   }
   return(TRUE)

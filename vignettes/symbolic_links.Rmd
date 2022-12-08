@@ -1,10 +1,10 @@
 ---
 title: "Using symbolic links"
-author: "Michela Leonardi, Paul Whitelaw, Margherita Colucci"
-date: "2022-12-06"
-output:
-  pdf_document: default
-  html_document: default
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{symbolic links}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 

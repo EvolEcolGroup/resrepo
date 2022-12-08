@@ -13,6 +13,7 @@ init_resrepo <- function (path=".") {
   copy_results <- file.copy(from=list.files(template_dir,full.names = TRUE,
                                      all.files=TRUE,no..=TRUE),
             to = git_root, recursive = TRUE, overwrite = TRUE)
+  dir.create(path_resrepo("/data/raw/default"))
   if (all(copy_results)){
     return(TRUE)
   } else {
