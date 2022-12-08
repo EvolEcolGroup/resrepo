@@ -16,6 +16,22 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+# define directories
+base_dir <- file.path(tempdir(),"mydrive")
+onedrive_dir <- file.path(base_dir ,"onedrive/gitdata/project1")
+git_dir <- file.path(base_dir ,"git/project1")
+# create directories
+dir.create(onedrive_dir, recursive = TRUE)
+dir.create(git_dir, recursive = TRUE)
+# initialise a git repository for the project
+git2r::init(git_dir)
+resrepo::init_resrepo()  # make all the resrepo folders
+git2r::add(path=".")  # add all the new files to git
+git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
+
+vignette_dir<-getwd()
+# set the working directory for markdown here
+knitr::opts_knit$set(root.dir = git_dir)
 ```
 
 
@@ -36,8 +52,8 @@ A **symbolic link** (also known as symlink or soft link) is a used to point to a
 ```{r}
 
 # set up the temporary directories
-temp_dir_onedrive <- file.path(tempdir(),"tempdir_mydrive/onedrive/gitdata/project1")
-temp_dir_git <- file.path(tempdir(),"tempdir_mydrive/git/project1")
+temp_dir_onedrive <- file.path(tempdir(),"mydrive/onedrive/gitdata/project1")
+temp_dir_git <- file.path(tempdir(),"mydrive/git/project1")
 
 # create the folders
 dir.create(temp_dir_onedrive, recursive=TRUE)
@@ -62,12 +78,12 @@ In this vignette we have created a project structure as follows:
 
 ```{r}
 # print the directory structure (the template structure has been added to the github repository)
-fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
+fs::dir_tree(path=file.path(tempdir(),"mydrive/"))
 ```
 
 with ./git being the directory linked to github and ./onedrive being the directory mirrored on the cloud. The ./git `project1` contains the `resrepo` template, ./onedrive will contain the data for the ./git `project1` (they are unlinked)
 
-We are now going to create a symbolic link that the system sees as "tempdir_mydrive/git/project1" but points to "./tempdir_mydrive/onedrive/gitdata/project1". The symbolic link directory should be seen as a directory, but is actually a link.
+We are now going to create a symbolic link that the system sees as "mydrive/git/project1" but points to "./mydrive/onedrive/gitdata/project1". The symbolic link directory should be seen as a directory, but is actually a link.
 
 ```{r}
 # create the new directory
@@ -83,7 +99,7 @@ data_dir_link("/data/raw/data_input",
 The folder and link are created:
 
 ```{r}
-fs::dir_tree(path=file.path(tempdir(),"tempdir_mydrive/"))
+fs::dir_tree(path=file.path(tempdir(),"mydrive/"))
 
 ```
 
