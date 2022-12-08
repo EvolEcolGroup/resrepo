@@ -7,11 +7,6 @@ output:
   html_document: default
 ---
 
-```{r devtools, include = FALSE}
-# load functions with 
-# devtools::load_all()
-```
-
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -108,7 +103,7 @@ So, first, create the directory:
 
 ```{r}
 # create the new directory
-dir.create(file.path(onedrive_dir,"project1/data/raw/data_input"))
+dir.create(file.path(onedrive_dir,"project1/data/raw/data_input"), recursive = TRUE)
 ```
 ```{r echo=FALSE}
 fs::dir_tree(base_dir)
