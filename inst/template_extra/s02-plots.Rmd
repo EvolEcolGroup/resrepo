@@ -2,7 +2,7 @@
 title: "Test Rmd for resrepo"
 author: "Andrea"
 date: "2022-12-09"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup_rmd, include=FALSE}
