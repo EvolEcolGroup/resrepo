@@ -27,9 +27,7 @@ The aim of `resrepo` is to encourage and facilitate good practices when setting 
 
 ## Initialise the repository
 
-Start by creating a repository for your project using the `resrepo_template` repository as a template. Within the EvolEcolGroup GitHub, if you click `New` to create a new project repository you will be offered the chance to use a `Repository template; Start your repository with a template repository's contents`. Here there is a dropdown box where you can select this template `resrepo_template`.
-
-Alternatively, you can create a blank repository, clone it on your computer, and use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
+Start by creating a blank repository, clone it on your computer, and use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
 ```{r}
 getwd()
 ```
