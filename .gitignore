@@ -29,3 +29,4 @@ code/*.rdx
 !/data/intermediate/*.md
 /data/archive/*
 !/data/archive/*.md
+.Rproj.user
