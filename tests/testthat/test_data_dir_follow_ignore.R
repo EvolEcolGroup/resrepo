@@ -7,9 +7,9 @@ unlink (file.path(test_dir,".*"), recursive = TRUE)
 dir.create(test_dir, showWarnings = FALSE)
 setwd(test_dir)
 # initialise a git repository
-git2r::init(test_dir)
+this_git <- git2r::init(test_dir)
 
-test_that("data_dir track and untrack",{
+test_that("data_dir follow and unfollow",{
   # create a repository as resrepo
   expect_true(init_resrepo())
   git2r::add(path=".")

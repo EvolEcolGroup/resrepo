@@ -7,7 +7,7 @@
 data_dir_ignore(path)
 }
 \arguments{
-\item{data_path}{the path of the data directory, given as relative to the root
+\item{path}{the path of the data directory, given as relative to the root
 of the git repository (e.g. "/data/raw/my_new_dir")}
 }
 \description{

@@ -3,7 +3,7 @@
 #' This function sets up a data directory to be tracked by git. It does so by
 #' adding the appropriate directory exception to `.gitignore`. 
 #'
-#' @param dir the path of the data directory, given as relative to the root
+#' @param path the path of the data directory, given as relative to the root
 #' of the git repository (e.g. "/data/raw/my_new_dir")
 #' @returns TRUE if the directory is tracked
 #' @export

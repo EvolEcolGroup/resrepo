@@ -2,7 +2,7 @@
 #'
 #' This function removes tracking for a data directory in git.
 #'
-#' @param data_path the path of the data directory, given as relative to the root
+#' @param path the path of the data directory, given as relative to the root
 #' of the git repository (e.g. "/data/raw/my_new_dir")
 #'
 #' @export
