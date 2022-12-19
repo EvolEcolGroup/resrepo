@@ -2,9 +2,7 @@
 title: "Template Rmarkdown file"
 author: "Your name"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-# knit to a directory under results:
 knit: resrepo::knit_to_results
-# output options include: pdf_document; html_document; github_document
 output: pdf_document
 ---
 
@@ -13,6 +11,13 @@ NB. We will change the contents of this template to be more resrepo-specific (an
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## YAML options
+
+The `knit: resrepo::knit_to_results` line causes the document to knit to a directory under results.
+
+The `output: pdf_document` line sets the output to a PDF document. Output options include: `pdf_document`; `html_document`; `github_document`; `word_document`. For more information see https://bookdown.org/yihui/rmarkdown/output-formats.html.
+
 
 ## R Markdown
 
