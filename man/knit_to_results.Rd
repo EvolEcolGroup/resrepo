@@ -2,19 +2,22 @@
 % Please edit documentation in R/knit_to_results.R
 \name{knit_to_results}
 \alias{knit_to_results}
-\title{Custom knit function for RStudio}
+\title{Knit RMarkdown file to results folder}
 \usage{
 knit_to_results(inputFile, encoding)
 }
 \arguments{
 \item{inputFile}{The name of the R Markdown file to be rendered.}
 
-\item{encoding}{As per \code{rmarkdown::render_site()} this is ignored.
-The encoding is always assumed to be UTF-8.}
+\item{encoding}{This is ignored. The encoding is always assumed to be UTF-8.}
 }
 \description{
 This function is used in the YAML of an RMarkdown file so that when it is
-knitted, the output \code{.md} file (and associated image files) are sent to
-the \code{~/results} folder rather than the folder in which the \code{.Rmd}
-file is located.
+knitted, the output file is sent to the \code{~/results} directory rather than
+the directory in which the \code{.Rmd} file is located.
+The output file can be \code{.pdf}, \code{.html}, \code{.md} etc.
+NB. This function does NOT cause any objects that are written to file in
+your \code{.Rmd} code to be written to the new results directory by default.
+To ensure all objects are written to the correct directories, specify an
+\code{output_dir} directly in the code.
 }
