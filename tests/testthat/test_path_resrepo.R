@@ -22,6 +22,9 @@ test_that("initialise repository",{
               "path ")
   expect_error(path_resrepo("/data/raw/README.dox",check_exists = TRUE),
                "path ")
+  # check shortcuts
+  expect_true(inherits(path_resrepo("/d/r/default",check_exists = TRUE),"character"))
+  
 })
 
 # and now clean up

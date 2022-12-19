@@ -10,9 +10,13 @@
 init_resrepo <- function (path=".") {
   git_root <- find_git_root()
   template_dir <- system.file("template",package="resrepo")
-  copy_results <- file.copy(from=dir(template_dir,full.names = TRUE,
-                                     all.files=TRUE),
+  copy_results <- file.copy(from=list.files(template_dir,full.names = TRUE,
+                                     all.files=TRUE,no..=TRUE),
             to = git_root, recursive = TRUE, overwrite = TRUE)
+  # make gitignore a hidden file
+  file.rename(from = file.path(git_root,"gitignore"), 
+    to = file.path(git_root,".gitignore"))
+  dir.create(path_resrepo("/data/raw/default"))
   if (all(copy_results)){
     return(TRUE)
   } else {

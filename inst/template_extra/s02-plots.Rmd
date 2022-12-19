@@ -1,0 +1,63 @@
+---
+title: "Test Rmd for resrepo"
+author: "Andrea"
+date: "2022-12-09"
+output: pdf_document
+---
+
+```{r setup_rmd, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reading data
+
+In a RMarkdown doocument within a `resrepo` repository, it easy to find data
+by using the function `path_resrepo`:
+```{r read_data1}
+library(resrepo)
+penguins_na_omit <- read.csv(
+  path_resrepo("/data/intermediate/s01-preprocess_penguins/penguins_na_omit.csv"))
+```
+
+If you are reading lots of files from the same directory, you can simply use
+a variable
+```{r read_data2}
+data_dir <- path_resrepo("/data/intermediate/s01-preprocess_penguins/")
+penguins_na_omit <- read.csv(file.path(data_dir,"penguins_na_omit.csv"))
+```
+
+
+## Writing output
+
+Writing output is equally easy. It is good practice to use directories in
+`/data/intermediate` and `/results` with the same name as the script. So, since this
+document is called `plots`, we will use `/data/intermediate/plots`
+and `/results/plots`. 
+
+For the data directory, it is best to use
+`add_data_sources` to generate it and at the same time provide a remote source.
+That needs to be done directly in the console (i.e. outside the script, as it is only done once, see the workflow
+vignette). In this example, we will not generate additional intermediate data,
+so we don't need to do that.
+
+We will however create some results. So, first we create the apprpriate directory:
+```{r make_res_dir}
+dir.create(path_resrepo('/results/plots'), 
+           showWarnings = FALSE)
+res_dir <- path_resrepo('/results/plots')
+```
+
+And then use it to store a plot:
+```{r make_plot}
+# create plot from intermediate data
+penguins_plot <- plot(x = penguins_na_omit$body_mass_g, 
+                      y = penguins_na_omit$flipper_length_mm
+                      )
+# and save it
+pdf(file.path(res_dir, "fig_flip_vs_mass.pdf"))
+print(penguins_plot)
+dev.off()
+
+```
+
+

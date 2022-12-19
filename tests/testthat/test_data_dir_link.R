@@ -18,17 +18,18 @@ test_that("create links for data directories",{
   expect_true(init_resrepo())  # make all the resrepo folders
   git2r::add(path=".")  # add all the new files to git
   git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
-  # expect an error if the data_path already exists
-  dir.create(path_resrepo("/data/raw/blah"))  # the local folder for my data (in git)
-  expect_error(data_dir_link(link_dir = "/data/raw/blah",  # the data folder I will use
-                             target_dir = file.path(mirror_dir,"blah2")),"the data_path")  # where the actual data are stored
-  # remove the data_path to reset the test
-  unlink(path_resrepo("/data/raw/blah"),recursive=TRUE)
-  # expect an error if the link path does not exist
+  # and now we expect an error if the link path does not exist
   expect_error(data_dir_link("/data/raw/blah",
                              file.path(mirror_dir,"blah2")),"the linked_path")
   # create the linked path
   dir.create(file.path(mirror_dir,"blah2"))
+  # but now the link_dir exists and contains a file
+  dir.create(path_resrepo("/data/raw/blah"))  # the local folder for my data (in git)
+  write.csv("blah blah",path_resrepo("/data/raw/blah/problem_file.csv"))
+  expect_error(data_dir_link(link_dir = "/data/raw/blah",  # the data folder I will use
+                             target_dir = file.path(mirror_dir,"blah2")),"the data_dir ")  # where the actual data are stored
+  # remove the file to allow the link to be created
+  unlink(path_resrepo("/data/raw/blah/problem_file.csv"))
   expect_true(data_dir_link("/data/raw/blah",
                 file.path(mirror_dir,"blah2")))
   # check that the link works (create a file within resrepo and find it in

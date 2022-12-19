@@ -13,10 +13,12 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 example_dir <- file.path(tempdir(),"resrepo_example")
-dir.create(example_dir)
+unlink(example_dir,recursive = TRUE)
+dir.create(example_dir, showWarnings = FALSE)
 git2r::init(example_dir)
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
+
 ```
 
 # resrepo: easy research on git
@@ -25,14 +27,15 @@ The aim of `resrepo` is to encourage and facilitate good practices when setting 
 
 ## Initialise the repository
 
-Start by creating a repository for your project using the `resrepo_template` repository as a template. Within the EvolEcolGroup GitHub, if you click `New` to create a new project repository you will be offered the chance to use a `Repository template; Start your repository with a template repository's contents`. Here there is a dropdown box where you can select this template `resrepo_template`.
+Start by creating a blank repository, clone it on your computer, and use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
+```{r}
+getwd()
+```
 
-Alternatively, you can create a blank repository, clone it on your computer, and use `resrepo` to initialise it. So, after setting our working directory within the `git` repository
+We can now initialise the repository:
 ```{r}
 library(resrepo)
 init_resrepo()
-# delete me when done
-getwd()
 ```
 
 Let us look at the content of our repository:
@@ -76,32 +79,38 @@ for the analysis. There should be one source for each first-level subdirectory (
 
 We can check that all entries are present and complete with:
 ```{r, error=TRUE}
-check_data_sources()
+data_source_check()
 ```
 
-Since the table is incomplete, we get an error! If we decided to mirror our data
-on OneDrive, we could easily fill these elements in with a text editor or in Excel/OpenOffice):
-```{r, echo=FALSE, results='hide'}
-temp_sources <- read.csv("./data/data_source_list.csv")
-temp_sources$source <- "onedrive"
-temp_sources$url <- "https://my_one_drive/link"
-write.csv(temp_sources, "./data/data_source_list.csv",row.names = FALSE)
+If we decided to mirror our data
+on OneDrive, we can simply edit the information:
+
+```{r}
+data_source_edit(dir = "/data/raw/default",
+                 source = "onedrive",
+                 url = "https://my_one_drive/link_to_default_folder")
 ```
 
+Note that you will need the link to the OneDrive folder where you will keep a
+copy of the data. `resrepo` does not update the data files for you, so you
+will have to manually keep the cloud source up-to-date (but see the
+vignette on symbolic_links for a set up where mirroring is automatic).
+
+If we inspect the data_source_list.csv file, we have:
 ```{r}
 read.csv("./data/data_source_list.csv")
 ```
-Note that you will need the link to the OneDrive folder that contains the data that
-go into `/data/raw/default`. The notes are optional, but they allow you to add
+
+The notes are optional, but they allow you to add
 additional information on where the data come from.
 
 And now all checks will pass:
 ```{r}
-#check_data_sources()
+data_source_check()
 ```
 Now data sources have been arranged, commit changes for a clean repository.
 
-```{r}
+```{r echo=FALSE, results="hide"}
 
 git2r::add(path="./data")
 git2r::commit(message="Added data sources", all=TRUE)
@@ -109,7 +118,7 @@ git2r::commit(message="Added data sources", all=TRUE)
 git2r::status()
 ```
 
-No files should be stored directly in `/data/raw` or `/data/intermediate`, they should always be put in a first level sub-directory (otherwise we can not define the provenance in `data_source_list.csv`). If you decide to remove the `/raw/default` subdir and use a custom directory, make sure that the `data_source_list.csv` table is updated accordingly. If you are not generating any intermediate data, you can simply ignore it.
+No files should be stored directly in `/data/raw` or `/data/intermediate`, they should always be put in a first level sub-directory (otherwise we can not define the provenance in `data_source_list.csv`). If you decide to remove the `/raw/default` subdir and use a custom directory, make sure that the `data_source_list.csv` table is updated accordingly. If you are not generating any intermediate data, you can simply ignore the `/data/intermediate` directory.
 
 ## Adding some code and generating results
 
@@ -117,8 +126,8 @@ Git is designed to track code, and it does so elegantly out of the box. For code
 however, it is important to use relative paths in your scripts. So, from the `/code` directory, data
 can be found as `../data/raw/default`. The other option is to use:
 ```{r}
-default_dir <- path_resrepo("/data/raw/default")
-default_dir
+data_dir <- path_resrepo("/data/raw/default")
+data_dir
 ```
 
 `path_resrespo` allows the use of paths relative to the root of the git
@@ -139,7 +148,7 @@ of the RMarkdown document.
 
 ## Writing it all up
 Git is not really designed to handle Word or OpenOffice files. Ideally, text is 
-keps in markdown files, but that format does not let itself nicely to formatting
+kept in markdown files, but that format does not let itself nicely to formatting
 for submission (e.g. bibliogrpahy from a reference manager). Having said that, 
 you could, in principle, track Word/Openoffice documents in the `writing` directory, as they are rarely large enough to cause trouble. If you are writing
 collaboratively, you are more likely to use GoogleDoc or shared Word documents.
@@ -148,81 +157,160 @@ so, it means that a collaborator who has access to the repository can also find 
 everything is in one place).
 
 # A step by step example
-We will now illustrate how to populate a `resrespo` for a simple project.
-The first step is to download some data and put them in `/data/raw/default`. We will use some data from the package `palmerpenguins`, and copy them into our repository:
+We will now illustrate how to populate a `resrespo` for a simple project. 
+The first step is to download some data and put them in `/data/raw/default`. 
+We will use some data from the package `palmerpenguins`, and copy them into our repository:
 ```{r}
 data("penguins", package = "palmerpenguins")
 write.csv(x = penguins,
           file = path_resrepo("/data/raw/default/penguins.csv"))
+```
+
+```{r echo=FALSE}
 fs::dir_tree()
 ```
 
-By default, the data are not tracked, so this file will not appear on your Git tab on the right hand side of RStudio.
+By default, the data are not tracked, so this file will not appear on your Git 
+tab on the right hand side of RStudio. We can use a command from the `git2r` library
+to check this (but you won't need it, you can just check the Git tab in Rstudio):
 
 ```{r}
 git2r::status()
 ```
 
 We will now process the data: we want to create a version of the dataset without NAs
-(of course, you will normally have much more complex data processing). We will
-write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
+(of course, you will normally have much more complex data processing). 
+
+
+We will write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
 We want the script to save a new version of the dataset. This should go in `/raw/intermediate`,
-in a new directory. We first need to create this directory:
+in a new directory. It is good practice to use the same name as the script, so
+that you can easily track down where the files come from.
+We first need to create this directory:
 ```{r}
-data_dir_make(path = "/data/intermediate/penguins")
+data_source_add(dir = "/data/intermediate/s01-preprocess_penguins",
+                source = "onedrive",
+                url = "https://my_one_drive/link_to_penguins_folder")
+```
+
+```{r echo=FALSE}
 fs::dir_tree()
 ```
+And that the source list is fully valid:
+```{r}
+data_source_check()
+```
+
+Let us copy in from the package a script to preprocess the data:
+
+```{r echo=FALSE, results="hide"}
+file.copy(system.file("template_extra/s01-preprocess_penguins.R",
+                      package="resrepo"),
+          path_resrepo("/code/s01-preprocess_penguins.R"))
+```
+
 Now that we have a directory where we can store our intermediate dataset, we can
-create our script, which will include:
-```{r process_raw_data}
-penguins <- read.csv(path_resrepo("/data/raw/default/penguins.csv"))
-penguins_na_omit <- na.omit(penguins)
-write.csv(penguins_na_omit, 
-          file = path_resrepo("/data/intermediate/penguins/penguins_na_omit.csv"),
-          row.names = FALSE)                          
+create our script that will generate it. The script will include:
+```{r echo=FALSE}
+readLines(path_resrepo("/code/s01-preprocess_penguins.R"))
 ```
 
-Check files are in the correct location and not tracked.
-```{r}
+```{r echo=FALSE}
 fs::dir_tree()
+```
+
+Let's now execute the script (if running R from the command line, 
+you might use `Rscript`):
+
+```{r}
+source(path_resrepo("/code/s01-preprocess_penguins.R"))
+```
+And we can see that the resulting dataset was stored as expected in the intermediate data
+directory.
+
+```{r echo=FALSE}
+fs::dir_tree()
+```
+
+The only files that should be visible to git are the source list table (which
+was updated when we created a new data source) and the script, but not the data
+files that we created (as we are ignoring the data directories):
+```{r}
 git2r::status()
-
-```
-Read in intermediate data file that we created earlier.
-
-```{r read in data}
-#read in preprocessed data from intermediate data directory
-penguins_na_omit <- read.csv(path_resrepo("/data/intermediate/penguins/penguins_na_omit.csv"))
 ```
 
-Plot body mass against flipper length.
+We should now commit our changes to our git repository.
+```{r echo=FALSE, results="hide"}
 
-```{r make plot}
-#create plot from intermediate data
+git2r::add(path=".")
+git2r::commit(message="Added preprocess script", all=TRUE)
+```
+
+And check that after that, we have a clean repository:
+```{r}
+git2r::status()
+```
+
+For other parts of the analysis, a RMarkdown document might be more suitable
+than a plain script. We will use Rmd file that generates a plot. 
+```{r}
+file.copy(system.file("template_extra/s02-plots.Rmd",
+                      package="resrepo"),
+          path_resrepo("/code/s02-plots.Rmd"))
+```
+
+The Rmd file `s02-plots.Rmd` includes example code toread in the data:
+```{r}
+data_dir <- path_resrepo("/data/intermediate/s01-preprocess_penguins/")
+penguins <- read.csv(file.path(data_dir,"penguins_na_omit.csv"))
+```
+
+And then to plot mass against flipper length whilst saving a pdf of the plot
+in the appropriate `/results`
+subdirectory:
+
+```{r plot_in_results, eval=FALSE}
+# create directory to store the results
+dir.create(path_resrepo('/results/plots'), 
+           showWarnings = FALSE)
+res_dir <- path_resrepo('/results/plots')
+# create plot from intermediate data
 penguins_plot <- plot(x = penguins_na_omit$body_mass_g, 
                       y = penguins_na_omit$flipper_length_mm
-                      #, col= penguins_na_omit$species
                       )
-
-dir.create(path_resrepo("/results/penguins"))
-pdf(path_resrepo("/results/penguins/penguins_plot.pdf"))
-
+# and save it
+pdf(file.path(res_dir, "penguins_plot.pdf"))
 print(penguins_plot)
-
 dev.off()
 
 ```
 
-Now commit plot and check git status.
+We can knit that Rmd (normally, you will do that from RStudio by clicking the
+Knit button):
 ```{r}
+rmarkdown::render(path_resrepo("/code/s02-plots.Rmd"),
+                  "pdf_document")
+```
 
-git2r::add(path="./results/penguins")
+We can see that our plot was saved in the right place.
+```{r}
+fs::dir_tree()
+```
+`results` are trackedby default:
+```{r}
+git2r::status()
+```
+
+Now we just need to commit our changes, and we have a full repository with code
+and results, and a traceable source of data. Before we publish, we woudl move
+those data directories to something like Zenodo rather than using Onedrive/Dropbox.
+```{r echo=FALSE, results="hide"}
+
+git2r::add(path=".")
 git2r::commit(message="Save plot", all=TRUE)
 
 git2r::status()
 ```
-
-
 
 ## FAQ
 
@@ -234,7 +322,7 @@ files, which you don't want to track directly in git, it is easiest to put them 
 `data/intermediate` as `data` are not tracked by default.
 
 
-### NOTES to modify
+### NOTES to integrate into the above
 
 **Naming files and folders**
 Never have spaces in your directory or file names (underscore can be used).
@@ -245,6 +333,9 @@ Naming your results folder as the script that created it (easy to find it after)
 
 **File size**
 Small data (<1MB or so) can be kept on GitHub. For all the other data/files please use an alternate source (Google Drive, OneDrive, DropBox, etc.). We will work on scripts to retrieve data from different sources.  
+
+
+# This are git specific advice, we could create a separate document with some git tips.
 
 **Commit**
 Think carefully about your commit messages and branch names, as they will be very useful for returning to past changes for both you and others (for example when a project is made publicly available). Please make them informative.  

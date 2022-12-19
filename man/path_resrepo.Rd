@@ -13,5 +13,9 @@ path_resrepo(path, check_exists = FALSE)
 }
 \description{
 Given a path relative to the root of a resrepo (e.g. \verb{/data/raw/default}), it returns
-the full path to it. It works both on files and directories
+the full path to it. It works both on files and directories. The first level
+directories can be shortened to the first letter, so \verb{/r/cleaning} will
+be expanded to \verb{/results/cleaning}. The same applies for the second level
+directories withing \verb{/data}: \verb{/d/r/} becomes \verb{/data/raw/} and \verb{/d/i/}
+becomes \verb{/data/intermediates/}
 }
