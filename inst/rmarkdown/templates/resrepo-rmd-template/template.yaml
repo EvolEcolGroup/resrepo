@@ -1,0 +1,4 @@
+name: resrepo Rmd template
+description: >
+   A template R markdown (.Rmd) file for use with the resrepo library.
+create_dir: FALSE
