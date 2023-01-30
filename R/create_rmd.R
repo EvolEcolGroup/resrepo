@@ -6,10 +6,13 @@
 #'  directories using resrepo functions.
 #'
 #' @param filename file path to new Rmd file to be created, excluding file
-#'  extension. Can be in a subfolder, e.g. \code{"code/s01_process_data"}
+#'  extension. Can be in a subfolder, e.g. \code{"code/s01_process_data"}.
+#'  This will be passed through the \code{path_resrepo()} function so should be
+#'  specified from the top level of the repository.
 #'
 #' @export
 #' 
 create_rmd <- function(filename){
+  filename <- path_resrepo(filename)  # sanitise the filepath input
   rmarkdown::draft(file = filename, template = "resrepo-rmd-template", package = "resrepo", create_dir = "default", edit = FALSE)
 }
