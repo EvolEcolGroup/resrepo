@@ -330,21 +330,20 @@ penguins_plot <- plot(x = penguins_na_omit$body_mass_g,
                       y = penguins_na_omit$flipper_length_mm
                       )
 # and save it
-pdf(file.path(res_dir, "penguins_plot.pdf"))
+png(file.path(res_dir, "penguins_plot.png"))
 print(penguins_plot)
 dev.off()
 
 ```
 
-We can knit that Rmd (normally, you will do that from RStudio by clicking the
-Knit button):
-```{r}
-rmarkdown::render(path_resrepo("/code/s02-plots.Rmd"))
+We can now knit that Rmd. You can do that from RStudio by clicking the Knit button.
+```{r, echo=F, results='hide'}
+knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
 # rmarkdown::render(path_resrepo("/code/s02-plots.Rmd"),
 #                   "pdf_document")
 ```
 
-We can see that our plot was saved in the right place.
+We can see that our PDF and plot were saved in the right place.
 ```{r}
 fs::dir_tree()
 ```

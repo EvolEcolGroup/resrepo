@@ -55,7 +55,7 @@ penguins_plot <- plot(x = penguins_na_omit$body_mass_g,
                       y = penguins_na_omit$flipper_length_mm
                       )
 # and save it
-pdf(file.path(res_dir, "fig_flip_vs_mass.pdf"))
+png(file.path(res_dir, "penguins_plot.png"))
 print(penguins_plot)
 dev.off()
 
