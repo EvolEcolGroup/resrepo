@@ -24,7 +24,8 @@ path_resrepo <- function(path, check_exists = FALSE){
   path <- sub (pattern= "^/w/","/writing/", path)
 
   # add the resrepo path
-  full_path <- file.path(normalizePath(git_root), path)
+  # full_path <- file.path(normalizePath(git_root), path)  # produces double backslashes
+  full_path <- file.path(git_root, path)  # changed by Lizzie 1st Feb 2023
   # check it exists
   if (check_exists){
     if (!any(dir.exists(full_path),file.exists(full_path))){

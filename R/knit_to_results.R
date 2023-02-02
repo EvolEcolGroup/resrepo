@@ -28,7 +28,7 @@ knit_to_results <- function(inputFile, encoding) {
   rmarkdown::render(
     input = inputFile,
     encoding = encoding,
-    output_dir = file.path(path_resrepo("results"), fname),  # put into a new folder under results
+    output_dir = file.path(path_relative(path_resrepo("results")), fname),  # put into a new folder under results
     output_file = fname  # file name is the same as the folder name
   )
 }

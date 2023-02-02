@@ -28,6 +28,7 @@ find_git_root <- function(path="."){
   if (basename(normalizePath(path))=="resrepo"){
     stop("You are in a git repository called resrepo; this name is reserved\n")
   }
+  path <- gsub("\\\\", "/", path) ## changed by Lizzie 1st Feb 2023: sanitize path: convert any double backslashes to single forward slashes
   return(path)
 }
 

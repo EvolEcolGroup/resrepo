@@ -8,7 +8,9 @@ create_rmd(filename)
 }
 \arguments{
 \item{filename}{file path to new Rmd file to be created, excluding file
-extension. Can be in a subfolder, e.g. \code{"code/s01_process_data"}}
+extension. Can be in a subfolder, e.g. \code{"code/s01_process_data"}.
+This will be passed through the \code{path_resrepo()} function so should be
+specified from the top level of the repository.}
 }
 \description{
 Creates and writes to file a new Rmarkdown (.Rmd) file from the \code{resrepo}
