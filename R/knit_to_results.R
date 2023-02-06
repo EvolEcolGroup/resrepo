@@ -22,13 +22,49 @@ knit_to_results <- function(inputFile, encoding) {
   }
   
   ## get the filename from inputFile
-  fname <- paste0(substr(base::basename(inputFile), 1, nchar(base::basename(inputFile)) - 4))
+  input_file_no_ext <- sub("([^.]+)\\.[[:alnum:]]+$", "\\1", base::basename(inputFile)) # code from file_path_sans_ext in the {tools} package.
+  # fname <- paste0(substr(base::basename(inputFile), 1, nchar(base::basename(inputFile)) - 4))
 
   ## run the rmarkdown render function
+  ## NB. EVERY OBJECT PRODUCED IN THE MARKDOWN STAYS IN THE ENVIRONMENT FOR THE REST OF THIS FUNCTION
+  ## TODO : can we get the markdown to knit in a different instance of R?
   rmarkdown::render(
     input = inputFile,
     encoding = encoding,
-    output_dir = file.path(path_relative(path_resrepo("results")), fname),  # put into a new folder under results
-    output_file = fname  # file name is the same as the folder name
+    output_file = input_file_no_ext  # file name stays the same, folder stays the same
   )
+  
+  ## Now we need to move the output files to the /results/fname folder
+  
+  ## define the current and new directories as RELATIVE paths from CURRENT working dir
+  cur_dir <- file.path(dirname(inputFile))
+  new_dir <- file.path(path_relative(path_resrepo("results")), input_file_no_ext)  # put into a new folder under results
+  ## create the new results folder if it doesn't already exist
+  if (! dir.exists(new_dir)) {
+    base::dir.create(new_dir)
+  }
+  
+  ## move the output file AND the associated folder of images over to the output directory
+  
+  ## FILES TO MOVE: fname.md or fname.pdf or fname.html etc
+  # inputFile
+  cur_file_regex <- paste0(input_file_no_ext, "(\\.html|\\.pdf|\\.md|\\.docx)$") ## create a regexp to find the output file
+  # cur_file_regex
+  
+  # list.files(cur_dir)
+  cur_files <- file.path(cur_dir, list.files(cur_dir, pattern = cur_file_regex)) # current filepaths
+  new_files <- file.path(new_dir, list.files(cur_dir, pattern = cur_file_regex)) # where they should go to
+  # base::file.copy(cur_files, new_files)  # copies files
+  base::file.rename(cur_files, new_files)  # MOVES files
+  
+  ## FOLDER TO MOVE: fname_files
+  cur_folder_regex <- paste0(input_file_no_ext, "_files$")
+  # cur_folder_regex
+  cur_folder <- file.path(cur_dir, list.files(cur_dir, pattern = cur_folder_regex)) # folder to move
+  if ( length(cur_folder) != 0 ) {  # if no match, cur_folder is just an empty character vector
+    ## can't just rename a folder (in windows) so we'll copy and delete instead
+    base::file.copy(cur_folder, new_dir, recursive = TRUE)  # copies files to results
+    base::unlink(cur_folder, recursive = TRUE)  # deletes originals
+  }
+  
 }
