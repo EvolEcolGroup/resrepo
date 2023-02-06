@@ -26,11 +26,10 @@ knit_to_results <- function(inputFile, encoding) {
   # fname <- paste0(substr(base::basename(inputFile), 1, nchar(base::basename(inputFile)) - 4))
 
   ## run the rmarkdown render function
-  ## NB. EVERY OBJECT PRODUCED IN THE MARKDOWN STAYS IN THE ENVIRONMENT FOR THE REST OF THIS FUNCTION
-  ## TODO : can we get the markdown to knit in a different instance of R?
   rmarkdown::render(
     input = inputFile,
     encoding = encoding,
+    envir = new.env(),  # compiles the rmarkdown in a DIFFERENT ENVIRONMENT
     output_file = input_file_no_ext  # file name stays the same, folder stays the same
   )
   
