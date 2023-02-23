@@ -21,7 +21,7 @@ example_repo <- git2r::init(example_dir)
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
-setwd(example_dir)
+#setwd(example_dir)
 
 ```
 

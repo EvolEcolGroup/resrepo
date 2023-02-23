@@ -2,7 +2,7 @@
 title: "Using symbolic links"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{symbolic links}
+  %\VignetteIndexEntry{Using symbolic links}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
