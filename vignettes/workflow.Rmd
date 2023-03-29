@@ -317,7 +317,7 @@ data_dir <- path_resrepo("/data/intermediate/s01-preprocess_penguins/")
 penguins <- read.csv(file.path(data_dir,"penguins_na_omit.csv"))
 ```
 
-And then to plot mass against flipper length whilst saving a pdf of the plot
+And then to plot mass against flipper length whilst saving a png of the plot
 in the appropriate `/results` subdirectory:
 
 ```{r plot_in_results, eval=FALSE}
@@ -336,11 +336,11 @@ dev.off()
 
 ```
 
-We can now knit that Rmd. You can do that from RStudio by clicking the Knit button.
+We can now knit that Rmd (in this case to an md document, which we could easily browse in github). You can do that from RStudio by clicking the Knit button.
 ```{r, echo=F, results='hide'}
-#knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
-knitr::knit(path_resrepo("/code/s02-plots.Rmd"), output=path_resrepo("/results/s02-plots/s02-plots.md"))
-rmarkdown::render(path_resrepo("/code/s02-plots.Rmd"))
+knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
+#knitr::knit(path_resrepo("/code/s02-plots.Rmd"), output=path_resrepo("/results/s02-plots/s02-plots.md"))
+#rmarkdown::render(path_resrepo("/code/s02-plots.Rmd"))
 ```
 
 We can see that our PDF and plot were saved in the right place.
