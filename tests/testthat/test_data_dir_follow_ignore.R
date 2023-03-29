@@ -8,6 +8,7 @@ dir.create(test_dir, showWarnings = FALSE)
 setwd(test_dir)
 # initialise a git repository
 this_git <- git2r::init(test_dir)
+git2r::config(this_git, user.name = "Test", user.email = "test@example.org")
 
 test_that("data_dir follow and unfollow",{
   # create a repository as resrepo

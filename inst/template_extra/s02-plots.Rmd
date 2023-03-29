@@ -2,7 +2,8 @@
 title: "Test Rmd for resrepo"
 author: "Andrea"
 date: "2022-12-09"
-output: pdf_document
+knit: resrepo::knit_to_results
+output: md_document
 ---
 
 ```{r setup_rmd, include=FALSE}
@@ -11,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Reading data
 
-In a RMarkdown doocument within a `resrepo` repository, it easy to find data
+In a RMarkdown document within a `resrepo` repository, it easy to find data
 by using the function `path_resrepo`:
 ```{r read_data1}
 library(resrepo)
@@ -40,11 +41,11 @@ That needs to be done directly in the console (i.e. outside the script, as it is
 vignette). In this example, we will not generate additional intermediate data,
 so we don't need to do that.
 
-We will however create some results. So, first we create the apprpriate directory:
+We will however create some results. So, first we create the appropriate directory:
 ```{r make_res_dir}
-dir.create(path_resrepo('/results/plots'), 
+dir.create(path_resrepo('/results/s02-plots'), 
            showWarnings = FALSE)
-res_dir <- path_resrepo('/results/plots')
+res_dir <- path_resrepo('/results/s02-plots')
 ```
 
 And then use it to store a plot:
@@ -54,7 +55,7 @@ penguins_plot <- plot(x = penguins_na_omit$body_mass_g,
                       y = penguins_na_omit$flipper_length_mm
                       )
 # and save it
-pdf(file.path(res_dir, "fig_flip_vs_mass.pdf"))
+png(file.path(res_dir, "penguins_plot.png"))
 print(penguins_plot)
 dev.off()
 

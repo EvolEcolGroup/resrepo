@@ -2,7 +2,7 @@
 title: "Using symbolic links"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{symbolic links}
+  %\VignetteIndexEntry{Using symbolic links}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,7 +25,8 @@ dir.create(onedrive_dir, recursive = TRUE)
 dir.create(git_dir, recursive = TRUE)
 vignette_dir<-getwd()
 # initialise the git repository
-git2r::init(path=git_dir)
+example_repo <- git2r::init(path=git_dir)
+git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 # set the working directory for markdown here
 knitr::opts_knit$set(root.dir = git_dir)
 ```

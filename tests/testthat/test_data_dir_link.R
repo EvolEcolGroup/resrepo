@@ -11,7 +11,8 @@ dir.create(test_dir, showWarnings = FALSE)
 dir.create(mirror_dir, recursive=TRUE, showWarnings = FALSE)
 setwd(test_dir)
 # initialise a git repository
-git2r::init(test_dir)
+this_git <- git2r::init(test_dir)
+git2r::config(this_git, user.name = "Test", user.email = "test@example.org")
 
 test_that("create links for data directories",{
   # create a repository as resrepo
