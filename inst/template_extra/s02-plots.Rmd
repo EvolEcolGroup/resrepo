@@ -3,7 +3,7 @@ title: "Test Rmd for resrepo"
 author: "Andrea"
 date: "2022-12-09"
 knit: resrepo::knit_to_results
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup_rmd, include=FALSE}
