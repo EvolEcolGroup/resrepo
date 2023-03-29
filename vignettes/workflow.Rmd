@@ -339,8 +339,6 @@ dev.off()
 We can now knit that Rmd (in this case to an md document, which we could easily browse in github). You can do that from RStudio by clicking the Knit button.
 ```{r, echo=F, results='hide'}
 knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
-#knitr::knit(path_resrepo("/code/s02-plots.Rmd"), output=path_resrepo("/results/s02-plots/s02-plots.md"))
-#rmarkdown::render(path_resrepo("/code/s02-plots.Rmd"))
 ```
 
 We can see that our PDF and plot were saved in the right place.
