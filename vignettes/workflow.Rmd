@@ -5,8 +5,6 @@ vignette: >
   %\VignetteIndexEntry{workflow}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
@@ -340,8 +338,8 @@ dev.off()
 
 We can now knit that Rmd. You can do that from RStudio by clicking the Knit button.
 ```{r, echo=F, results='hide'}
-#knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
-knitr::knit(path_resrepo("/code/s02-plots.Rmd"))
+knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
+#knitr::knit(path_resrepo("/code/s02-plots.Rmd"))
 ```
 
 We can see that our PDF and plot were saved in the right place.
