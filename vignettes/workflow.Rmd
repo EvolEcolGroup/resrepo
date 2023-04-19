@@ -218,7 +218,7 @@ We will now process the data: we want to create a version of the dataset without
 
 
 We will write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
-We want the script to save a new version of the dataset. This should go in `/raw/intermediate`,
+We want the script to save a new version of the dataset. This should go in `/data/intermediate`,
 in a new directory. It is good practice to use the same name as the script, so
 that you can easily track down where the files come from.
 We first need to create this directory:
