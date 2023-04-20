@@ -46,7 +46,7 @@ knit_to_results <- function(inputFile, encoding) {
   new_dir <- file.path(path_relative(path_resrepo("results")),code_sub_dir, input_file_no_ext)  # put into a new folder under results
   ## create the new results folder if it doesn't already exist
   if (! dir.exists(new_dir)) {
-    base::dir.create(new_dir)
+    base::dir.create(new_dir, recursive = TRUE)
   }
   
   ## move the output file AND the associated folder of images over to the output directory
