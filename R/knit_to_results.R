@@ -15,7 +15,6 @@
 #' @export
 
 knit_to_results <- function(inputFile, encoding) {
-  
   ## check that the last 4 letters of inputFile are '.Rmd'
   if (tolower(substr(base::basename(inputFile), (nchar(base::basename(inputFile)) - 3), nchar(base::basename(inputFile)))) != ".rmd") {
     stop("Attempting to use knit_to_results on a file that is not a .Rmd or .rmd file.")
@@ -37,7 +36,14 @@ knit_to_results <- function(inputFile, encoding) {
   
   ## define the current and new directories as RELATIVE paths from CURRENT working dir
   cur_dir <- file.path(dirname(inputFile))
-  new_dir <- file.path(path_relative(path_resrepo("results")), input_file_no_ext)  # put into a new folder under results
+  ## check if we are in a subdirectory of code
+  if (length(strsplit(cur_dir,"/code/")[[1]])>1){
+    code_sub_dir <- strsplit(cur_dir,"/code/")[[1]][2]
+  } else {
+    code_sub_dir <- ""
+  }
+  
+  new_dir <- file.path(path_relative(path_resrepo("results")),code_sub_dir, input_file_no_ext)  # put into a new folder under results
   ## create the new results folder if it doesn't already exist
   if (! dir.exists(new_dir)) {
     base::dir.create(new_dir)
