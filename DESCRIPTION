@@ -1,6 +1,6 @@
 Package: resrepo
 Title: Easy git repo management for reproducible science
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Andrea", "Manica", , "am351@cam.ac.uk", role = c("aut", "cre"))
 Description: A package to manage git repositories used for research that contain a with a mix of code and data. resrepo is based on a well documented template with clear guidelines on how the repository should be structured, what file naming conventions to use, and how to manage large data that can not be stored in git repositories, encouraging reproducible science. In particular, resrepo provides tools to ensure that data are available and up-to-date both locally and in the cloud, as well as simplifying the process of locating directories within the repository from R scripts.
