@@ -10,11 +10,15 @@
 #' \code{output_dir} directly in the code.
 #'
 #' @param inputFile The name of the R Markdown file to be rendered.
-#' @param encoding This is ignored. The encoding is always assumed to be UTF-8.
+#' @param encoding Ignored. The encoding is always assumed to be UTF-8.
+#' @param envir The environment in which the code chunks are to be evaluated 
+#' during knitting. If new.env() is used to guarantee an empty new environment,
+#' note that save.image() will not, by default save, save the objects created
+#' in the Rmd.
 #'
 #' @export
 
-knit_to_results <- function(inputFile, encoding) {
+knit_to_results <- function(inputFile, encoding, envir=parent.frame()) {
   ## check that the last 4 letters of inputFile are '.Rmd'
   if (tolower(substr(base::basename(inputFile), (nchar(base::basename(inputFile)) - 3), nchar(base::basename(inputFile)))) != ".rmd") {
     stop("Attempting to use knit_to_results on a file that is not a .Rmd or .rmd file.")
@@ -22,13 +26,11 @@ knit_to_results <- function(inputFile, encoding) {
   
   ## get the filename from inputFile
   input_file_no_ext <- sub("([^.]+)\\.[[:alnum:]]+$", "\\1", base::basename(inputFile)) # code from file_path_sans_ext in the {tools} package.
-  # fname <- paste0(substr(base::basename(inputFile), 1, nchar(base::basename(inputFile)) - 4))
 
   ## run the rmarkdown render function
   rmarkdown::render(
     input = inputFile,
-    encoding = encoding,
-    envir = new.env(),  # compiles the rmarkdown in a DIFFERENT ENVIRONMENT
+    envir = envir,
     output_file = input_file_no_ext  # file name stays the same, folder stays the same
   )
   

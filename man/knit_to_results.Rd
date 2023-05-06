@@ -4,12 +4,17 @@
 \alias{knit_to_results}
 \title{Knit RMarkdown file to results folder}
 \usage{
-knit_to_results(inputFile, encoding)
+knit_to_results(inputFile, encoding, envir = parent.frame())
 }
 \arguments{
 \item{inputFile}{The name of the R Markdown file to be rendered.}
 
-\item{encoding}{This is ignored. The encoding is always assumed to be UTF-8.}
+\item{encoding}{Ignored. The encoding is always assumed to be UTF-8.}
+
+\item{envir}{The environment in which the code chunks are to be evaluated
+during knitting. If new.env() is used to guarantee an empty new environment,
+note that save.image() will not, by default save, save the objects created
+in the Rmd.}
 }
 \description{
 This function is used in the YAML of an RMarkdown file so that when it is
