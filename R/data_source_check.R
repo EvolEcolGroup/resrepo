@@ -4,16 +4,16 @@
 #' and that their details are complete.
 #'
 #' @param path option string giving the path for the root of the repository (NOT the data
-#' directory). If left NULL, then the current working directory is used.
+#' directory). If left NULL, then the script assumes that the current working directory is within the git repository.
 #'
 #' @export
 
 
 data_source_check <- function(path=NULL){
   if (is.null(path)){
-    path = getwd()
+    path = find_git_root()
   }
-  if(!file.exists(file.path(path,"./data/data_source_list.csv"))){
+  if(!file.exists(file.path(path,"data/data_source_list.csv"))){
     stop("data_source_list.csv can not be found; are you in the root directory of your repository?")
   }
   
