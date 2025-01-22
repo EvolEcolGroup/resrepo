@@ -158,8 +158,9 @@ create_rmd("code/s01_download_penguins")
 
 This only requires a single chunk of code:
 ```{r eval = FALSE}
-# define the output directory (named after the script)
+# define the output directory (named after the script) and create it
 output_dir <- path_resrepo("/data/raw/s01_download_penguins")
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 # load the data
 data("penguins", package = "palmerpenguins")
 # write the data
