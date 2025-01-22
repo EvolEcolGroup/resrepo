@@ -16,7 +16,7 @@ init_resrepo <- function (path=".") {
   # make gitignore a hidden file
   file.rename(from = file.path(git_root,"gitignore"), 
     to = file.path(git_root,".gitignore"))
-  dir.create(path_resrepo("/data/raw/default"))
+  dir.create(path_resrepo("/data/raw/original"))
   if (all(copy_results)){
     return(TRUE)
   } else {
