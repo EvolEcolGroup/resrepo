@@ -50,8 +50,6 @@ Let us look at the content of our repository:
 fs::dir_tree()
 ```
 
-# TODO remove archive under data, and update raw/original
-
 In `resrespo`, we keep data, code, results, and the write-up separate. This 
 allows for a tidy structure that can flexibly accommodate very complex projects.
 Note that there are a number of README.md files, which provide instructions and advice
@@ -142,11 +140,12 @@ file.copy(from = system.file("template_extra/tux_measurements.csv", package="res
 
 ```
 
-TODO GENERATE DATA FOR A NEW PENGUIN SPECIES (STORE THE SCRIPT TO DO IT IN `data-raw` directory
-of the package), put it in `inst/extdata` and copy it to the `data/raw/original` directory.
+```{r}
+fs::dir_tree()
+```
 
 We will then write a script to download data on three other species of penguins from the `palmerpenguins`
-dataset. We will call this script `s01_download_penguins.Rmd`, and store the data in the `data/raw/s01_download_penguins`. 
+dataset. We will call this script `s01_download_penguins.Rmd`, and store the data in `data/raw/s01_download_penguins`. 
 
 `resrepo` can generate a pre-edited Rmd file for you to use as a template for your analysis
 (this is better than the default template in RStudio, we will explore some of it additional
@@ -164,7 +163,7 @@ output_dir <- path_resrepo("/data/raw/s01_download_penguins")
 # load the data
 data("penguins", package = "palmerpenguins")
 # write the data
-write.csv(x = penguins, file = output_dir)
+write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"))
 ```
 
 Note that, to set the output directory, we used the function `path_resrepo`, which
