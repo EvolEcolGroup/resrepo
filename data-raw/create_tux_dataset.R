@@ -8,6 +8,6 @@ tux <- tibble::tibble(species = "Tux",
               sex= rep(c("female", "male"), each=25),
               year = 2025)
 # now scatter some missing data              
-tux[sample(1:50, 5), "body_mass"] <- NA
+tux[sample(1:50, 5), "body_mass_g"] <- NA
 tux[8,"bill_length_mm"] <- NA
 write.csv(tux, "./inst/template_extra/tux_measurements.csv", row.names = FALSE)
