@@ -221,9 +221,6 @@ We now want to merge our data on the new species with the reference dataset, and
 file.copy(from = system.file("template_extra/s02_merge_clean.Rmd", package="resrepo"),
           to = path_resrepo("/code/s02_merge_clean.Rmd"),
           overwrite = TRUE)
-
-
-
 ```
 
 ```{r echo=FALSE}
@@ -235,147 +232,29 @@ We can now open the Rmd and knit it to merge the data and clean it.
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
 
-We can see that the data was saved in the correct intermediate subdirectory:
+We can see that the data was saved in the correct "/data/intermediate" subdirectory:
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
 
 Again, note that a markdown output was placed in an appropriate subdirectory of `results`.
 
-################################################################################
-
-
-We will write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
-We want the script to save a new version of the dataset. This should go in `/data/intermediate`,
-in a new directory. It is good practice to use the same name as the script, so
-that you can easily track down where the files come from.
-We first need to create this directory:
-```{r}
-data_source_add(dir = "/data/intermediate/s01-preprocess_penguins",
-                source = "onedrive",
-                url = "https://my_one_drive/link_to_penguins_folder")
-```
-
-```{r echo=FALSE}
-fs::dir_tree()
-```
-And that the source list is fully valid:
-```{r}
-data_source_check()
-```
-
-Let us copy in from the package a script to preprocess the data:
-
-```{r echo=FALSE, results="hide"}
-file.copy(system.file("template_extra/s01-preprocess_penguins.R",
-                      package="resrepo"),
-          path_resrepo("/code/s01-preprocess_penguins.R"))
-```
-
-Now that we have a directory where we can store our intermediate dataset, we can
-create our script that will generate it. The script will include:
-```{r echo=FALSE}
-readLines(path_resrepo("/code/s01-preprocess_penguins.R"))
-```
-
-```{r echo=FALSE}
-fs::dir_tree()
-```
-
-Let's now execute the script (if running R from the command line, 
-you might use `Rscript`):
+We are now ready to do some analysis. We will start with a PCA, with the aim of testing
+whether our tux penguin is clearly distinct from other penguin species.
 
 ```{r}
-source(path_resrepo("/code/s01-preprocess_penguins.R"))
-```
-And we can see that the resulting dataset was stored as expected in the intermediate data
-directory.
-
-```{r echo=FALSE}
-fs::dir_tree()
-```
-
-The only files that should be visible to git are the source list table (which
-was updated when we created a new data source) and the script, but not the data
-files that we created (as we are ignoring the data directories):
-```{r}
-git2r::status()
-```
-
-We should now commit our changes to our git repository.
-```{r echo=FALSE, results="hide"}
-
-git2r::add(path=".")
-git2r::commit(message="Added preprocess script", all=TRUE)
-```
-
-And check that after that, we have a clean repository:
-```{r}
-git2r::status()
-```
-
-For other parts of the analysis, a RMarkdown document might be more suitable
-than a plain script. 
-
-To create a new Rmd file from the `resrepo` template Rmd file, use the `create_rmd` 
-function and specify the filename and which folder it should be in (you do not 
-need to include the `.Rmd` file extension).
-```{r}
-create_rmd("code/s02-plots")
-```
-
-We can see that a new Rmd file has appeared.
-```{r}
-fs::dir_tree()
-```
-
-You can now open this file and edit it to do your analyses. For this vignette, 
-we will replace it with a pre-written analysis file to continue the example.
-
-We will use an Rmd file that generates a plot. 
-```{r}
-file.copy(from = system.file("template_extra/s02-plots.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s02-plots.Rmd"),
+file.copy(from = system.file("template_extra/s03_pca.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s03_pca.Rmd"),
           overwrite = TRUE)
 ```
 
-The Rmd file `s02-plots.Rmd` includes example code to read in the data:
-```{r}
-data_dir <- path_resrepo("/data/intermediate/s01-preprocess_penguins/")
-penguins <- read.csv(file.path(data_dir,"penguins_na_omit.csv"))
-```
-
-And then to plot mass against flipper length whilst saving a png of the plot
-in the appropriate `/results` subdirectory:
-
-```{r plot_in_results, eval=FALSE}
-# create directory to store the results
-dir.create(path_resrepo('/results/s02-plots'), 
-           showWarnings = FALSE)
-res_dir <- path_resrepo('/results/s02-plots')
-# create plot from intermediate data
-penguins_plot <- plot(x = penguins_na_omit$body_mass_g, 
-                      y = penguins_na_omit$flipper_length_mm
-                      )
-# and save it
-png(file.path(res_dir, "penguins_plot.png"))
-print(penguins_plot)
-dev.off()
-
-```
-
-We can now knit that Rmd (in this case to an md document, which we could easily browse in github). You can do that from RStudio by clicking the Knit button.
+After knitting it, we get
 ```{r, echo=F, results='hide'}
-knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
+knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 ```
 
-We can see that our PDF and plot were saved in the right place.
-```{r}
+```{r echo=FALSE}
 fs::dir_tree()
-```
-`results` are tracked by default:
-```{r}
-git2r::status()
 ```
 
 Now we just need to commit our changes, and we have a full repository with code
@@ -389,15 +268,6 @@ git2r::commit(message="Save plot", all=TRUE)
 git2r::status()
 ```
 
-
-## FAQ
-
-How do I decide whether to put certain files in `data/intermediate` or `results`?
-
-In principle, it does not matter that much where you put them, as long as they are not
-too large. Sometimes the same file can be both a result and data. However, for very large
-files, which you don't want to track directly in git, it is easiest to put them under
-`data/intermediate` as `data` are not tracked by default.
 
 
 ### NOTES to integrate into the above
@@ -438,56 +308,4 @@ Source: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/
 
 **3. Test connection**
 Source: https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection  
-
-### Worked example (branch)  
-**Summary**
-
-
-
-## Adding some code and generating results
-
-Git is designed to track code, and it does so elegantly out of the box. For code portability,
-however, it is important to use relative paths in your scripts. So, from the `/code` directory, data
-can be found as `../data/raw/default`. The other option is to use:
-```{r}
-data_dir <- path_resrepo("/data/raw/default")
-data_dir
-```
-
-`path_resrespo` allows the use of paths relative to the root of the git
-repository, irrespective of where the scripts are (e.g.
-deep in a subdirectory of `code`).
-
-It is also important that code saves data in the `results` directory. 
-If you have many scripts, it is often better to have them each writing results into separate sub-directories, as it helps tracking where each result file comes from. So, for example,
-`/code/s01_preprocessing.R` would write files into `/results/s01_preprocessing`. 
-This strategy also allows to have a simple command at the beginning of a script which wipes the results directory before generating the new set of results (thus avoiding the risk of having old files from obsolete analyses floating around the repository).
-
-An added challenge is posed by RMarkdown (Rmd) files, as they, by default, knit in the
-same directory as the script (and thus would put the output into `code`). The function
-`knit_to_results` changes this behaviour: when you click 'knit', the output will 
-automatically be knitted to a folder under `results` with the same name as the `Rmd` file itself. 
-
-To use the `knit_to_results` function, add it to the the YAML section of the 
-RMarkdown document under the `knit` parameter. 
-
-For example, if this is the YAML header of the RMarkdown file `code/s02_plots.Rmd` 
-which is the 2nd step in an analysis workflow and produces some plots:
-
-```
----
-title: "Step 2: plots"
-author: "Your name"
-date: "2022-01-30"
-knit: resrepo::knit_to_results
-output: pdf_document
----
-```
-then the output of knitting this file will be a PDF document of the same name, in 
-a `results` folder of the same name: `results/s02_plots/s02_plots.pdf`.
-
-If the code in this Rmd file also saves plots to file (e.g. using `png()` or `ggsave()` functions),
-you should ensure they are also written to the output folder `results/s02_plots`. This
-way all the outputs from one Rmd file are in the same place, and can easily be linked back
-to the script that produced them (`code/s02_plots.Rmd`).
 
