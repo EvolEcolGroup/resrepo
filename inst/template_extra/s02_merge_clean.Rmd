@@ -17,7 +17,7 @@ to the script or, if you use `resrepo::path_resrepo`, to the project root.
 ```{r input_paths}
 tux_dir <- "../data/raw/original"
 # alternatively:
-# raw_dir <- path_resrepo("/data/raw/original")
+# tux_dir <- path_resrepo("/data/raw/original")
 palmer_dir <- "../data/raw/s01_download_penguins"
 ```
 

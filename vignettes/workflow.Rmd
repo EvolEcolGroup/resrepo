@@ -228,7 +228,7 @@ fs::dir_tree()
 ```
 
 We can now open the Rmd and knit it to merge the data and clean it. 
-```{r, echo=F, results='hide'}
+```{r knit_merge_clean, echo=F, results='hide'}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
 
