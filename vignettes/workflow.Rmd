@@ -25,13 +25,13 @@ knitr::opts_knit$set(root.dir = example_dir)
 # resrepo: easy research on git
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. There are three main elements to this: 
 - first, it provides a template for a tidy repository structure that can be used for any project, with functions that help keeping a clear separation of code, data and results.
-- second, it provides functions to help versioning the data and results produced by different code branches, thus allowing
-us to easily track the provenance of the data and results.
-- third, it provides functions to help manage large data and results in a way that is compatible with `git` and `GitHub` (or another git server like `GitLab`).
+- second, it provides functions to help versioning the data and results when they are too large to be tracked by git, allowing the easy comparison of different branches (e.g. different data filtering)/
+- third, it provides functions to help manage large data by using symlinks to store them outside the git repository,
+potentially in directories that are backed up on the cloud, whilst mantaining the same paths as if the data were stored
+locally in the git repository.
 
-#TODO if the data were tracked, we wouldn't need versioning... So, we need to swap 2 and 3.
-
-Scientific projects contain both code and data. `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, ensuring reproducible science and a tidy repository that can used for publication of your project.
+## Similar tools
+Scientific projects contain both code and data. `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, making it easy to share your project with collaborators, thus ensuring reproducible science and a tidy repository that can used for publication of your work.
 
 ## Initialise the repository
 
@@ -202,17 +202,26 @@ fs::dir_tree()
 
 Note that we also created the new directory `results/s01_download_penguins` to store the knitted markdown: this is a feature of custom Rmd documents created with `resrepo::create_rmd()`, so that their knitted output is stored in the right place in results by default (standard Rmd documents save the outputs in the same directory as the code, breaking the separation of code and outputs that we prefer in `resrepo`). In this case, this document is pretty minimal (it just repeats the 
 code used to download and save), but later one we will use it to document our analysis.
-Be
 
-
-Now that we have new files (the code to download and the resulting data ond output), we should commit
+Now that we have new files (the code to download and the resulting data and output), we should commit
 our changes to the repository. In RStudio, you can do this by clicking on the Git tab on the
 right hand side, and then clicking on the "Commit" button. TODO CREATE AN IMAGE OF THIS STEP
+
+```{r echo=FALSE, results="hide"}
+
+git2r::add(path=".")
+git2r::commit(message="Added preprocess script", all=TRUE)
+```
 
 We now want to merge our data on the new species with the reference dataset, and clean the data (e.g. remove missing data). We create another code script called `s02_merge_clean.Rmd`
 
 ```{r}
 create_rmd("code/s02_merge_clean")
+```
+
+And fill it in with the following code:
+```{r echo=FALSE}
+readLines(path_resrepo("/code/s01-preprocess_penguins.R"))
 ```
 
 
