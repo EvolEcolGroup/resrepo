@@ -1,0 +1,56 @@
+---
+title: "Merge and clean penguins data"
+author: "Andrea"
+date: "2025-01-23"
+knit: resrepo::knit_to_results
+output: md_document
+---
+
+```{r setup_rmd, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+It is useful to set your input directories all at the top of your script, so that
+you can easily check in one place what is needed to run it. 
+You should always use relative paths, either relative
+to the script or, if you use `resrepo::path_resrepo`, to the project root.
+```{r input_paths}
+tux_dir <- "../data/raw/original"
+# alternatively:
+# raw_dir <- path_resrepo("/data/raw/original")
+palmer_dir <- "../data/raw/s01_download_penguins"
+```
+
+And the output paths:
+```{r output_paths}
+output_dir <- "../intermediate/s02_merge_clean"
+dir.create(output_dir, showWarnings = FALSE)
+```
+
+Note that, by using "showWarnings = FALSE", we suppress the warning that the directory already exists. This is useful when the script is run multiple times, as it will not stop the script.
+
+## Reading data
+
+We can now read the data, using the paths that we set up at the beginning of our script:
+```{r read_data}
+tux_penguins <- read.csv(file.path(tux_dir,"tux_measurements.csv"))
+palmer_penguins <- read.csv(file.path(palmer_dir, "palmer_penguins.csv"))
+```
+
+## Merge and clean
+
+We will now merge the two datasets, and remove lines with missing data:
+```{r merge_clean}
+# merge the two datasets
+penguins <- rbind(tux_penguins, palmer_penguins)
+# remove na
+penguins_na_omit <- na.omit(penguins)
+```
+
+## Saving the data
+
+We will now save the data into the appropriate `/data/intermediate` directory:
+```{r save_data}
+
+write.csv(penguins_na_omit, file.path(output_dir, "penguins_na_omit.csv"))
+```

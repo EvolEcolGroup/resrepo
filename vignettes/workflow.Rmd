@@ -213,18 +213,30 @@ git2r::add(path=".")
 git2r::commit(message="Added preprocess script", all=TRUE)
 ```
 
-We now want to merge our data on the new species with the reference dataset, and clean the data (e.g. remove missing data). We create another code script called `s02_merge_clean.Rmd`
+We now want to merge our data on the new species with the reference dataset, and clean the data (e.g. remove missing data). We will copy over an Rmd from the package, which was originally created with `resrepo::crete_rmd`: 
 
 ```{r}
-create_rmd("code/s02_merge_clean")
+file.copy(from = system.file("template_extra/s02_merge_clean.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s02_merge_clean.Rmd"),
+          overwrite = TRUE)
+
+
+
 ```
 
-And fill it in with the following code:
 ```{r echo=FALSE}
-readLines(path_resrepo("/code/s01-preprocess_penguins.R"))
+fs::dir_tree()
 ```
 
+We can now open the Rmd and knit it to merge the data and clean it. 
+```{r, echo=F, results='hide'}
+knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+```
 
+We can see that the data was saved in the right place:
+```{r echo=FALSE}
+fs::dir_tree()
+```
 
 
 We will write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
