@@ -23,11 +23,13 @@ palmer_dir <- "../data/raw/s01_download_penguins"
 
 And the output paths:
 ```{r output_paths}
-output_dir <- "../intermediate/s02_merge_clean"
-dir.create(output_dir, showWarnings = FALSE)
+output_dir <- "../data/intermediate/s02_merge_clean"
+if (!dir.exists(output_dir)){
+  dir.create(output_dir)
+}
 ```
 
-Note that, by using "showWarnings = FALSE", we suppress the warning that the directory already exists. This is useful when the script is run multiple times, as it will not stop the script.
+Note that we only create the directory if it does not exist, so that, if the script is run multiple times, it will generate an error if the directory already exists.
 
 ## Reading data
 

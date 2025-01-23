@@ -175,8 +175,8 @@ write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"))
 ```
 
 Note that, to set the output directory, we used the function `path_resrepo`, which
-allows us to use paths relative to the root of the git repository, irrespective of where the scripts are. Altenatively, you could use a relative path from the script, e.g. `../data/raw/s01_download_penguins`. The `..` means "go up one directory", so from the `code` directory, it would go to the root of the repository, then into `data/raw/s01_download_penguins`. If you want more informatio on relative data paths,
-have a look at TODO A USEFUL WEBLINK.
+allows us to use paths relative to the root of the git repository, irrespective of where the scripts are. Altenatively, you could use a relative path from the script, e.g. `../data/raw/s01_download_penguins`. The `..` means "go up one directory", so from the `code` directory, it would go to the root of the repository, then into `data/raw/s01_download_penguins`. If you want more information on relative data paths,
+have a look at this [link] (https://www.redhat.com/en/blog/linux-path-absolute-relative).
 
 Create the Rmd and save it in the code directory:
 ```{r echo=FALSE, results="hide"}
@@ -235,10 +235,14 @@ We can now open the Rmd and knit it to merge the data and clean it.
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
 
-We can see that the data was saved in the right place:
+We can see that the data was saved in the correct intermediate subdirectory:
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
+
+Again, note that a markdown output was placed in an appropriate subdirectory of `results`.
+
+################################################################################
 
 
 We will write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
