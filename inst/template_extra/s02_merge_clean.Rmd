@@ -15,15 +15,15 @@ you can easily check in one place what is needed to run it.
 You should always use relative paths, either relative
 to the script or, if you use `resrepo::path_resrepo`, to the project root.
 ```{r input_paths}
-tux_dir <- "../data/raw/original"
+tux_dir <- path_resrepo("/data/raw/original")
 # alternatively:
-# tux_dir <- path_resrepo("/data/raw/original")
-palmer_dir <- "../data/raw/s01_download_penguins"
+#tux_dir <- "../data/raw/original"
+palmer_dir <- path_resrepo("/data/raw/s01_download_penguins")
 ```
 
 And the output paths:
 ```{r output_paths}
-output_dir <- "../data/intermediate/s02_merge_clean"
+output_dir <- path_resrepo("/data/intermediate/s02_merge_clean")
 if (!dir.exists(output_dir)){
   dir.create(output_dir)
 }

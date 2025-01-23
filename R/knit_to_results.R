@@ -4,6 +4,7 @@
 #' knitted, the output file is sent to the \code{~/results} directory rather than 
 #' the directory in which the \code{.Rmd} file is located.
 #' The output file can be \code{.pdf}, \code{.html}, \code{.md} etc.
+#' 
 #' NB. This function does NOT cause any objects that are written to file in
 #' your \code{.Rmd} code to be written to the new results directory by default. 
 #' To ensure all objects are written to the correct directories, specify an

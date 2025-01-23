@@ -15,14 +15,15 @@ you can easily check in one place what is needed to run it.
 You should always use relative paths, either relative
 to the script or, if you use `resrepo::path_resrepo`, to the project root.
 ```{r input_paths}
-penguin_dir <- "../data/intermediate/s02_merge_clean"
+library(resrepo)
+penguin_dir <- path_resrepo("/data/intermediate/s02_merge_clean")
 # alternatively:
-# penguin_dir <- path_resrepo("/data/intermediate/s02_merge_clean)
+# penguin_dir <- "../data/intermediate/s02_merge_clean")
 ```
 
 And the output paths:
 ```{r output_paths, eval=FALSE}
-output_dir <- "../data/intermediate/s03_pca"
+output_dir <- path_resrepo("/data/intermediate/s03_pca")
 if (!dir.exists(output_dir)){
   dir.create(output_dir)
 }
