@@ -74,7 +74,12 @@ knit_to_results <- function(inputFile, encoding, envir=parent.frame()) {
     base::file.copy(cur_folder, new_dir, recursive = TRUE)  # copies files to results
     base::unlink(cur_folder, recursive = TRUE)  # deletes originals
   }
+  
   # rename the md file to README for GitHub display 
-  md_file <- list.files(new_dir, pattern = ".md")
-  file.rename(file.path(new_dir, md_file), file.path(new_dir, "README.md"))
+  md_file <- list.files(new_dir, pattern = paste0(input_file_no_ext, ".md"))
+  # check if there is a .md file in the new directory
+  if (length(md_file) > 0) {
+    file.rename(file.path(new_dir, md_file), file.path(new_dir, "README.md"))
+    
+ }
 }
