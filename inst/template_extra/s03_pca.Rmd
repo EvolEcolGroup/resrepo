@@ -3,7 +3,9 @@ title: "PCA of penguins data"
 author: "Andrea"
 date: "2025-01-23"
 knit: resrepo::knit_to_results
-output: md_document
+output: 
+  pdf_document:
+    keep_md: yes
 ---
 
 ```{r setup_rmd, include=FALSE}
