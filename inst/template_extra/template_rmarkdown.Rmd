@@ -3,7 +3,9 @@ title: "Template Rmarkdown file"
 author: "Your name"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 knit: resrepo::knit_to_results
-output: pdf_document
+output:
+  pdf_document:
+    keep_md: yes
 ---
 
 NB. We will change the contents of this template to be more resrepo-specific (and add a code chunk to specify `output_dir` etc). For now it's just something that knits to the right place.
