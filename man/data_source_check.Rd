@@ -8,7 +8,7 @@ data_source_check(path = NULL)
 }
 \arguments{
 \item{path}{option string giving the path for the root of the repository (NOT the data
-directory). If left NULL, then the current working directory is used.}
+directory). If left NULL, then the script assumes that the current working directory is within the git repository.}
 }
 \description{
 Check that all directories in /data/raw and /data/intermediate are found in data_source_list.csv,
