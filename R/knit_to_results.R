@@ -16,10 +16,12 @@
 #' during knitting. If new.env() is used to guarantee an empty new environment,
 #' note that save.image() will not, by default save, save the objects created
 #' in the Rmd.
+#' @param rename_md Logical. If TRUE, the generated .md file will be renamed to
+#' README.md to be display on GitHub.
 #'
 #' @export
 
-knit_to_results <- function(inputFile, encoding, envir=parent.frame()) {
+knit_to_results <- function(inputFile, encoding, envir=parent.frame(), rename_md = TRUE) {
   ## check that the last 4 letters of inputFile are '.Rmd'
   if (tolower(substr(base::basename(inputFile), (nchar(base::basename(inputFile)) - 3), nchar(base::basename(inputFile)))) != ".rmd") {
     stop("Attempting to use knit_to_results on a file that is not a .Rmd or .rmd file.")
@@ -76,10 +78,11 @@ knit_to_results <- function(inputFile, encoding, envir=parent.frame()) {
   }
   
   # rename the md file to README for GitHub display 
-  md_file <- list.files(new_dir, pattern = paste0(input_file_no_ext, ".md"))
-  # check if there is a .md file in the new directory
-  if (length(md_file) > 0) {
-    file.rename(file.path(new_dir, md_file), file.path(new_dir, "README.md"))
-    
+  if (rename_md == TRUE){
+    md_file <- list.files(new_dir, pattern = paste0(input_file_no_ext, ".md"))
+    # check if there is a .md file in the new directory
+    if (length(md_file) > 0) {
+      file.rename(file.path(new_dir, md_file), file.path(new_dir, "README.md"))
+  }
  }
 }
