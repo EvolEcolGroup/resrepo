@@ -79,9 +79,14 @@ to the directories in `version_resources`.
 dir(path_resrepo("/data/raw"))
 ```
 
+However, note that the data are now NOT being tracked by git, as `version_resources` is in .gitignore. So,
+you want to make sure that you have a reliable way to back up your data (we provide a solution
+in the vignette on `Data mirroring outside a git repository`).
+
 # Adding a new version
 We might now want to revise the filtering of data that we are doing. As this will
-affect some intermediate and results, we want to version the data before we start.
+affect some intermediate and results, we want to version the data before we start,
+so that we can compare the two versions.
 ```{r}
 version_add(new_version = "new_filtering",
             description = "Filtering out some data")
