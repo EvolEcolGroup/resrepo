@@ -11,9 +11,10 @@ data_dir_ignore <- function (path) {
   if (!dir.exists(path_resrepo(path))){
     stop("the path ", path," does not exist!")
   }
-  ignore_line<-paste0("!",path)
+#  ignore_line<-paste0("!",path) # Why?!?!
+  ignore_line <- path
   my_gitignore <- readLines(path_resrepo("/.gitignore"))
-  if (ignore_line %in% my_gitignore){
+  if (!ignore_line %in% my_gitignore){
     # stop and give advice if there are already tracked files form this directory
     dir_git2r_format <- substr(path,2, nchar(path))
     if (substr(dir_git2r_format,nchar(dir_git2r_format), nchar(dir_git2r_format))!="/"){
@@ -26,8 +27,9 @@ data_dir_ignore <- function (path) {
            "   see them as deleted\n",
            "3) re-run data_dir_ingore('",path,"') in R\n",
            "4) move back your files into ", path)
-     }
-    my_gitignore<-my_gitignore[!my_gitignore %in% ignore_line]
+    }
+    # add it to the gitignore
+    my_gitignore<-c(my_gitignore, ignore_line)
     writeLines(my_gitignore,path_resrepo("/.gitignore"))
   } else {
     warning(path," is already being ignored by git")

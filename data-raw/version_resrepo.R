@@ -12,6 +12,9 @@ version_setup <- function(){
     fs::dir_copy(path_resrepo("data/raw"),path_resrepo("version_resources/initial/raw"))
     fs::dir_copy(path_resrepo("data/intermediate"),path_resrepo("version_resources/initial/intermediate"))
 #    fs::dir_copy(path_resrepo("results"),path_resrepo("version_resources/initial/results"))
+    # TODO compare the old and new directories to make sure that we can proceed with deleting the old
+    
+    
     # remove the old directory
     fs::dir_delete(path_resrepo("data/raw"))
     fs::dir_delete(path_resrepo("data/intermediate"))

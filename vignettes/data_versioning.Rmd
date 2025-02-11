@@ -25,15 +25,10 @@ knitr::opts_knit$set(root.dir = example_dir)
 In many scientific projects, data are simply too large to be stored in a git repository. 
 However, you still want to keep track of the data you used for my analysis, and often you will
 be using different code branches to explore alternative approaches (e.g. different data filtering).
-`res_repo` allows you to track versions of the data directories used in your projects, 
+`res_repo` allows you to create versions of the data directories used in your projects, 
 allowing you to easily switch between different versions of the data.
 
-# Ignoring data in your repository
-
-The first step is to ignore the data in your repository. `git` is not designed for very large files,
-and indeed Github has a limit of XXX TODO on the size of files that can be uploaded.
-`resrepo` offers a simple function that will remove your data from the repository, and
-avoid tracking any further data.
+# Setting up data versioning
 
 Let us start by recreating the example repository. This is the same repository
 we created in vignette basic_workflow; if you still have that repository, you don't need to run the code below:
@@ -60,14 +55,49 @@ git2r::add(path=".")
 git2r::commit(message="Save plot", all=TRUE)
 
 ```
-
 Let us check that we do have indeed a full repository:
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
-Technically, we need to ignore the data directories (`data/raw` and `data/intermediate`). 
-In `resrepo`, we have a function `data_dir_ignore`, that will do this for us.
-```{r}
 
+If our data become too large to track on git, and we want to start versioning the data, we can use the function `setup_version`.
+```{r}
+version_setup()
 
 ```
+
+Let us check what happened:
+```{r echo=FALSE}
+fs::dir_tree()
+```
+
+We can see that both `data/raw` and `data/intermediate` have been moved into `version_resources`, under the `initial` version,
+and that they have been replaced by symlinks. If we use these links as if they were directories, they point correctly
+to the directories in `version_resources`.
+
+```{r}
+dir(path_resrepo("/data/raw"))
+```
+
+# Adding a new version
+We might now want to revise the filtering of data that we are doing. As this will
+affect some intermediate and results, we want to version the data before we start.
+```{r}
+version_add(new_version = "new_filtering",
+            description = "Filtering out some data")
+```
+```{r echo=FALSE}
+fs::dir_tree()
+```
+
+If we write a file to the `data/raw` directory, it will be written to the `version_resources/new_filtering/raw` directory.
+```{r}
+write.csv("blah", path_resrepo("/data/raw/my_new_file1.csv"))
+```
+
+```{r echo=FALSE}
+fs::dir_tree()
+```
+
+# Switching between versions
+We can now switch between the versions by using the `version_switch` function. TO BE WRITTEN!!!!
