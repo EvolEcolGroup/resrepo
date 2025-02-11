@@ -38,7 +38,7 @@ avoid tracking any further data.
 Let us start by recreating the example repository. This is the same repository
 we created in vignette basic_workflow; if you still have that repository, you don't need to run the code below:
 
-```{r}
+```{r, echo=FALSE}
 library(resrepo)
 init_resrepo()
 file.copy(from = system.file("template_extra/tux_measurements.csv", package="resrepo"),
@@ -65,9 +65,5 @@ Let us check that we do have indeed a full repository:
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
-Technically, we need to ignore the data directories (`data/raw` and `data/intermediate`). 
-In `resrepo`, we have a function `data_dir_ignore`, that will do this for us.
-```{r}
 
-
-```
+If we want to 
