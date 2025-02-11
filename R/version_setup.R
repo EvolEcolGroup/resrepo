@@ -9,31 +9,45 @@
 
 
 version_setup <- function(){
-  git_root <- find_git_root()
-  # if the version_resource path does not exist, create it
-  if (!dir.exists(path_resrepo("version_resources"))){
-    # create an initial version
-    dir.create(path_resrepo("version_resources/initial"), recursive=TRUE)
-    # ingore the version_resources directory
-    data_dir_ignore("version_resources")
-    # copy all raw, intermediate contents
-    fs::dir_copy(path_resrepo("data/raw"),path_resrepo("version_resources/initial/raw"))
-    fs::dir_copy(path_resrepo("data/intermediate"),path_resrepo("version_resources/initial/intermediate"))
-    # TODO compare the old and new directories to make sure that we can proceed with deleting the old
-    # remove the old directory
-    fs::dir_delete(path_resrepo("data/raw"))
-    fs::dir_delete(path_resrepo("data/intermediate"))
-    # create links
-    data_dir_link(target_dir = path_resrepo("version_resources/initial/raw"),link_dir = "data/raw")
-    data_dir_link(path_resrepo("version_resources/initial/intermediate"),link_dir= "data/intermediate")
-    # commit to the repository to remove the data from the current branch
-    git2r::commit(message="Move data to version_resources", all=TRUE)
-    data_dir_ignore("data/raw")
-    data_dir_ignore("data/intermediate")
-    git2r::commit(message="Update gitignore", all=TRUE)
-    
+  # check if running interactively 
+  if (interactive()) {
+    # check that the user has a bakup of the data
+    # add options for the user 
+    options <- c("Yes", "No")
+    # prompt the choice for the user 
+    choice <- menu(options, title="To avoid data lost, it is good practice to have a backup of your raw data outside your repository before versioning.\nHave you backed up your data?")
+    if (choice == 2){
+      stop("Please backup your data before versioning")
+    }
   } else {
-    stop("version_resources already exists")
+    choice <- 1 # when non-run interactively for vignette building 
   }
-  
+    git_root <- find_git_root()
+    # if the version_resource path does not exist, create it
+    if (!dir.exists(path_resrepo("version_resources"))){
+      # create an initial version
+      dir.create(path_resrepo("version_resources/initial"), recursive=TRUE)
+      # ingore the version_resources directory
+      data_dir_ignore("version_resources")
+      # copy all raw, intermediate contents
+      fs::dir_copy(path_resrepo("data/raw"),path_resrepo("version_resources/initial/raw"))
+      fs::dir_copy(path_resrepo("data/intermediate"),path_resrepo("version_resources/initial/intermediate"))
+      # check if content of old and new directories are the same
+      identical(list.files(path_resrepo("data/raw"), recursive = TRUE), list.files(path_resrepo("version_resources/initial/raw"), recursive = TRUE))
+      identical(list.files(path_resrepo("data/intermediate"), recursive = TRUE), list.files(path_resrepo("version_resources/initial/intermediate"), recursive = TRUE))
+      # remove the old directory
+      fs::dir_delete(path_resrepo("data/raw"))
+      fs::dir_delete(path_resrepo("data/intermediate"))
+      # create links
+      data_dir_link(target_dir = path_resrepo("version_resources/initial/raw"),link_dir = "data/raw")
+      data_dir_link(path_resrepo("version_resources/initial/intermediate"),link_dir= "data/intermediate")
+      # commit to the repository to remove the data from the current branch
+      git2r::commit(message="Move data to version_resources", all=TRUE)
+      data_dir_ignore("data/raw")
+      data_dir_ignore("data/intermediate")
+      git2r::commit(message="Update gitignore", all=TRUE)
+      
+    } else {
+      stop("version_resources already exists")
+    }
 }
