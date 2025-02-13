@@ -17,7 +17,7 @@ version_setup <- function(quiet = FALSE){
     # add options for the user 
     options <- c("Yes", "No")
     # prompt the choice for the user 
-    choice <- menu(options, title="To avoid data lost, it is good practice to have a backup of your raw data outside your repository before versioning.\nHave you backed up your data?")
+    choice <- menu(options, title="To avoid data loss, it is good practice to have a backup of your raw data outside your repository before versioning.\nHave you backed up your data?")
     if (choice == 2){
       stop("Please backup your data before versioning")
     }
