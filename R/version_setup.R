@@ -43,11 +43,24 @@ version_setup <- function(quiet = FALSE){
     # create links
     data_dir_link(target_dir = path_resrepo("version_resources/initial/raw"),link_dir = "data/raw")
     data_dir_link(path_resrepo("version_resources/initial/intermediate"),link_dir= "data/intermediate")
+    # create a file with info on this version
+    if (!dir.exists(path_resrepo("data/version_meta"))){
+      dir.create(path_resrepo("data/version_meta"), recursive=TRUE)
+    }
+    version_meta <- data.frame(version = "initial", date_created = Sys.Date(), 
+                               description = "the initial version", stringsAsFactors = FALSE)
+    write.csv(version_meta, file = path_resrepo("data/version_meta/initial.meta"), row.names = FALSE)
+    writeLines("initial", con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), sep = "\n", useBytes = FALSE)
     # commit to the repository to remove the data from the current branch
     git2r::commit(message="Move data to version_resources", all=TRUE)
     data_dir_ignore("data/raw")
     data_dir_ignore("data/intermediate")
     git2r::commit(message="Update gitignore", all=TRUE)
+    # TODO create the githooks for this repository
+    # copy the githooks from the package
+    
+    # change permissions to make them executable
+    
     
   } else {
     stop("version_resources already exists")

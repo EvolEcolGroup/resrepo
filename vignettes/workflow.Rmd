@@ -158,7 +158,7 @@ body mass and sex. We will store this data, of which we have a copy in the packa
 in the `data/raw/original` directory:
 
 ```{r}
-file.copy(from = system.file("template_extra/tux_measurements.csv", package="resrepo"),
+file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
           to = path_resrepo("/data/raw/original/tux_measurements.csv"),
           overwrite = TRUE)
 ```
@@ -202,7 +202,7 @@ have a look at this [link] (https://www.redhat.com/en/blog/linux-path-absolute-r
 
 Add the chunk about to the Rmd and save it:
 ```{r echo=FALSE, results="hide"}
-file.copy(from = system.file("template_extra/s01_download_penguins.Rmd", package="resrepo"),
+file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
           to = path_resrepo("/code/s01_download_penguins.Rmd"),
           overwrite = TRUE)
 ```
@@ -244,7 +244,7 @@ and clean the data (e.g. remove missing data). We will copy over an Rmd from
 the package, which was originally created with `resrepo::crete_rmd`: 
 
 ```{r}
-file.copy(from = system.file("template_extra/s02_merge_clean.Rmd", package="resrepo"),
+file.copy(from = system.file("vignette_example/s02_merge_clean.Rmd", package="resrepo"),
           to = path_resrepo("/code/s02_merge_clean.Rmd"),
           overwrite = TRUE)
 ```
@@ -274,7 +274,7 @@ whether our tux penguin is clearly distinct from other penguin species. We use a
 from the package, which we copy over to our repository:
 
 ```{r}
-file.copy(from = system.file("template_extra/s03_pca.Rmd", package="resrepo"),
+file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
           to = path_resrepo("/code/s03_pca.Rmd"),
           overwrite = TRUE)
 ```

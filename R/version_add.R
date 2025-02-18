@@ -24,7 +24,6 @@ version_add <- function (path=".", new_version, source_version = NULL, descripti
   if (git_branch %in%  names(git2r::branches())){
     stop("branch ",git_branch," already exists")
   } else {
-    browser()
     git2r::branch_create(name = git_branch)
   }
   
@@ -33,8 +32,6 @@ version_add <- function (path=".", new_version, source_version = NULL, descripti
     current_version_path <- fs::link_path(path_resrepo("data/raw"))
     source_version <- strsplit(current_version_path,"/")[[1]][length(strsplit(current_version_path,"/")[[1]])-1]
   }
-  
-  
   # create a new version
   fs::dir_copy(path_resrepo(paste("version_resources/",source_version,sep="")),
                path_resrepo(paste("version_resources/",new_version,sep="")))
@@ -48,7 +45,13 @@ version_add <- function (path=".", new_version, source_version = NULL, descripti
   data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/intermediate",sep="")),link_dir = "data/intermediate")
   #  data_dir_link(target_dir = path_resrepo(paste("version_resources/",version_name,"/results",sep="")),link_dir = "results")
   message("new version ",new_version," created")
-  # TODO add meta information on the version
+  # add meta information on the version
+  version_meta <- data.frame(version = new_version, date_created = Sys.Date(), 
+                             description = description, stringsAsFactors = FALSE)
+  write.csv(version_meta, file = path_resrepo(paste0("data/version_meta/",new_version,".meta")), row.names = FALSE)
+  writeLines(new_version, con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), sep = "\n", useBytes = FALSE)
+  
+  
   return(TRUE)
   
 }
