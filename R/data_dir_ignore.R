@@ -5,7 +5,7 @@
 #' @param path the path of the data directory, given as relative to the root
 #' of the git repository (e.g. "/data/raw/my_new_dir")
 #'
-#' @export
+#' @keywords internal
 
 data_dir_ignore <- function (path) {
   if (!dir.exists(path_resrepo(path))){

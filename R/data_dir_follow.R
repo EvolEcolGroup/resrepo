@@ -6,7 +6,7 @@
 #' @param path the path of the data directory, given as relative to the root
 #' of the git repository (e.g. "/data/raw/my_new_dir")
 #' @returns TRUE if the directory is tracked
-#' @export
+#' @keywords internal
 
 data_dir_follow <- function (path) {
   if (!dir.exists(path_resrepo(path))){
