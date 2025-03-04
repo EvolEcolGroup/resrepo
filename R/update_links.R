@@ -57,5 +57,5 @@ update_links <- function(quiet = FALSE) {
     fs::link_create(version_intermediate_path, intermediate_path, symbolic = TRUE)
   }
 
-  return(TRUE)
+  return(invisible(TRUE))
 }

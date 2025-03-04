@@ -8,7 +8,7 @@ test_that("versioning", {
   example_repo <- git2r::init(example_dir, branch = "main")
   git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
   vignette_dir<-getwd()
-  # set our working dictory in the git repository
+  # set our working directory in the git repository
   setwd(example_dir)
   ############
   # initialise the repository and add the relevant files
@@ -79,7 +79,20 @@ test_that("versioning", {
   expect_true(git_is_clean())
   ##########
   # move back to main and check that we use the correct version (initial)
-  git2r::checkout(branch = "main")
+  # note that we need to use system2 to run git commands as
+  # git2r::checkout does not trigger hooks
+  system2("git", args = c("checkout main"))
   expect_true(git2r::is_head(git2r::branches()$main))  
   expect_true(grep("initial",fs::link_path("./data/raw"))==1)
-  
+  #########
+  # merge new_filtering into main
+  system2("git", args = c("merge new_filtering"))
+  # we are still in main
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # but the data version is new_filtering as a consequence of the merge
+  expect_true(grep("new_filtering",fs::link_path("./data/raw"))==1)
+  #########
+  # change data version in main back to initial
+  version_switch("initial")
+  expect_true(grep("initial",fs::link_path("./data/raw"))==1)  
+})
