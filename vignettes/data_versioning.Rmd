@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 example_dir <- file.path(tempdir(),"resrepo_example")
 unlink(example_dir,recursive = TRUE)
 dir.create(example_dir, showWarnings = FALSE)
-example_repo <- git2r::init(example_dir)
+example_repo <- git2r::init(example_dir, branch = "main")
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)

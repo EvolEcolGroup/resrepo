@@ -7,7 +7,6 @@
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#'
 #' @returns TRUE if the setup was successful
 #' @export
 
@@ -104,12 +103,13 @@ version_setup_first <- function(quiet = FALSE) {
     con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), # nolint
     sep = "\n", useBytes = FALSE
   )
+  git2r::add(path=path_resrepo("data/version_meta"))
   # commit to the repository to remove the data from the current branch
   git2r::commit(message = "Move data to version_resources", all = TRUE)
   data_dir_ignore("data/raw")
   data_dir_ignore("data/intermediate")
   git2r::commit(message = "Update gitignore", all = TRUE)
-  # TODO create the githooks for this repository
+  # create the githooks for this repository
   # copy the githooks from the package
   fs::dir_copy(system.file("githooks", package = "resrepo"),
     path_resrepo(".git/hooks"), overwrite = TRUE
@@ -123,5 +123,7 @@ version_setup_first <- function(quiet = FALSE) {
   fs::file_chmod(
     path_resrepo(".git/hooks/post-merge"),
     mode = "755"
-  )  
+  )
+  # TODO check that we successfully made the githooks executable
+  return(TRUE)
 }
