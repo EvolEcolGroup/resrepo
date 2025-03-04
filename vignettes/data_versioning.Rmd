@@ -87,61 +87,84 @@ in the vignette on `Data mirroring outside a git repository`).
 
 # Adding a new version
 
-We might now want to revise the filtering of data that we are doing. As this will
-affect some intermediate and results, we want to version the data before we start,
-so that we can compare the two versions.
+We might now want to revise the filtering of data that we are doing.This will
+affect some intermediate data and results. Whilst results are tracked in the git
+repository, data are often not (as they are too large). However, we might want to
+compare the alternative filtering approaches. We can use the `version_add()` 
+function to create a new version of the data, which we can modify and compare 
+to the `initial` version we created earlier:
+
 ```{r}
 version_add(new_version = "new_filtering",
             description = "Filtering out some data")
 ```
+
+
+Now `data/raw` and `data/intermediate` are symlinks to the `new_filtering` 
+version of the data, which is found under `version_resources/new_filtering`.
+
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
-We now will edit the code that filters the data, that removes the first 10 penguins from the dataset.
+
+Imagine that we have just been told that the first 10 measurements of the penguins
+might be considered unreliable, as the scales were showing a low battery warning.
+We now will edit the code that merges and cleans the data, and modify it to 
+remove the first 10 penguins from the dataset. We us a pre-prepared script for this,
+which we copy to the `code` directory:
 
 ```{r}
-
 file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd", package="resrepo"),
           to = path_resrepo("code/s02_merge_clean.Rmd"),
           overwrite = TRUE)
 ```
 
-Now, the copy of the code is in the new branch `new_filtering`. We can now check that we are indeed in a different branch.
-
+We can now remove the old version of the intermediate data created by that script:
 ```{r}
-git2r::is_head(git2r::branches()$new_filtering)
-
+unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
 
-If we now knit the new version of the code, where we remove the first 10 penguins, we will see that the data are written to the `version_resources/new_filtering/intermediate` directory.
+Note that the version of that directory in the `version_resources/initial` version of data is still
+there, as we have not removed it from the `version_resources/new_filtering` directory.
+
+```{r echo=FALSE}
+fs::dir_tree()
+```
+
+If we now knit the new version of the code, where we remove the first 10 penguins, 
+the data are written to the `version_resources/new_filtering/intermediate` directory.
 
 ```{r}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
-We can now compare the datasets of our two versions, and we can see that our `new_filtering` version has 10 fewer penguins.
+We can now compare the datasets of our two versions, and we can see that our current version of
+the data, which is found in `new_filtering` version, has 10 fewer penguins than the `initial`
+version.
 
 ```{r}
-penguins_initial <- read.csv(path_resrepo("/version_resources/initial/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+penguins_new_filtering <- read.csv(path_resrepo("data/intermediate/s02_merge_clean/penguins_na_omit.csv"))
 
-penguins_new_filtering <- read.csv(path_resrepo("/version_resources/new_filtering/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+penguins_initial <- read.csv(path_resrepo("/version_resources/initial/intermediate/s02_merge_clean/penguins_na_omit.csv"))
 
 nrow(penguins_initial)
 nrow(penguins_new_filtering)
-
 ```
 # Merging back into main
 
 If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). Before we merge, we need to commit the changes to the branch `new_filtering`.
 
-TODO Make a gif on how to do this, but dont show in vignette
+TODO Make a gif on how to do this
 ```{r, eval=T, echo=FALSE}
 # commit changes
 git2r::commit(message="Filter out 10 penguins", all=TRUE)
 
 ```
 
+Now we can merge the branch `new_filtering` into the branch `main`, and check
+out `main`.
 
-```{r}
+TODO Make a gif on how to do this
+```{r, eval=T, echo=FALSE}
 # merge in branch
 system2("git", args = c("merge new_filtering"))
 
