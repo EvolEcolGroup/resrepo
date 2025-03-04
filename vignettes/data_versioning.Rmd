@@ -20,6 +20,7 @@ git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
 # setwd(example_dir)
+example_dir
 ```
 
 In many scientific projects, data are simply too large to be stored in a git repository. 
@@ -60,7 +61,8 @@ Let us check that we do have indeed a full repository:
 fs::dir_tree()
 ```
 
-If our data become too large to track on git, and we want to start versioning the data, we can use the function `setup_version`.
+If we want to start versioning the data, we can use the function `version_setup`.
+
 ```{r}
 version_setup(quiet = TRUE)
 
@@ -84,6 +86,7 @@ you want to make sure that you have a reliable way to back up your data (we prov
 in the vignette on `Data mirroring outside a git repository`).
 
 # Adding a new version
+
 We might now want to revise the filtering of data that we are doing. As this will
 affect some intermediate and results, we want to version the data before we start,
 so that we can compare the two versions.
@@ -94,18 +97,65 @@ version_add(new_version = "new_filtering",
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
+We now will edit the code that filters the data, that removes the first 10 penguins from the dataset.
 
-If we write a file to the `data/raw` directory, it will be written to the `version_resources/new_filtering/raw` directory.
 ```{r}
-write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"))
+
+file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd", package="resrepo"),
+          to = path_resrepo("code/s02_merge_clean.Rmd"),
+          overwrite = TRUE)
 ```
 
-```{r echo=FALSE}
-fs::dir_tree()
+Now, the copy of the code is in the new branch `new_filtering`. We can now check that we are indeed in a different branch.
+
+```{r}
+git2r::is_head(git2r::branches()$new_filtering)
+
+```
+
+If we now knit the new version of the code, where we remove the first 10 penguins, we will see that the data are written to the `version_resources/new_filtering/intermediate` directory.
+
+```{r}
+knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+```
+We can now compare the datasets of our two versions, and we can see that our `new_filtering` version has 10 fewer penguins.
+
+```{r}
+penguins_initial <- read.csv(path_resrepo("/version_resources/initial/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+
+penguins_new_filtering <- read.csv(path_resrepo("/version_resources/new_filtering/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+
+nrow(penguins_initial)
+nrow(penguins_new_filtering)
+
+```
+# Merging back into main
+
+If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). Before we merge, we need to commit the changes to the branch `new_filtering`.
+
+TODO Make a gif on how to do this, but dont show in vignette
+```{r, eval=T, echo=FALSE}
+# commit changes
+git2r::commit(message="Filter out 10 penguins", all=TRUE)
+
+```
+
+
+```{r}
+# merge in branch
+system2("git", args = c("merge new_filtering"))
+
+# checkout main
+system2("git", args = c("checkout main"))
+
+# we are still in main
+git2r::is_head(git2r::branches()$main)
+
 ```
 
 # Switching between versions
-We can now switch between the versions by using the `version_switch` function.
+
+We can also stay in the same branch, but switch between the data versions. This can be useful if we want to compare the results of different versions of the data. We can use the `version_switch` function.
 ```{r}
 version_switch("initial")
 ```
@@ -114,6 +164,7 @@ Check that we are indeed writing to the `initial` version:
 ```{r}
 write.csv("blah", path_resrepo("/data/raw/original/my_new_file2.csv"))
 ```
+
 
 ```{r echo=FALSE}
 fs::dir_tree()

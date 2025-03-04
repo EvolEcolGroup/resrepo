@@ -9,7 +9,8 @@ version_add(
   new_version,
   source_version = NULL,
   description,
-  git_branch = NULL
+  git_branch = NULL,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -19,7 +20,10 @@ version_add(
 
 \item{description}{A description of the new version}
 
-\item{git_branch}{The name of the git branch to create. If NULL, it will be the same as \code{new_version}}
+\item{git_branch}{The name of the git branch to create.
+If NULL, it will be the same as \code{new_version}}
+
+\item{quiet}{If TRUE, suppress messages}
 }
 \value{
 TRUE if the version was successfully added

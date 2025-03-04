@@ -5,6 +5,7 @@
 #' 
 #' @param version The version to switch to
 #' @return TRUE if the switch was successful, FALSE otherwise
+#' @export
 
 version_switch <- function(version) {
   # Check if the version exists

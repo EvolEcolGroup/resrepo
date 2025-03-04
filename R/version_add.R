@@ -11,6 +11,7 @@
 #' If NULL, it will be the same as `new_version`
 #' @param quiet If TRUE, suppress messages
 #' @returns TRUE if the version was successfully added
+#' @export
 
 
 version_add <- function (path=".", new_version, source_version = NULL,
