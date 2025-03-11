@@ -2,20 +2,29 @@
 #'
 #' Move over the data to a separate directory, "version_resources", and create
 #' links to the data in the repository. The first version of the data is, by
-#' default, called "initial". Later on, we can add further versions of the data,
-#' and switch between them.
+#' default, called "initial". Later on, we can add further versions of the 
+#' data, using [version_add()], and switch between them with [version_switch()].
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
+#' @param resources_path The path to the directory where the "version_resources",
+#' the directory containing versioned data, will be stored. If NULL (the default),
+#' "version_resources" is placed at the root of the repository.
 #' @returns TRUE if the setup was successful
 #' @export
 
 
-version_setup <- function(quiet = FALSE) {
+version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # figure out if this repository already has data versioning
+  # BUG this does not catch the case where we have just cloned a repository
+  # that has version info, but we have yet to set up versioning on this
+  # local copy
   if (!fs::dir_exists(path_resrepo("version_resources"))) {
-    version_setup_first(quiet = quiet)
+    version_setup_first(quiet = quiet, resources_path = NULL)
   } else {
+    # TODO think carefully what we want to do here
+    # this is the case when we already have versioning set up in the repository
+    # so there is meta information about the versions
     stop("we dont' have a function yet!")
   }
 }
@@ -29,7 +38,13 @@ version_setup <- function(quiet = FALSE) {
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-version_setup_first <- function(quiet = FALSE) {
+#' @param resources_path The path to the directory where the "version_resources",
+#' the directory containing versioned data, will be stored. If NULL (the default),
+#' "version_resources" is placed at the root of the repository.
+#' @returns TRUE if the setup was successful
+#' @keywords internal
+
+version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   # check if running interactively
   if (interactive() && quiet == FALSE) {
     # check that the user has a back up of the data
@@ -51,7 +66,13 @@ version_setup_first <- function(quiet = FALSE) {
     choice <- 1 # when non-run interactively for vignette building
   }
   # create an initial version
-  dir.create(path_resrepo("version_resources/initial"), recursive = TRUE)
+  if (is.null(resources_path)) {
+    dir.create(path_resrepo("version_resources/initial"), recursive = TRUE)
+  } else {
+    #TODO this is not implemented yet
+    stop("creating version resources somewhere else is not implemented yet!")
+  }
+  
   # ingore the version_resources directory
   data_dir_ignore("version_resources")
   # copy all raw, intermediate contents

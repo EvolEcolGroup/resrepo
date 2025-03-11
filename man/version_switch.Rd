@@ -4,13 +4,15 @@
 \alias{version_switch}
 \title{Switch from one data version to another}
 \usage{
-version_switch(version)
+version_switch(version, fail_on_error = TRUE)
 }
 \arguments{
 \item{version}{The version to switch to}
+
+\item{fail_on_error}{Should the function stop if the version does not exist?}
 }
 \value{
-TRUE if the switch was successful, FALSE otherwise
+TRUE if the switch was successful, FALSE otherwise (if \code{fail_on_error} is FALSE)
 }
 \description{
 Change the soft links to \code{data/raw} and \code{data/intermediate} to point to the

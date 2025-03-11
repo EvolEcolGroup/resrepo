@@ -4,10 +4,13 @@
 \alias{path_resrepo}
 \title{Convert a path from its relative position within a resrepo}
 \usage{
-path_resrepo(path, check_exists = FALSE)
+path_resrepo(path, version = NULL, check_exists = FALSE)
 }
 \arguments{
 \item{path}{directory within a resrepo}
+
+\item{version}{version of the data to use (only valid if the path starts
+with "/data" or the relevant shortcut)}
 
 \item{check_exists}{boolean whether we should check if it exists}
 }

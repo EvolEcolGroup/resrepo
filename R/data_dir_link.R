@@ -8,7 +8,7 @@
 #' @param target_dir path outside the git repository that we want to link to 
 #' (i.e. where the data will be really stored)
 #'
-#' @export
+#' @keywords internal
 
 data_dir_link <- function (link_dir, target_dir) {
   # check that we have a target_dir

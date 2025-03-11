@@ -8,11 +8,13 @@
 #'   becomes `/data/intermediates/`
 #'
 #' @param path directory within a resrepo
+#' @param version version of the data to use (only valid if the path starts 
+#' with "/data" or the relevant shortcut)
 #' @param check_exists boolean whether we should check if it exists
 #'
 #' @export
 
-path_resrepo <- function(path, check_exists = FALSE){
+path_resrepo <- function(path, version = NULL, check_exists = FALSE){
   # first find the repo path
   git_root <- find_git_root()
   # shortcuts
@@ -22,6 +24,22 @@ path_resrepo <- function(path, check_exists = FALSE){
   path <- sub(pattern = "^/r/","/results/", path)
   path <- sub (pattern= "^/c/","/code/", path)
   path <- sub (pattern= "^/w/","/writing/", path)
+
+  # if version is specified
+  if (!is.null(version)){
+    # check this version exists
+    if(!version_exists(version)){
+        stop("Version ", version, " does not exist in 'version_resources'")
+    }
+    # check that path starts with data
+    if (!grepl("^/data",path)){
+      stop("version can only be specified for paths starting with /data")
+    }
+    # remove the data prefix
+    version_file_path <- stringr::str_remove(path, "^data/")
+    # add the version prefix
+    path <- fs::path("version_resources", version, version_file_path)
+  }
 
   # add the resrepo path
   full_path <- file.path(normalizePath(git_root), path)  # NB. produces double backslashes

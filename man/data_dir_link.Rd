@@ -17,3 +17,4 @@ it must be empty, as it will be deleted and removed.}
 \description{
 Create a symlink to a data directory in a resrepo (more details needed)
 }
+\keyword{internal}

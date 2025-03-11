@@ -1,6 +1,6 @@
 #' Check that a string is a valid datadir
 #'
-#' Internal function to check validtiy
+#' Internal function to check validity of a path
 #'
 #' @param path string of path
 #'

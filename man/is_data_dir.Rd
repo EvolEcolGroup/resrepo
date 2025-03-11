@@ -10,6 +10,6 @@ is_data_dir(path)
 \item{path}{string of path}
 }
 \description{
-Internal function to check validtiy
+Internal function to check validity of a path
 }
 \keyword{internal}
