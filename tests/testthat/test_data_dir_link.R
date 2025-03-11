@@ -17,8 +17,8 @@ git2r::config(this_git, user.name = "Test", user.email = "test@example.org")
 test_that("create links for data directories",{
   # create a repository as resrepo
   expect_true(init_resrepo())  # make all the resrepo folders
-  git2r::add(path=".")  # add all the new files to git
-  git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
+#  git2r::add(path=".")  # add all the new files to git
+#  git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
   # and now we expect an error if the link path does not exist
   expect_error(data_dir_link("/data/raw/blah",
                              file.path(mirror_dir,"blah2")),"the linked_path")

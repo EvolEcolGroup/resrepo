@@ -27,17 +27,19 @@ test_that("initialise repository",{
   
 })
 
-# and now clean up
-unlink (file.path(test_dir,"*"), recursive = TRUE)
-unlink (file.path(test_dir,".*"), recursive = TRUE)
-
 # test that we can use the version argument in the function
 test_that("version argument",{
   git2r::status()
   version_setup(quiet = TRUE)
-  version_add(new_version = "test_version", source_version = "initial")
+  version_add(new_version = "test_version", source_version = "initial",
+              description = "a version to test the function")
   
   
   
   
 })
+
+# and now clean up
+unlink (file.path(test_dir,"*"), recursive = TRUE)
+unlink (file.path(test_dir,".*"), recursive = TRUE)
+

@@ -45,6 +45,10 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
 #' @keywords internal
 
 version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
+  if (!git_is_clean()) {
+    stop("Please commit or stash your changes before setting up versioning")
+  }
+  
   # check if running interactively
   if (interactive() && quiet == FALSE) {
     # check that the user has a back up of the data
