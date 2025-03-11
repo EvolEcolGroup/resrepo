@@ -62,16 +62,8 @@ allows for a tidy structure that can flexibly accommodate very complex projects.
 Note that there are a number of README.md files, which provide instructions and advice
 related to the files that go into that particular directory.
 
-If you created the repository with `init_resrepo`, it would be a good idea to 
-commit the changes, so that you have a clean repository template as your first commit, and you
+If you created the repository with `init_resrepo`, the function will automatically commit these changes for you, so that you have a clean repository template as your first commit, and you
 can best document the changes that you make as you progress.
-
-TODO add image of committing changes in RStudio
-
-```{r echo=FALSE, results=FALSE}
-git2r::add(path=".")
-git2r::commit(message="initialise resrepo template", all=TRUE)
-```
 
 First, you should modify the main README.md, found at the root of the project,
 to describe your project. That document will act as the landing page of your
