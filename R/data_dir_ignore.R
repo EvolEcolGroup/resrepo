@@ -16,7 +16,7 @@ data_dir_ignore <- function (path) {
   my_gitignore <- readLines(path_resrepo("/.gitignore"))
   if (!ignore_line %in% my_gitignore){
     # stop and give advice if there are already tracked files form this directory
-    dir_git2r_format <- substr(path,2, nchar(path))
+    dir_git2r_format <- substr(path,1, nchar(path))
     if (substr(dir_git2r_format,nchar(dir_git2r_format), nchar(dir_git2r_format))!="/"){
       dir_git2r_format <- paste0(dir_git2r_format,"/")
     }

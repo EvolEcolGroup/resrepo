@@ -148,3 +148,4 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   # TODO check that we successfully made the githooks executable
   return(TRUE)
 }
+

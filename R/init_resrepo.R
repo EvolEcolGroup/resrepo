@@ -18,10 +18,12 @@ init_resrepo <- function (path=".") {
     to = file.path(git_root,".gitignore"))
   dir.create(path_resrepo("/data/raw/original"))
   if (all(copy_results)){
+    # commit initial repository (without any commits version_setup will give an error)
+    git2r::add(path=".")
+    git2r::commit(message="Initialise resrepo", all=TRUE)
     return(TRUE)
   } else {
     warning("something went wrong; not all files were included in the template")
     return(FALSE)
   }
-  
 }
