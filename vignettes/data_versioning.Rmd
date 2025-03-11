@@ -34,7 +34,7 @@ allowing you to easily switch between different versions of the data.
 Let us start by recreating the example repository. This is the same repository
 we created in vignette basic_workflow; if you still have that repository, you don't need to run the code below:
 
-```{r}
+```{r, results='hide'}
 library(resrepo)
 init_resrepo()
 file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
