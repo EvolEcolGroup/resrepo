@@ -2,7 +2,7 @@
 #'
 #' Move over the data to a separate directory, "version_resources", and create
 #' links to the data in the repository. The first version of the data is, by
-#' default, called "initial". Later on, we can add further versions of the 
+#' default, called "initial". Later on, we can add further versions of the
 #' data, using [version_add()], and switch between them with [version_switch()].
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
@@ -20,7 +20,7 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # that has version info, but we have yet to set up versioning on this
   # local copy
   if (!fs::dir_exists(path_resrepo("version_resources"))) {
-    version_setup_first(quiet = quiet, resources_path = NULL)
+    version_setup_first(quiet = quiet, resources_path = resources_path)
   } else {
     # TODO think carefully what we want to do here
     # this is the case when we already have versioning set up in the repository
@@ -45,10 +45,10 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
 #' @keywords internal
 
 version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
-  if (!git_is_clean()) {
+   if (!git_is_clean()) {
     stop("Please commit or stash your changes before setting up versioning")
   }
-  
+
   # check if running interactively
   if (interactive() && quiet == FALSE) {
     # check that the user has a back up of the data
@@ -73,10 +73,15 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   if (is.null(resources_path)) {
     dir.create(path_resrepo("version_resources/initial"), recursive = TRUE)
   } else {
+    # check that resources_path exists and is a directory
+    if (!dir.exists(resources_path)) {
+      stop("The path ", resources_path, " does not exist!")
+    }
     #TODO this is not implemented yet
     stop("creating version resources somewhere else is not implemented yet!")
+
   }
-  
+
   # ingore the version_resources directory
   data_dir_ignore("version_resources")
   # copy all raw, intermediate contents
