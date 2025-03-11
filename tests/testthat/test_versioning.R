@@ -31,7 +31,10 @@ test_that("versioning", {
     to = path_resrepo("/code/s01_download_penguins.Rmd"),
     overwrite = TRUE
   )
-  knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+  # silence knitr
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))))
   file.copy(
     from = system.file("vignette_example/s02_merge_clean.Rmd",
       package = "resrepo"
@@ -39,7 +42,9 @@ test_that("versioning", {
     to = path_resrepo("/code/s02_merge_clean.Rmd"),
     overwrite = TRUE
   )
-  knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))))
   file.copy(
     from = system.file("vignette_example/s03_pca.Rmd",
       package = "resrepo"
@@ -47,7 +52,9 @@ test_that("versioning", {
     to = path_resrepo("/code/s03_pca.Rmd"),
     overwrite = TRUE
   )
-  knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s03_pca.Rmd"))))
   git2r::add(path = ".")
   git2r::commit(message = "Save plot", all = TRUE)
   # check that we are on main and there is nothing to commit
@@ -117,12 +124,13 @@ test_that("versioning", {
   # move back to main and check that we use the correct version (initial)
   # note that we need to use system2 to run git commands as
   # git2r::checkout does not trigger hooks
-  system2("git", args = c("checkout main"))
+  # TODO this is noisy, we should suppress the output
+  suppressMessages(system2("git", args = c("checkout main")))
   expect_true(git2r::is_head(git2r::branches()$main))
   expect_true(grep("initial", fs::link_path("./data/raw")) == 1)
   #########
   # merge new_filtering into main
-  system2("git", args = c("merge new_filtering"))
+  git_res <- system2("git", args = c("merge new_filtering"))
   # we are still in main
   expect_true(git2r::is_head(git2r::branches()$main))
   # but the data version is new_filtering as a consequence of the merge

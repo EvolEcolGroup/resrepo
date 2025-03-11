@@ -10,7 +10,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     fs,
-    git2r
+    git2r,
+    stringr
 Suggests:
     ggfortify,
     knitr,

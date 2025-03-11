@@ -14,6 +14,8 @@ version_add(
 )
 }
 \arguments{
+\item{path}{The path to the resrepo directory}
+
 \item{new_version}{The name of the new version}
 
 \item{source_version}{The name of the version to copy from. If NULL, it will be the current version}

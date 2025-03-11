@@ -4,6 +4,7 @@
 #' data directories to a new directory in `version_resources`, and creating links to the new
 #' directories. The new version will be called `version_name`.
 #' 
+#' @param path The path to the resrepo directory
 #' @param new_version The name of the new version
 #' @param source_version The name of the version to copy from. If NULL, it will be the current version
 #' @param description A description of the new version
@@ -53,20 +54,22 @@ version_add <- function (path=".", new_version, source_version = NULL,
   fs::link_delete(path_resrepo("data/intermediate"))
   #  fs::link_delete(path_resrepo("results"))
   # then create the new ones
-  data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/raw",sep="")),link_dir = "data/raw")
-  data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/intermediate",sep="")),link_dir = "data/intermediate")
-  #  data_dir_link(target_dir = path_resrepo(paste("version_resources/",version_name,"/results",sep="")),link_dir = "results")
+  data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/raw",sep="")),
+                link_dir = "data/raw")
+  data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/intermediate",sep="")),
+                link_dir = "data/intermediate")
   if (!quiet){
     message("version ",new_version," created")
   }
   # add meta information on the version
   version_meta <- data.frame(version = new_version, date_created = Sys.Date(), 
                              description = description, stringsAsFactors = FALSE)
-  write.csv(version_meta, file = path_resrepo(paste0("data/version_meta/",new_version,".meta")), row.names = FALSE)
-  writeLines(new_version, con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), sep = "\n", useBytes = FALSE)
+  utils::write.csv(version_meta,
+                   file = path_resrepo(paste0("data/version_meta/",new_version,".meta")), row.names = FALSE)
+  writeLines(new_version,
+             con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), sep = "\n", useBytes = FALSE)
   # add the meta files to git
   git2r::add(path=path_resrepo("data/version_meta/*"))
   git2r::commit(message = paste("Add version ",new_version), all = TRUE)
   return(TRUE)
-  
 }

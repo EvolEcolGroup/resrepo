@@ -55,7 +55,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     # add options for the user
     options <- c("Yes", "No")
     # prompt the choice for the user
-    choice <- menu(options,
+    choice <- utils::menu(options,
       title = paste0(
         "To avoid data loss, it is good practice to ",
         "have a backup of your raw data outside your ",
@@ -125,7 +125,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     version = "initial", date_created = Sys.Date(),
     description = "the initial version", stringsAsFactors = FALSE
   )
-  write.csv(version_meta,
+  utils::write.csv(version_meta,
     file = path_resrepo("data/version_meta/initial.meta"),
     row.names = FALSE
   )

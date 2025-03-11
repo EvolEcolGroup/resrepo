@@ -16,6 +16,10 @@ init_resrepo <- function (path=".") {
   # make gitignore a hidden file
   file.rename(from = file.path(git_root,"gitignore"), 
     to = file.path(git_root,".gitignore"))
+  # create hidden file with resrepo version
+  # TODO fixme!
+#  writeLines(utils::packageVersion("resrepo"),
+#             con = path_resrepo(".resrepo_version"))
   dir.create(path_resrepo("/data/raw/original"))
   if (all(copy_results)){
     # commit initial repository (without any commits version_setup will give an error)
