@@ -17,6 +17,7 @@ init_resrepo <- function (path=".") {
   file.rename(from = file.path(git_root,"gitignore"), 
     to = file.path(git_root,".gitignore"))
   # create hidden file with resrepo version
+  # TODO add a line saying not to delete this file
   writeLines(text = as.character(utils::packageVersion("resrepo")),
              con = path_resrepo(".resrepo_version"))
   dir.create(path_resrepo("/data/raw/original"))
