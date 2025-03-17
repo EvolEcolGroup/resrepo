@@ -74,34 +74,31 @@ fs::dir_tree()
 ```
 
 We can see that both `data/raw` and `data/intermediate` have been moved into `version_resources`, under the `initial` version,
-and that they have been replaced by symlinks. If we use these links as if they were directories, they point correctly
+and that they have been replaced by symlinks. We can use these links as if they were directories, and check that they point correctly
 to the directories in `version_resources`.
 
 ```{r}
 dir(path_resrepo("/data/raw"))
 ```
 
-However, note that the data are now NOT being tracked by git, as `version_resources` is in .gitignore. So,
-you want to make sure that you have a reliable way to back up your data (we provide a solution
-in the vignette on `Data mirroring outside a git repository`).
+However, note that the data are now NOT being tracked by git, as `version_resources` is in .gitignore. So, you want to make sure that you have a reliable way to back up your data (we provide a solution in the vignette on `Data mirroring outside a git repository`).
 
 # Adding a new version
 
 We might now want to revise the filtering of data that we are doing.This will
 affect some intermediate data and results. Whilst results are tracked in the git
-repository, data are often not (as they are too large). However, we might want to
+repository, data are not. However, we might want to
 compare the alternative filtering approaches. We can use the `version_add()` 
 function to create a new version of the data, which we can modify and compare 
-to the `initial` version we created earlier:
+to the `initial` version we created earlier. It will also create a new branch in the git repository (with the same name):
 
 ```{r}
 version_add(new_version = "new_filtering",
             description = "Filtering out some data")
 ```
 
-
 Now `data/raw` and `data/intermediate` are symlinks to the `new_filtering` 
-version of the data, which is found under `version_resources/new_filtering`.
+version of the data, which is found under `version_resources/new_filtering`. Each version will be under a new branch of the repository.
 
 ```{r echo=FALSE}
 fs::dir_tree()
