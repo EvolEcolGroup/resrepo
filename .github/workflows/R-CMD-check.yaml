@@ -41,7 +41,7 @@ jobs:
 
 
       - name: Get libgit2 for Ubuntu
-        if: matrix.config.os == 'ubuntu-latest' }}
+        if: matrix.config.os == 'ubuntu-latest'
         run: |
           sudo apt-get -y install libgit2-dev
 
