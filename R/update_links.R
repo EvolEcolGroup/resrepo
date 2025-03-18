@@ -1,7 +1,7 @@
 #' Update links to the data directories
 #'
 #' Update links to the data directories, so that they point to the correct
-#' version in the `version_resources` directory. If they links do not exist,
+#' version in the `versions` directory. If they links do not exist,
 #' they will be created. If they exist, they will be updated only if the target
 #' directory has changed.
 #' 
@@ -14,7 +14,7 @@ update_links <- function(quiet = FALSE) {
   version <- readLines(
     path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"))
   # check that the version exists
-  if(!dir.exists(path_resrepo(paste0("version_resources/",version)))){
+  if(!dir.exists(path_resrepo(paste0("versions/",version)))){
     stop("the version ", version," does not exist!")
   }
   # check that the data paths are NOT directories (they should be a link
@@ -30,8 +30,8 @@ update_links <- function(quiet = FALSE) {
   }
 
   # make the paths for data dirs to the version
-  version_raw_path <- path_resrepo(paste0("version_resources/", version, "/data/raw"))
-  version_intermediate_path <- path_resrepo(paste0("version_resources/",
+  version_raw_path <- path_resrepo(paste0("versions/", version, "/data/raw"))
+  version_intermediate_path <- path_resrepo(paste0("versions/",
                                           version, "/data/intermediate"))
   raw_path <- path_resrepo("data/raw")
   intermediate_path <- path_resrepo("data/intermediate")

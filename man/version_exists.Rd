@@ -2,7 +2,7 @@
 % Please edit documentation in R/version_exists.R
 \name{version_exists}
 \alias{version_exists}
-\title{Check that a version exists in version_resources}
+\title{Check that a version exists in versions}
 \usage{
 version_exists(version, quiet = TRUE)
 }
@@ -15,6 +15,6 @@ version_exists(version, quiet = TRUE)
 TRUE if the version exists, FALSE otherwise
 }
 \description{
-Check that a version exists in version_resources
+Check that a version exists in versions
 }
 \keyword{internal}

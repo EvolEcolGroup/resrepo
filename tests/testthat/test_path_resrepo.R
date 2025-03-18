@@ -34,9 +34,9 @@ test_that("version argument",{
   version_add(new_version = "test_version", source_version = "initial",
               description = "a version to test the function", quiet = TRUE)
   expect_equal(path_resrepo("/data/raw", version = "test_version"),
-               path_resrepo("version_resources/test_version/data/raw"))
+               path_resrepo("versions/test_version/data/raw"))
   expect_equal(path_resrepo("/data/raw", version = "initial"),
-               path_resrepo("version_resources/initial/data/raw"))
+               path_resrepo("versions/initial/data/raw"))
 })
 
 # and now clean up

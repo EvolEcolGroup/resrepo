@@ -1,15 +1,15 @@
 #' Set up versioning for data in a resrepo
 #'
-#' Move over the data to a separate directory, "version_resources", and create
+#' Move over the data to a separate directory, "versions", and create
 #' links to the data in the repository. The first version of the data is, by
 #' default, called "initial". Later on, we can add further versions of the
 #' data, using [version_add()], and switch between them with [version_switch()].
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#' @param resources_path The path to the directory where the "version_resources",
+#' @param resources_path The path to the directory where the "versions",
 #' the directory containing versioned data, will be stored. If NULL (the default),
-#' "version_resources" is placed at the root of the repository.
+#' "versions" is placed at the root of the repository.
 #' @returns TRUE if the setup was successful
 #' @export
 
@@ -19,7 +19,7 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # BUG this does not catch the case where we have just cloned a repository
   # that has version info, but we have yet to set up versioning on this
   # local copy
-  if (!fs::dir_exists(path_resrepo("version_resources"))) {
+  if (!fs::dir_exists(path_resrepo("versions"))) {
     version_setup_first(quiet = quiet, resources_path = resources_path)
   } else {
     # TODO think carefully what we want to do here
@@ -32,15 +32,15 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
 #' Set up versioning for data in a resrepo for the first time
 #'
 #' This function is used in a repository where data were being tracked and we
-#' need to move them to a separate directory, "version_resources", and create
+#' need to move them to a separate directory, "versions", and create
 #' links to the data in the repository. The first version of the data is, by
 #' default, called "initial".
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#' @param resources_path The path to the directory where the "version_resources",
+#' @param resources_path The path to the directory where the "versions",
 #' the directory containing versioned data, will be stored. If NULL (the default),
-#' "version_resources" is placed at the root of the repository.
+#' "versions" is placed at the root of the repository.
 #' @returns TRUE if the setup was successful
 #' @keywords internal
 
@@ -71,7 +71,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   }
   # create an initial version
   if (is.null(resources_path)) {
-    dir.create(path_resrepo("version_resources/initial"), recursive = TRUE)
+    dir.create(path_resrepo("versions/initial"), recursive = TRUE)
   } else {
     # check that resources_path exists and is a directory
     if (!dir.exists(resources_path)) {
@@ -82,27 +82,27 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
 
   }
 
-  # ingore the version_resources directory
-  data_dir_ignore("version_resources")
+  # ingore the versions directory
+  data_dir_ignore("versions")
   # copy all raw, intermediate contents
   fs::dir_copy(
     path_resrepo("data/raw"),
-    path_resrepo("version_resources/initial/raw")
+    path_resrepo("versions/initial/raw")
   )
   fs::dir_copy(
     path_resrepo("data/intermediate"),
-    path_resrepo("version_resources/initial/intermediate")
+    path_resrepo("versions/initial/intermediate")
   )
   # check if content of old and new directories are the same
   identical(
     list.files(path_resrepo("data/raw"), recursive = TRUE),
-    list.files(path_resrepo("version_resources/initial/raw"),
+    list.files(path_resrepo("versions/initial/raw"),
       recursive = TRUE
     )
   )
   identical(
     list.files(path_resrepo("data/intermediate"), recursive = TRUE),
-    list.files(path_resrepo("version_resources/initial/intermediate"),
+    list.files(path_resrepo("versions/initial/intermediate"),
       recursive = TRUE
     )
   )
@@ -111,10 +111,10 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   fs::dir_delete(path_resrepo("data/intermediate"))
   # create links
   data_dir_link(
-    target_dir = path_resrepo("version_resources/initial/raw"),
+    target_dir = path_resrepo("versions/initial/raw"),
     link_dir = "data/raw"
   )
-  data_dir_link(path_resrepo("version_resources/initial/intermediate"),
+  data_dir_link(path_resrepo("versions/initial/intermediate"),
     link_dir = "data/intermediate"
   )
   # create a file with meta info on this version
@@ -135,7 +135,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   )
   git2r::add(path=path_resrepo("data/version_meta"))
   # commit to the repository to remove the data from the current branch
-  git2r::commit(message = "Move data to version_resources", all = TRUE)
+  git2r::commit(message = "Move data to versions", all = TRUE)
   data_dir_ignore("data/raw")
   data_dir_ignore("data/intermediate")
   git2r::commit(message = "Update gitignore", all = TRUE)

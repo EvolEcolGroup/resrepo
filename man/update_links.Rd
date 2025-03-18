@@ -14,7 +14,7 @@ TRUE if successful
 }
 \description{
 Update links to the data directories, so that they point to the correct
-version in the \code{version_resources} directory. If they links do not exist,
+version in the \code{versions} directory. If they links do not exist,
 they will be created. If they exist, they will be updated only if the target
 directory has changed.
 }

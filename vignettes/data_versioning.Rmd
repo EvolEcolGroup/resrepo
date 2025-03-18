@@ -73,15 +73,15 @@ Let us check what happened:
 fs::dir_tree()
 ```
 
-We can see that both `data/raw` and `data/intermediate` have been moved into `version_resources`, under the `initial` version,
+We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, under the `initial` version,
 and that they have been replaced by symlinks. We can use these links as if they were directories, and check that they point correctly
-to the directories in `version_resources`.
+to the directories in `versions`.
 
 ```{r}
 dir(path_resrepo("/data/raw"))
 ```
 
-However, note that the data are now NOT being tracked by git, as `version_resources` is in .gitignore. So, you want to make sure that you have a reliable way to back up your data (we provide a solution in the vignette on `Data mirroring outside a git repository`).
+However, note that the data are now NOT being tracked by git, as `versions` is in .gitignore. So, you want to make sure that you have a reliable way to back up your data (we provide a solution in the vignette on `Data mirroring outside a git repository`).
 
 # Adding a new version
 
@@ -98,7 +98,7 @@ version_add(new_version = "new_filtering",
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the `new_filtering` 
-version of the data, which is found under `version_resources/new_filtering`. Each version will be under a new branch of the repository.
+version of the data, which is found under `versions/new_filtering`. Each version will be under a new branch of the repository.
 
 ```{r echo=FALSE}
 fs::dir_tree()
@@ -121,15 +121,15 @@ We can now remove the old version of the intermediate data created by that scrip
 unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
 
-Note that the version of that directory in the `version_resources/initial` version of data is still
-there, as we have not removed it from the `version_resources/new_filtering` directory.
+Note that the version of that directory in the `versions/initial` version of data is still
+there, as we have not removed it from the `versions/new_filtering` directory.
 
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
 
 If we now knit the new version of the code, where we remove the first 10 penguins, 
-the data are written to the `version_resources/new_filtering/intermediate` directory.
+the data are written to the `versions/new_filtering/intermediate` directory.
 
 ```{r}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
@@ -141,7 +141,7 @@ version.
 ```{r}
 penguins_new_filtering <- read.csv(path_resrepo("data/intermediate/s02_merge_clean/penguins_na_omit.csv"))
 
-penguins_initial <- read.csv(path_resrepo("/version_resources/initial/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+penguins_initial <- read.csv(path_resrepo("/versions/initial/intermediate/s02_merge_clean/penguins_na_omit.csv"))
 
 nrow(penguins_initial)
 nrow(penguins_new_filtering)

@@ -32,6 +32,6 @@ TRUE if the version was successfully added
 }
 \description{
 This function will create a new version of the data directories, by copying the current
-data directories to a new directory in \code{version_resources}, and creating links to the new
+data directories to a new directory in \code{versions}, and creating links to the new
 directories. The new version will be called \code{version_name}.
 }

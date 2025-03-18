@@ -29,7 +29,7 @@ path_resrepo <- function(path, version = NULL, check_exists = FALSE){
   if (!is.null(version)){
     # check this version exists
     if(!version_exists(version)){
-        stop("Version ", version, " does not exist in 'version_resources'")
+        stop("Version ", version, " does not exist in 'versions'")
     }
     # check that path starts with data
     if (!grepl("^/data",path)){
@@ -38,7 +38,7 @@ path_resrepo <- function(path, version = NULL, check_exists = FALSE){
     # remove the data prefix
     version_file_path <- stringr::str_remove(path, "^data/")
     # add the version prefix
-    path <- fs::path("version_resources", version, version_file_path)
+    path <- fs::path("versions", version, version_file_path)
   }
 
   # add the resrepo path

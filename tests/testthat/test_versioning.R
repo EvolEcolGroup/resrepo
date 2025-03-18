@@ -3,7 +3,9 @@ test_that("versioning", {
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
   unlink(example_dir, recursive = TRUE)
+  # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   example_repo <- git2r::init(example_dir, branch = "main")
   git2r::config(example_repo,
@@ -15,7 +17,6 @@ test_that("versioning", {
   setwd(example_dir)
   ############
   # initialise the repository and add the relevant files
-  # TODO this section is very noisy, we should suppress the output
   init_resrepo()
   file.copy(
     from = system.file("vignette_example/tux_measurements.csv",
@@ -102,10 +103,10 @@ test_that("versioning", {
   # cleaned working directory)
   expect_true(git_is_clean())
   # check that we created the correct resources and that the links are correct
-  expect_true(dir.exists(path_resrepo("version_resources/new_filtering/raw")))
+  expect_true(dir.exists(path_resrepo("versions/new_filtering/raw")))
   expect_true(
     dir.exists(
-      path_resrepo("version_resources/new_filtering/intermediate")
+      path_resrepo("versions/new_filtering/intermediate")
     )
   )
 
@@ -114,7 +115,7 @@ test_that("versioning", {
   expect_true(
     file.exists(
       path_resrepo(
-        "/version_resources/new_filtering/raw/original/my_new_file1.csv"
+        "/versions/new_filtering/raw/original/my_new_file1.csv"
       )
     )
   )
@@ -125,7 +126,7 @@ test_that("versioning", {
   # note that we need to use system2 to run git commands as
   # git2r::checkout does not trigger hooks
   # TODO this is noisy, we should suppress the output
-  suppressMessages(system2("git", args = c("checkout main")))
+  system2("git", args = c("checkout main"))
   expect_true(git2r::is_head(git2r::branches()$main))
   expect_true(grep("initial", fs::link_path("./data/raw")) == 1)
   #########
@@ -193,10 +194,10 @@ test_that("versioning with resources_path argument", {
   # # cleaned working directory)
   # expect_true(git_is_clean())
   # # check that we created the correct resources and that the links are correct
-  # expect_true(dir.exists(path_resrepo("version_resources/new_filtering/raw")))
+  # expect_true(dir.exists(path_resrepo("versions/new_filtering/raw")))
   # expect_true(
   #   dir.exists(
-  #     path_resrepo("version_resources/new_filtering/intermediate")
+  #     path_resrepo("versions/new_filtering/intermediate")
   #   )
   # )
   #
@@ -205,7 +206,7 @@ test_that("versioning with resources_path argument", {
   # expect_true(
   #   file.exists(
   #     path_resrepo(
-  #       "/version_resources/new_filtering/raw/original/my_new_file1.csv"
+  #       "/versions/new_filtering/raw/original/my_new_file1.csv"
   #     )
   #   )
   # )

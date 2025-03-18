@@ -10,15 +10,15 @@ version_setup(quiet = FALSE, resources_path = NULL)
 \item{quiet}{If TRUE, the user will not be prompted to backup their data.
 Default is FALSE.}
 
-\item{resources_path}{The path to the directory where the "version_resources",
+\item{resources_path}{The path to the directory where the "versions",
 the directory containing versioned data, will be stored. If NULL (the default),
-"version_resources" is placed at the root of the repository.}
+"versions" is placed at the root of the repository.}
 }
 \value{
 TRUE if the setup was successful
 }
 \description{
-Move over the data to a separate directory, "version_resources", and create
+Move over the data to a separate directory, "versions", and create
 links to the data in the repository. The first version of the data is, by
 default, called "initial". Later on, we can add further versions of the
 data, using \code{\link[=version_add]{version_add()}}, and switch between them with \code{\link[=version_switch]{version_switch()}}.

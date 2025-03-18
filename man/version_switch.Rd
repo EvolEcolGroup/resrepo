@@ -16,5 +16,5 @@ TRUE if the switch was successful, FALSE otherwise (if \code{fail_on_error} is F
 }
 \description{
 Change the soft links to \code{data/raw} and \code{data/intermediate} to point to the
-specified version in \code{version_resources}
+specified version in \code{versions}
 }

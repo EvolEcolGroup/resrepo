@@ -1,7 +1,7 @@
 #' Add a version of the data directories
 #' 
 #' This function will create a new version of the data directories, by copying the current
-#' data directories to a new directory in `version_resources`, and creating links to the new
+#' data directories to a new directory in `versions`, and creating links to the new
 #' directories. The new version will be called `version_name`.
 #' 
 #' @param path The path to the resrepo directory
@@ -23,9 +23,9 @@ version_add <- function (path=".", new_version, source_version = NULL,
     "before adding a new version")
   }
   
-  # check if the version_resources directory exists
-  if (!dir.exists(path_resrepo("version_resources"))){
-    stop("version_resources does not exist; you need to use setup_version() first")
+  # check if the versions directory exists
+  if (!dir.exists(path_resrepo("versions"))){
+    stop("versions does not exist; you need to use setup_version() first")
   }
   # if no name for the git branch was given, use the same name as the version
   if (is.null(git_branch)){
@@ -46,17 +46,17 @@ version_add <- function (path=".", new_version, source_version = NULL,
     source_version <- strsplit(current_version_path,"/")[[1]][length(strsplit(current_version_path,"/")[[1]])-1]
   }
   # create a new version
-  fs::dir_copy(path_resrepo(paste("version_resources/",source_version,sep="")),
-               path_resrepo(paste("version_resources/",new_version,sep="")))
+  fs::dir_copy(path_resrepo(paste("versions/",source_version,sep="")),
+               path_resrepo(paste("versions/",new_version,sep="")))
   # update the links
   # first delete the old ones
   fs::link_delete(path_resrepo("data/raw"))
   fs::link_delete(path_resrepo("data/intermediate"))
   #  fs::link_delete(path_resrepo("results"))
   # then create the new ones
-  data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/raw",sep="")),
+  data_dir_link(target_dir = path_resrepo(paste("versions/",new_version,"/raw",sep="")),
                 link_dir = "data/raw")
-  data_dir_link(target_dir = path_resrepo(paste("version_resources/",new_version,"/intermediate",sep="")),
+  data_dir_link(target_dir = path_resrepo(paste("versions/",new_version,"/intermediate",sep="")),
                 link_dir = "data/intermediate")
   if (!quiet){
     message("version ",new_version," created")
