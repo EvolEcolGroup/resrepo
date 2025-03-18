@@ -58,3 +58,9 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+      # Add this step to output the log file if there is a failure
+      - name: Output LaTeX Log File for Debugging
+        if: failure()
+        run: cat s01_download_penguins.log
+        shell: bash
