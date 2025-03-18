@@ -62,5 +62,12 @@ jobs:
       # Add this step to output the log file if there is a failure
       - name: Output LaTeX Log File for Debugging
         if: failure()
-        run: cat s01_download_penguins.log
+        run: cat ./results/s01_download_penguins/s01_download_penguins.log
+        shell: bash
+        
+        
+      # Add this step to output the log file if there is a failure
+      - name: Output LaTeX Log File for Debugging
+        if: failure()
+        run: cat ./code/s01_download_penguins.log
         shell: bash
