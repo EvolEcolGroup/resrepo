@@ -189,6 +189,24 @@ write.csv("blah", path_resrepo("/data/raw/original/my_new_file2.csv"))
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
+
+# Outsource the data 
+
+Demonstrate how to use the function `version_setup` with the argument `resources_path` 
+to outsource the data. 
+
+
+## TO DO 
+- add function or (use function that checks r names) to check that 
+  versions do not special characters or spaces 
+- find ways to break data versioning (cases when you close the repository 
+  but don't have the stuff in the rigth path)
+- it would be nice to version just some part of the data (copy data_raw during 
+  `version_setup` by default and then version with `version_add`)
+
+
+
+
 ```{r}
 
 ```
