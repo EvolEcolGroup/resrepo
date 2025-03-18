@@ -39,6 +39,13 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+
+      - name: Get libgit2 for Ubuntu
+        if: matrix.config.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get -y install libgit2-dev
+
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
