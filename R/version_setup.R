@@ -77,16 +77,19 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     if (!dir.exists(resources_path)) {
       stop("The path ", resources_path, " does not exist!")
     }
-    # create a "versions" directory in the rosources path
-    #TODO we should checkthat we have been successful
-    dir.create(file.path(resources_path, "initial"),
+    # create a "versions" directory in the resources path
+    dir.create(file.path(resources_path, "versions"),
                recursive = TRUE)
+    dir.exists(file.path(resources_path, "versions"))
     # create a link from the repository to the resources path
-    #TODO we should check that we have been successful
-    fs::link_create(
-      path_resrepo("versions"),
-      file.path(resources_path, path_resrepo("versions"))
+    # need to create versions directory in our repository 
+    dir.create(path_resrepo("versions"), recursive = TRUE)
+    dir.exists(path_resrepo("versions"))
+    data_dir_link(
+      link_dir = "/versions",
+      target_dir = file.path(resources_path)
     )
+    dir.create(path_resrepo("versions/initial"), recursive = TRUE)
   }
 
   # ingore the versions directory
