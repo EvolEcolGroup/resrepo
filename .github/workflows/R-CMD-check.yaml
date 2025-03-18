@@ -38,12 +38,18 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          extra-packages: any::rcmdcheck
 
 
       - name: Get libgit2 for Ubuntu
         if: matrix.config.os == 'ubuntu-latest'
         run: |
           sudo apt-get -y install libgit2-dev
+
+
+      - name: Install resrepo to use it in vignette
+        run: devtools::install()
+        shell: Rscript {0}
 
 
       - uses: r-lib/actions/setup-r-dependencies@v2
