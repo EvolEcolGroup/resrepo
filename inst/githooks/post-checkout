@@ -3,7 +3,8 @@
 set -e  # Exit immediately if a command exits with a non-zero status.
 
 # Read the current version from the file
-VERSION=$(<./data/version_meta/current_version_in_use_by_resrepo.meta)
+# TODO this needs to read the second row and split by comma and remove ""
+VERSION=$(<./data/version_meta/in_use.meta)
 
 # Check that the version directory exists
 if [[ ! -d ./versions/$VERSION ]]; then
