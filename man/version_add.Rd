@@ -35,3 +35,8 @@ This function will create a new version of the data directories, by copying the 
 data directories to a new directory in \code{versions}, and creating links to the new
 directories. The new version will be called \code{version_name}.
 }
+\details{
+\code{new_version} will be sanitised to remove spaces and other characters that
+are not allowed in directory names. If the sanitised version is different from
+the original version, a warning will be issued.
+}

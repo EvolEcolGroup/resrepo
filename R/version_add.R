@@ -4,6 +4,10 @@
 #' data directories to a new directory in `versions`, and creating links to the new
 #' directories. The new version will be called `version_name`.
 #' 
+#' `new_version` will be sanitised to remove spaces and other characters that 
+#' are not allowed in directory names. If the sanitised version is different from
+#' the original version, a warning will be issued.
+#' 
 #' @param path The path to the resrepo directory
 #' @param new_version The name of the new version
 #' @param source_version The name of the version to copy from. If NULL, it will be the current version
@@ -17,6 +21,16 @@
 
 version_add <- function (path=".", new_version, source_version = NULL,
                          description, git_branch = NULL, quiet = FALSE) {
+  
+  new_version_orig <- new_version
+  # sanitise new version
+  new_version <- fs::path_sanitize(new_version)
+  # replace spaces with underscores
+  new_version <- gsub(" ","_",new_version)
+  if (new_version != new_version_orig){
+    warning("new_version has been sanitised to ", new_version)
+  }
+  
   # check that we have a clean working directory with git
   if (!git_is_clean()){
     stop("You have uncommitted changes; please commit or stash them ",
