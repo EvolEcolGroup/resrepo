@@ -6,9 +6,12 @@
 \usage{
 version_add(
   path = ".",
-  new_version,
-  source_version = NULL,
-  description,
+  intermediate_new_version,
+  raw_new_version = NULL,
+  intermediate_source = NULL,
+  raw_source = NULL,
+  intermediate_description,
+  raw_description = NULL,
   git_branch = NULL,
   quiet = FALSE
 )
@@ -16,16 +19,16 @@ version_add(
 \arguments{
 \item{path}{The path to the resrepo directory}
 
+\item{git_branch}{The name of the git branch to create.
+If NULL, it will be the same as \code{new_version}}
+
+\item{quiet}{If TRUE, suppress messages}
+
 \item{new_version}{The name of the new version}
 
 \item{source_version}{The name of the version to copy from. If NULL, it will be the current version}
 
 \item{description}{A description of the new version}
-
-\item{git_branch}{The name of the git branch to create.
-If NULL, it will be the same as \code{new_version}}
-
-\item{quiet}{If TRUE, suppress messages}
 }
 \value{
 TRUE if the version was successfully added

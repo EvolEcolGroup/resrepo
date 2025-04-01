@@ -83,8 +83,8 @@ test_that("versioning", {
   write.csv("blah", path_resrepo("/code/random_code.R"))
   expect_error(
     version_add(
-      new_version = "new_filtering",
-      description = "Filtering out some data",
+      intermediate_new_version = "new_filtering",
+      intermediate_description = "Filtering out some data",
       quiet = TRUE
     ),
     "You have uncommitted changes;"
@@ -94,8 +94,8 @@ test_that("versioning", {
   ############
   # add another version
   expect_true(version_add(
-    new_version = "new_filtering",
-    description = "Filtering out some data", quiet = TRUE
+    intermediate_new_version = "new_filtering",
+    intermediate_description = "Filtering out some data", quiet = TRUE
   ))
   # check that we are on a new branch and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$new_filtering))
@@ -103,19 +103,19 @@ test_that("versioning", {
   # cleaned working directory)
   expect_true(git_is_clean())
   # check that we created the correct resources and that the links are correct
-  expect_true(dir.exists(path_resrepo("versions/new_filtering/raw")))
-  expect_true(
+  expect_true(dir.exists(path_resrepo("versions/new_filtering/intermediate")))
+  expect_false(
     dir.exists(
-      path_resrepo("versions/new_filtering/intermediate")
+      path_resrepo("versions/new_filtering/raw")
     )
   )
 
   # check that the links point to the right places
-  write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"))
+  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
   expect_true(
     file.exists(
       path_resrepo(
-        "/versions/new_filtering/raw/original/my_new_file1.csv"
+        "/versions/new_filtering/intermediate/my_new_file1.csv"
       )
     )
   )

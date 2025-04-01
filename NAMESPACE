@@ -2,6 +2,7 @@
 
 export(create_rmd)
 export(find_git_root)
+export(get_versions_in_use)
 export(init_mirror)
 export(init_resrepo)
 export(knit_to_results)

@@ -4,7 +4,7 @@
 #' data directories to a new directory in `versions`, and creating links to the new
 #' directories. The new version will be called `version_name`.
 #' 
-#' `new_version` will be sanitised to remove spaces and other characters that 
+#' `intermediate_new_version` and `raw_new_version` will be sanitised to remove spaces and other characters that 
 #' are not allowed in directory names. If the sanitised version is different from
 #' the original version, a warning will be issued.
 #' 
@@ -19,16 +19,38 @@
 #' @export
 
 
-version_add <- function (path=".", new_version, source_version = NULL,
-                         description, git_branch = NULL, quiet = FALSE) {
+version_add <- function (path=".",
+                         intermediate_new_version,
+                         raw_new_version = NULL,
+                         intermediate_source = NULL,
+                         raw_source = NULL,
+                         intermediate_description,
+                         raw_description = NULL,
+                         git_branch = NULL, quiet = FALSE) {
   
-  new_version_orig <- new_version
-  # sanitise new version
-  new_version <- fs::path_sanitize(new_version)
-  # replace spaces with underscores
-  new_version <- gsub(" ","_",new_version)
-  if (new_version != new_version_orig){
-    warning("new_version has been sanitised to ", new_version)
+  in_use <- get_versions_in_use()
+  
+  sanitise_version <- function (x){
+    x_orig <- x
+    x <- fs::path_sanitize(x)
+    x <- gsub(" ","_",x)
+    # give a warning if the name was changed
+    if (x != x_orig){
+      warning(x_orig, " has been sanitised to ", x)
+    }
+    return(x)
+  }
+  
+  intermediate_new_version <- sanitise_version(intermediate_new_version)
+  # TODO check that this is new
+  if (!is.null(raw_new_version)){
+    raw_new_version <- sanitise_version(raw_new_version)
+    create_raw <- TRUE
+    # TODO check that this is new
+  } else {
+    # if null, use the current raw version
+    raw_new_version <- in_use$raw
+    create_raw <- FALSE
   }
   
   # check that we have a clean working directory with git
@@ -43,7 +65,7 @@ version_add <- function (path=".", new_version, source_version = NULL,
   }
   # if no name for the git branch was given, use the same name as the version
   if (is.null(git_branch)){
-    git_branch <- new_version
+    git_branch <- intermediate_new_version
   }
   # check that the branch does not exist on git already
   if (git_branch %in%  names(git2r::branches())){
@@ -53,37 +75,75 @@ version_add <- function (path=".", new_version, source_version = NULL,
     git2r::checkout(branch = git_branch)
   }
   
-  # if no source version was given, use the current version
-  if(is.null(source_version)){
-    # get the current version
-    current_version_path <- fs::link_path(path_resrepo("data/raw"))
-    source_version <- strsplit(current_version_path,"/")[[1]][length(strsplit(current_version_path,"/")[[1]])-1]
+  # if source versions not given, use the current one, else check that they exist
+  # for raw
+  if (is.null(raw_source)){
+    raw_source <- in_use$raw
+  } else {
+    if (!dir.exists(path_resrepo(paste0("versions/",raw_source)))){
+      stop("source version ",raw_source," does not exist")
+    }
   }
-  # create a new version
-  fs::dir_copy(path_resrepo(paste("versions/",source_version,sep="")),
-               path_resrepo(paste("versions/",new_version,sep="")))
+  # same for intermediate
+  if (is.null(intermediate_source)){
+    intermediate_source <- in_use$intermediate
+  } else {
+    if (!dir.exists(path_resrepo(paste0("versions/",intermediate_source)))){
+      stop("source version ",intermediate_source," does not exist")
+    }
+  }
+  
+  # create a new intermediate version
+  fs::dir_copy(path_resrepo(paste("versions/",intermediate_source,sep="")),
+               path_resrepo(paste("versions/",intermediate_new_version,sep="")))
+  # add meta information on the version
+  version_meta <- data.frame(data = "intermediate",
+                             version = intermediate_new_version,
+                             date_created = Sys.Date(), 
+                             description = intermediate_description,
+                             stringsAsFactors = FALSE)
+  utils::write.csv(version_meta,
+                   file = path_resrepo(paste0("data/version_meta/",intermediate_new_version,".meta")), row.names = FALSE)
+  
+  # if we need to create a new raw version
+  if (create_raw){
+    fs::dir_copy(path_resrepo(paste("versions/",raw_source,"/raw",sep="")),
+                 path_resrepo(paste("versions/",raw_new_version,"/raw",sep="")))
+    version_meta <- data.frame(data = "raw",
+                               version = raw_new_version,
+                               date_created = Sys.Date(), 
+                               description = raw_description,
+                               stringsAsFactors = FALSE)
+    utils::write.csv(version_meta,
+                     file = path_resrepo(paste0("data/version_meta/",raw_new_version,".meta")), row.names = FALSE)
+    
+  }
+  
   # update the links
   # first delete the old ones
   fs::link_delete(path_resrepo("data/raw"))
   fs::link_delete(path_resrepo("data/intermediate"))
   #  fs::link_delete(path_resrepo("results"))
   # then create the new ones
-  data_dir_link(target_dir = path_resrepo(paste("versions/",new_version,"/raw",sep="")),
+  data_dir_link(target_dir = path_resrepo(paste("versions/",raw_new_version,"/raw",sep="")),
                 link_dir = "data/raw")
-  data_dir_link(target_dir = path_resrepo(paste("versions/",new_version,"/intermediate",sep="")),
+  data_dir_link(target_dir = path_resrepo(paste("versions/",intermediate_new_version,"/intermediate",sep="")),
                 link_dir = "data/intermediate")
   if (!quiet){
-    message("version ",new_version," created")
+    message("version ",intermediate_new_version," created")
+    if(create_raw){
+      message("raw version ",raw_new_version," created")
+    }
   }
-  # add meta information on the version
-  version_meta <- data.frame(version = new_version, date_created = Sys.Date(), 
-                             description = description, stringsAsFactors = FALSE)
-  utils::write.csv(version_meta,
-                   file = path_resrepo(paste0("data/version_meta/",new_version,".meta")), row.names = FALSE)
-  writeLines(new_version,
-             con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), sep = "\n", useBytes = FALSE)
-  # add the meta files to git
+  utils::write.csv(data.frame( raw = raw_new_version, intermediate = intermediate_new_version),
+                   file = path_resrepo("data/version_meta/in_use.meta"),
+                   row.names = FALSE
+  )  # add the meta files to git
   git2r::add(path=path_resrepo("data/version_meta/*"))
-  git2r::commit(message = paste("Add version ",new_version), all = TRUE)
+  commit_message <- paste("Add version",intermediate_new_version)
+  if (create_raw){
+    commit_message <- paste(commit_message, "and", raw_new_version)
+  }
+  git2r::commit(message = commit_message, all = TRUE)
   return(TRUE)
 }

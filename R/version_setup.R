@@ -132,16 +132,25 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     dir.create(path_resrepo("data/version_meta"), recursive = TRUE)
   }
   version_meta <- data.frame(
-    version = "initial", date_created = Sys.Date(),
-    description = "the initial version", stringsAsFactors = FALSE
+    data = "intermediate", version = "initial", date_created = Sys.Date(),
+    description = "the initial version intermediate data", stringsAsFactors = FALSE
   )
   utils::write.csv(version_meta,
     file = path_resrepo("data/version_meta/initial.meta"),
     row.names = FALSE
   )
-  writeLines("initial",
-    con = path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"), # nolint
-    sep = "\n", useBytes = FALSE
+  version_meta <- data.frame(
+    data = "raw", version = "starting", date_created = Sys.Date(),
+    description = "the starting version of raw data", stringsAsFactors = FALSE
+  )
+  utils::write.csv(version_meta,
+                   file = path_resrepo("data/version_meta/starting.meta"),
+                   row.names = FALSE
+  )  
+  
+  utils::write.csv(data.frame( raw = "starting", intermediate = "initial"),
+    file = path_resrepo("data/version_meta/in_use.meta"),
+    row.names = FALSE
   )
   git2r::add(path=path_resrepo("data/version_meta"))
   # commit to the repository to remove the data from the current branch
