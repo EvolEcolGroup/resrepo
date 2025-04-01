@@ -10,13 +10,16 @@
 #' @export
 
 update_links <- function(quiet = FALSE) {
-  # get the current version
-  version <- readLines(
-    path_resrepo("data/version_meta/current_version_in_use_by_resrepo.meta"))
-  # check that the version exists
-  if(!dir.exists(path_resrepo(paste0("versions/",version)))){
-    stop("the version ", version," does not exist!")
+  # get the current version  
+  in_use <- get_versions_in_use(check_links = FALSE)
+  # check that the raw version exists
+  if(!dir.exists(path_resrepo(paste0("versions/",in_use$raw,"/raw")))){
+    stop("the version ", in_use$raw," does not exist!")
   }
+  # and now do the same for intermediate
+  if(!dir.exists(path_resrepo(paste0("versions/",in_use$intermediate,"/intermediate")))){
+    stop("the version ", in_use$intermediate," does not exist!")
+  }  
   # check that the data paths are NOT directories (they should be a link
   # or not exist)
   if(dir.exists(path_resrepo("data/raw")) && 
@@ -30,9 +33,9 @@ update_links <- function(quiet = FALSE) {
   }
 
   # make the paths for data dirs to the version
-  version_raw_path <- path_resrepo(paste0("versions/", version, "/data/raw"))
+  version_raw_path <- path_resrepo(paste0("versions/", in_use$raw, "/raw"))
   version_intermediate_path <- path_resrepo(paste0("versions/",
-                                          version, "/data/intermediate"))
+                                          in_use$intermediate, "/intermediate"))
   raw_path <- path_resrepo("data/raw")
   intermediate_path <- path_resrepo("data/intermediate")
   # if the link exists but points to the wrong directory, delete

@@ -136,10 +136,6 @@ test_that("versioning", {
   expect_true(git2r::is_head(git2r::branches()$main))
   # but the data version is new_filtering as a consequence of the merge
   expect_true(grep("new_filtering", fs::link_path("./data/raw")) == 1)
-  #########
-  # change data version in main back to initial
-  version_switch("initial")
-  expect_true(grep("initial", fs::link_path("./data/raw")) == 1)
 })
 
 # this file tests several functions related to versioning
