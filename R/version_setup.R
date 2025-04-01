@@ -70,9 +70,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     choice <- 1 # when non-run interactively for vignette building
   }
   # create an initial version
-  if (is.null(resources_path)) {
-    dir.create(path_resrepo("versions/initial"), recursive = TRUE)
-  } else {
+  if (!is.null(resources_path)) {
     # check that resources_path exists and is a directory
     if (!dir.exists(resources_path)) {
       stop("The path ", resources_path, " does not exist!")
@@ -89,24 +87,26 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
       link_dir = "/versions",
       target_dir = file.path(resources_path)
     )
-    dir.create(path_resrepo("versions/initial"), recursive = TRUE)
   }
+  dir.create(path_resrepo("versions/starting"), recursive = TRUE)
+  dir.create(path_resrepo("versions/initial"), recursive = TRUE)
+  
 
   # ingore the versions directory
   data_dir_ignore("versions")
   # copy all raw, intermediate contents
   fs::dir_copy(
     path_resrepo("data/raw"),
-    path_resrepo("versions/initial/raw")
+    path_resrepo("versions/starting")
   )
   fs::dir_copy(
     path_resrepo("data/intermediate"),
-    path_resrepo("versions/initial/intermediate")
+    path_resrepo("versions/initial")
   )
   # check if content of old and new directories are the same
   identical(
     list.files(path_resrepo("data/raw"), recursive = TRUE),
-    list.files(path_resrepo("versions/initial/raw"),
+    list.files(path_resrepo("versions/starting/raw"),
       recursive = TRUE
     )
   )
@@ -121,7 +121,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   fs::dir_delete(path_resrepo("data/intermediate"))
   # create links
   data_dir_link(
-    target_dir = path_resrepo("versions/initial/raw"),
+    target_dir = path_resrepo("versions/starting/raw"),
     link_dir = "data/raw"
   )
   data_dir_link(path_resrepo("versions/initial/intermediate"),

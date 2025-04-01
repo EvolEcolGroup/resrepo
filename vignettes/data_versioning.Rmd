@@ -197,8 +197,6 @@ to outsource the data.
 
 
 ## TO DO 
-- add function or (use function that checks r names) to check that 
-  versions do not special characters or spaces 
 - find ways to break data versioning (cases when you close the repository 
   but don't have the stuff in the rigth path)
 - it would be nice to version just some part of the data (copy data_raw during 

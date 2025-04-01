@@ -9,7 +9,7 @@ version_setup <- function(){
     # create an initial version
     dir.create(path_resrepo("versions/initial"), recursive=TRUE)
     # copy all raw, intermediate contents
-    fs::dir_copy(path_resrepo("data/raw"),path_resrepo("versions/initial/raw"))
+    fs::dir_copy(path_resrepo("data/raw"),path_resrepo("versions/starting/raw"))
     fs::dir_copy(path_resrepo("data/intermediate"),path_resrepo("versions/initial/intermediate"))
 #    fs::dir_copy(path_resrepo("results"),path_resrepo("versions/initial/results"))
     # TODO compare the old and new directories to make sure that we can proceed with deleting the old
@@ -20,7 +20,7 @@ version_setup <- function(){
     fs::dir_delete(path_resrepo("data/intermediate"))
 #    fs::dir_delete(path_resrepo("results"))
     # create links
-    data_dir_link(target_dir = path_resrepo("versions/initial/raw"),link_dir = "data/raw")
+    data_dir_link(target_dir = path_resrepo("versions/starting/raw"),link_dir = "data/raw")
     data_dir_link(path_resrepo("versions/initial/intermediate"),link_dir= "data/intermediate")
 #    data_dir_link(path_resrepo("versions/initial/results"),link_dir = "results")
     # add data_resources and data/raw and data/intermediate to gitignore
