@@ -1,19 +1,28 @@
 #' Add a version of the data directories
-#' 
-#' This function will create a new version of the data directories, by copying the current
-#' data directories to a new directory in `versions`, and creating links to the new
-#' directories. The new version will be called `version_name`.
-#' 
-#' `intermediate_new_version` and `raw_new_version` will be sanitised to remove spaces and other characters that 
-#' are not allowed in directory names. If the sanitised version is different from
-#' the original version, a warning will be issued.
-#' 
+#'
+#' This function will create a new version of the data directories, by copying
+#' the current data directories to a new directory in `versions`, and creating
+#' links to the new directories. The new version will be called `version_name`.
+#'
+#' `intermediate_new_version` and `raw_new_version` will be sanitised to remove
+#' spaces and other characters that are not allowed in directory names. If the
+#' sanitised version is different from the original version, a warning will be
+#' issued.
+#'
 #' @param path The path to the resrepo directory
-#' @param new_version The name of the new version
-#' @param source_version The name of the version to copy from. If NULL, it will be the current version
-#' @param description A description of the new version
-#' @param git_branch The name of the git branch to create. 
-#' If NULL, it will be the same as `new_version`
+#' @param intermediate_new_version The name of the new version for the
+#'   intermediate data
+#' @param raw_new_version The name of the new version for the raw data. If NULL,
+#'   the raw data will be kept in the currently used version
+#' @param intermediate_source The name of the intermediate version to
+#'   copy from. If NULL, it will be the current version
+#' @param raw_source The name of the raw version to copy from. If NULL,
+#'   it will be the current version. Ingored if `raw_new_version` is NULL.
+#' @param intermediate_description A description of the new intermediate version
+#' @param raw_description A description of the new raw version. Ignored if
+#'  `raw_new_version` is NULL.
+#' @param git_branch The name of the git branch to create. If NULL, it will be
+#'   the same as `new_version`
 #' @param quiet If TRUE, suppress messages
 #' @returns TRUE if the version was successfully added
 #' @export
@@ -74,7 +83,7 @@ version_add <- function (path=".",
     git2r::branch_create(name = git_branch)
     git2r::checkout(branch = git_branch)
   }
-  
+
   # if source versions not given, use the current one, else check that they exist
   # for raw
   if (is.null(raw_source)){
@@ -135,10 +144,14 @@ version_add <- function (path=".",
       message("raw version ",raw_new_version," created")
     }
   }
-  utils::write.csv(data.frame( raw = raw_new_version, intermediate = intermediate_new_version),
-                   file = path_resrepo("data/version_meta/in_use.meta"),
-                   row.names = FALSE
-  )  # add the meta files to git
+  # write the versions to file
+  writeLines(raw_new_version,
+             con = path_resrepo("data/version_meta/raw_in_use.meta"),
+             sep = "\n", useBytes = FALSE)
+  writeLines(intermediate_new_version,
+             con = path_resrepo("data/version_meta/intermediate_in_use.meta"),
+             sep = "\n", useBytes = FALSE)
+  # add the meta files to git
   git2r::add(path=path_resrepo("data/version_meta/*"))
   commit_message <- paste("Add version",intermediate_new_version)
   if (create_raw){

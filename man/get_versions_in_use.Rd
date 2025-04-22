@@ -7,15 +7,18 @@
 get_versions_in_use(check_links = TRUE)
 }
 \arguments{
-\item{check_links}{If TRUE, check that the links in the \code{data} directory are correct}
+\item{check_links}{If TRUE, check that the links in the \code{data} directory are
+correct}
 }
 \value{
-A data.frame with columns, \code{raw} and \code{intermediate}, which are the versions
-of the raw and intermediate data currently in use.
+A data.frame with columns, \code{raw} and \code{intermediate}, which are the
+versions of the raw and intermediate data currently in use.
 }
 \description{
 This returns the versions of the raw and intermediate data that are currently
-in use. This is determined by the information in "data/version_meta/in_use.meta",
-and can be cross-checked with the links in the \code{data} directory. This function
-assumes that the current working directory is within a \code{resrepo} repository
+in use. This is determined by the information in
+"data/version_meta/raw_in_use.meta" and
+"data/version_meta/intermediate_in_use.meta", which can be cross-checked with
+the links in the \code{data} directory. This function assumes that the current
+working directory is within a \code{resrepo} repository
 }

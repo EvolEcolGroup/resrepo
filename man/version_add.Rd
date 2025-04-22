@@ -19,27 +19,39 @@ version_add(
 \arguments{
 \item{path}{The path to the resrepo directory}
 
-\item{git_branch}{The name of the git branch to create.
-If NULL, it will be the same as \code{new_version}}
+\item{intermediate_new_version}{The name of the new version for the
+intermediate data}
+
+\item{raw_new_version}{The name of the new version for the raw data. If NULL,
+the raw data will be kept in the currently used version}
+
+\item{intermediate_source}{The name of the intermediate version to
+copy from. If NULL, it will be the current version}
+
+\item{raw_source}{The name of the raw version to copy from. If NULL,
+it will be the current version. Ingored if \code{raw_new_version} is NULL.}
+
+\item{intermediate_description}{A description of the new intermediate version}
+
+\item{raw_description}{A description of the new raw version. Ignored if
+\code{raw_new_version} is NULL.}
+
+\item{git_branch}{The name of the git branch to create. If NULL, it will be
+the same as \code{new_version}}
 
 \item{quiet}{If TRUE, suppress messages}
-
-\item{new_version}{The name of the new version}
-
-\item{source_version}{The name of the version to copy from. If NULL, it will be the current version}
-
-\item{description}{A description of the new version}
 }
 \value{
 TRUE if the version was successfully added
 }
 \description{
-This function will create a new version of the data directories, by copying the current
-data directories to a new directory in \code{versions}, and creating links to the new
-directories. The new version will be called \code{version_name}.
+This function will create a new version of the data directories, by copying
+the current data directories to a new directory in \code{versions}, and creating
+links to the new directories. The new version will be called \code{version_name}.
 }
 \details{
-\code{intermediate_new_version} and \code{raw_new_version} will be sanitised to remove spaces and other characters that
-are not allowed in directory names. If the sanitised version is different from
-the original version, a warning will be issued.
+\code{intermediate_new_version} and \code{raw_new_version} will be sanitised to remove
+spaces and other characters that are not allowed in directory names. If the
+sanitised version is different from the original version, a warning will be
+issued.
 }

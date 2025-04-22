@@ -4,11 +4,18 @@ set -e  # Exit immediately if a command exits with a non-zero status.
 
 # Read the current version from the file
 # TODO this needs to read the second row and split by comma and remove ""
-VERSION=$(<./data/version_meta/in_use.meta)
+VERSION_RAW=$(<./data/version_meta/raw_in_use.meta)
+VERSION_INTERMEDIATE=$(<./data/version_meta/intermediate_in_use.meta)
 
-# Check that the version directory exists
-if [[ ! -d ./versions/$VERSION ]]; then
-  echo "Error: the version $VERSION does not exist!" >&2
+# Check that the raw version directory exists
+if [[ ! -d ./versions/$VERSION_RAW ]]; then
+  echo "Error: the version $VERSION_RAW does not exist!" >&2
+  exit 1
+fi
+
+# Check that the intermediate version directory exists
+if [[ ! -d ./versions/$VERSION_INTERMEDIATE ]]; then
+  echo "Error: the version $VERSION_INTERMEDIATE does not exist!" >&2
   exit 1
 fi
 
@@ -23,8 +30,8 @@ if  [[ -d ./data/intermediate && ! -L ./data/intermediate ]]; then
 fi
 
 # create the links (overwrite them if they exist already)
-ln -sfn ./versions/$VERSION/raw data/raw
-ln -sfn ./versions/$VERSION/intermediate data/intermediate
+ln -sfn ./versions/$VERSION_RAW/raw data/raw
+ln -sfn ./versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
 
 echo "Links updated"
 exit 0

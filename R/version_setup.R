@@ -3,7 +3,7 @@
 #' Move over the data to a separate directory, "versions", and create
 #' links to the data in the repository. The first version of the data is, by
 #' default, called "initial". Later on, we can add further versions of the
-#' data, using [version_add()], and switch between them with [version_switch()].
+#' data, using [version_add()].
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
@@ -147,11 +147,15 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
                    file = path_resrepo("data/version_meta/starting.meta"),
                    row.names = FALSE
   )  
+  # write the versions to file
+  writeLines("starting",
+             con = path_resrepo("data/version_meta/raw_in_use.meta"),
+             sep = "\n", useBytes = FALSE)
+  writeLines("initial",
+             con = path_resrepo("data/version_meta/intermediate_in_use.meta"),
+             sep = "\n", useBytes = FALSE)
   
-  utils::write.csv(data.frame( raw = "starting", intermediate = "initial"),
-    file = path_resrepo("data/version_meta/in_use.meta"),
-    row.names = FALSE
-  )
+  # add the meta files to git
   git2r::add(path=path_resrepo("data/version_meta"))
   # commit to the repository to remove the data from the current branch
   git2r::commit(message = "Move data to versions", all = TRUE)

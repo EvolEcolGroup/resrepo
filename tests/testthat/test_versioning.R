@@ -128,7 +128,8 @@ test_that("versioning", {
   # TODO this is noisy, we should suppress the output
   system2("git", args = c("checkout main"))
   expect_true(git2r::is_head(git2r::branches()$main))
-  expect_true(grep("initial", fs::link_path("./data/raw")) == 1)
+  expect_true(grep("starting", fs::link_path("./data/raw")) == 1)
+  expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
   #########
   # merge new_filtering into main
   git_res <- system2("git", args = c("merge new_filtering"))
@@ -186,8 +187,8 @@ test_that("versioning with resources_path argument", {
   ############
   # add another version
   expect_true(version_add(
-    new_version = "new_filtering",
-    description = "Filtering out some data", quiet = TRUE
+    intermediate_new_version = "new_filtering",
+    intermediate_description = "Filtering out some data", quiet = TRUE
   ))
   # check that we are on a new branch and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$new_filtering))
@@ -195,7 +196,7 @@ test_that("versioning with resources_path argument", {
   # cleaned working directory)
   expect_true(git_is_clean())
   # check that we created the correct resources and that the links are correct
-  expect_true(dir.exists(path_resrepo("versions/new_filtering/raw")))
+  expect_true(dir.exists(path_resrepo("versions/new_filtering/intermediate")))
   expect_true(
     dir.exists(
       path_resrepo("versions/new_filtering/intermediate")
@@ -203,11 +204,12 @@ test_that("versioning with resources_path argument", {
   )
 
   # check that the links point to the right places
+  # raw should still be in the starting version
   write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"))
   expect_true(
     file.exists(
       path_resrepo(
-        "/versions/new_filtering/raw/original/my_new_file1.csv"
+        "/versions/starting/raw/original/my_new_file1.csv"
       )
     )
   )

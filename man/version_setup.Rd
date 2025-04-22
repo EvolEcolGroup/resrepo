@@ -21,5 +21,5 @@ TRUE if the setup was successful
 Move over the data to a separate directory, "versions", and create
 links to the data in the repository. The first version of the data is, by
 default, called "initial". Later on, we can add further versions of the
-data, using \code{\link[=version_add]{version_add()}}, and switch between them with \code{\link[=version_switch]{version_switch()}}.
+data, using \code{\link[=version_add]{version_add()}}.
 }

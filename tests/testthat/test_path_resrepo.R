@@ -31,12 +31,15 @@ test_that("initialise repository",{
 test_that("version argument",{
   git2r::status()
   version_setup(quiet = TRUE)
-  version_add(new_version = "test_version", source_version = "initial",
-              description = "a version to test the function", quiet = TRUE)
-  expect_equal(path_resrepo("/data/raw", version = "test_version"),
-               path_resrepo("versions/test_version/data/raw"))
-  expect_equal(path_resrepo("/data/raw", version = "initial"),
-               path_resrepo("versions/initial/data/raw"))
+  version_add(intermediate_new_version = "test_version",
+              intermediate_source = "initial",
+              intermediate_description = "a version to test the function", quiet = TRUE)
+  # we have a new version for intermediate
+  expect_equal(path_resrepo("/data/intermediate", version = "test_version"),
+               path_resrepo("versions/test_version/data/intermediate"))
+  # the original path should not change for raw
+  expect_equal(path_resrepo("/data/raw", version = "starting"),
+               path_resrepo("versions/starting/data/raw"))
 })
 
 # and now clean up
