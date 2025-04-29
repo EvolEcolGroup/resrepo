@@ -19,20 +19,19 @@ example_repo <- git2r::init(example_dir, branch = "main")
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
-# setwd(example_dir)
 example_dir
 ```
 
 In many scientific projects, data are simply too large to be stored in a git repository. 
-However, you still want to keep track of the data you used for my analysis, and often you will
+However, you still want to keep track of the data you used for your analysis, and often you will
 be using different code branches to explore alternative approaches (e.g. different data filtering).
-`res_repo` allows you to create versions of the data directories used in your projects, 
+`resrepo` allows you to create versions of the data directories used in your projects, 
 allowing you to easily switch between different versions of the data.
 
 # Setting up data versioning
 
 Let us start by recreating the example repository. This is the same repository
-we created in vignette basic_workflow; if you still have that repository, you don't need to run the code below:
+we created in vignette `workflow`; if you still have that repository, you don't need to run the code below:
 
 ```{r, results='hide'}
 library(resrepo)
@@ -56,25 +55,30 @@ git2r::add(path=".")
 git2r::commit(message="Save plot", all=TRUE)
 
 ```
+
 Let us check that we do have indeed a full repository:
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
 
-If we want to start versioning the data, we can use the function `version_setup`.
 
+When we want to start versioning the data, we can use the function `version_setup`. We only need to use the function once at the beginning of the project to initialise versioning. 
+You can specify the location of your data using the `resources_path` argument. 
+The function will create a subfolder named `versions` in this location.
+By default, this will end into your repository, but it doesn't have to, and it can
+be located anywhere on your system.
 ```{r}
-version_setup(quiet = TRUE)
+version_setup(quiet = TRUE, resources_path = ".")
 
 ```
 
 Let us check what happened:
-```{r echo=FALSE}
+```{r}
 fs::dir_tree()
 ```
 
-We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, under the `initial` version,
-and that they have been replaced by symlinks. We can use these links as if they were directories, and check that they point correctly
+We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, `intermediate` is under the `initial` version, while `raw` is under the `starting` directory.
+We can use these links as if they were directories, and check that they point correctly
 to the directories in `versions`.
 
 ```{r}
