@@ -168,17 +168,14 @@ features further below). To create a new Rmd file from the `resrepo` template Rm
 function and specify the file name and which folder it should be in (you do not 
 need to include the `.Rmd` file extension).
 
-### BUG WARNING: the markdown file only worked when adding "library(resrepo)"
 
 ```{r}
-
 create_rmd("code/s01_download_penguins")
-### BUG WARNING: the markdown file only worked when adding "library(resrepo)"
-
 ```
 
-We need to add only a simple chunk of code in this Rmd:
+We can replace the explanatory text and examples in this Rmd with only a simple chunk of code:
 ```{r eval = FALSE}
+library(resrepo)
 # define the output directory (named after the script) and create it
 output_dir <- path_resrepo("/data/raw/s01_download_penguins")
 if (!dir.exists(output_dir)){
