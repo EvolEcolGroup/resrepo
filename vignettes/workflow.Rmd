@@ -167,8 +167,14 @@ dataset. We will call this script `s01_download_penguins.Rmd`, and store the dat
 features further below). To create a new Rmd file from the `resrepo` template Rmd file, use the `create_rmd` 
 function and specify the file name and which folder it should be in (you do not 
 need to include the `.Rmd` file extension).
+
+### BUG WARNING: the markdown file only worked when adding "library(resrepo)"
+
 ```{r}
+
 create_rmd("code/s01_download_penguins")
+### BUG WARNING: the markdown file only worked when adding "library(resrepo)"
+
 ```
 
 We need to add only a simple chunk of code in this Rmd:
