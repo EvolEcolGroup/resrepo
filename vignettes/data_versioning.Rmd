@@ -68,7 +68,7 @@ The function will create a subfolder named `versions` in this location.
 By default, this will end into your repository, but it doesn't have to, and it can
 be located anywhere on your system.
 ```{r}
-version_setup(quiet = TRUE, resources_path = ".")
+version_setup(quiet = TRUE, resources_path = NULL)
 
 ```
 
@@ -78,8 +78,15 @@ fs::dir_tree()
 ```
 
 We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, `intermediate` is under the `initial` version, while `raw` is under the `starting` directory.
-We can use these links as if they were directories, and check that they point correctly
-to the directories in `versions`.
+In this vignette, we will be focusing only on versioning `data/intermediate`. Advanced users
+can also version `data/raw` but that will be covered in vignete LALALA. For now, 
+`raw_in_use.meta` will point to the starting version of `data/raw` and will not change.
+
+In the tree above, we can see that `data/intermediate` and `data/raw` are now light
+blue. This is because they are now links. We can use these links as if they were 
+directories, and check that they point correctly to the directories in `versions`.
+
+TODO: Create vignette for versioning data raw.
 
 ```{r}
 dir(path_resrepo("/data/raw"))
@@ -87,9 +94,11 @@ dir(path_resrepo("/data/raw"))
 
 However, note that the data are now NOT being tracked by git, as `versions` is in .gitignore. So, you want to make sure that you have a reliable way to back up your data (we provide a solution in the vignette on `Data mirroring outside a git repository`).
 
+TODO: Create vignette for data mirroring outside a git repository.
+
 # Adding a new version
 
-We might now want to revise the filtering of data that we are doing.This will
+We might now want to revise the filtering of data that we are doing. This will
 affect some intermediate data and results. Whilst results are tracked in the git
 repository, data are not. However, we might want to
 compare the alternative filtering approaches. We can use the `version_add()` 
@@ -111,7 +120,7 @@ fs::dir_tree()
 Imagine that we have just been told that the first 10 measurements of the penguins
 might be considered unreliable, as the scales were showing a low battery warning.
 We now will edit the code that merges and cleans the data, and modify it to 
-remove the first 10 penguins from the dataset. We us a pre-prepared script for this,
+remove the first 10 penguins from the dataset. We use a pre-prepared script for this,
 which we copy to the `code` directory:
 
 ```{r}
@@ -120,13 +129,18 @@ file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd
           overwrite = TRUE)
 ```
 
-We can now remove the old version of the intermediate data created by that script:
+If this was a "real" project, since the `new_filtering` version is a new branch of 
+the repository, we could edit the script in the `code` directory and commit the changes.
+
+We can now remove the old version of the intermediate data that included the 10
+penguins we want to remove in this version.
 ```{r}
 unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
 
-Note that the version of that directory in the `versions/initial` version of data is still
-there, as we have not removed it from the `versions/new_filtering` directory.
+Note that `penguins_na_omit.csv` is still in the `versions/initial` folder, as we
+have not removed it from `versions/initial` but only from the `versions/new_filtering` 
+directory.
 
 ```{r echo=FALSE}
 fs::dir_tree()
