@@ -44,9 +44,6 @@ We can now read the data, using the paths that we set up at the beginning of our
 ```{r read_data}
 tux_penguins <- read.csv(file.path(tux_dir,"tux_measurements.csv"))
 palmer_penguins <- read.csv(file.path(palmer_dir, "palmer_penguins.csv"))
-
-# remove the first column of palmer_penguins
-palmer_penguins <- palmer_penguins[,-1]
 ```
 
 ## Merge and clean
