@@ -207,7 +207,8 @@ if (!dir.exists(output_dir)){
 # load the data
 data("penguins", package = "palmerpenguins")
 # write the data
-write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"))
+write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"),
+          row.names = FALSE)
 ```
 
 Note that, to set the output directory, we used the function `path_resrepo`, which
