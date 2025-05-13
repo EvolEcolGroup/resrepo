@@ -220,10 +220,8 @@ fs::dir_tree()
 ```
 
 Note that knitting our Rmd also created the new directory `results/s01_download_penguins` 
-to store the knitted markdown: this is a feature of custom Rmd documents created 
-with `resrepo::create_rmd()`, so that their knitted output is stored in the 
-right place in results by default (standard Rmd documents save the outputs in the same directory as the code, breaking the separation of code and outputs that we prefer in `resrepo`). In this case, this document is pretty minimal (it just repeats the 
-code used to download and save), but later one we will use it to document our analysis.
+to store the knitted markdown. Standard Rmd documents save the outputs in the same directory as the code, which would break the rule of separation of code and outputs. To avoid this, rmd documents created with `resrepo::create_rmd()`, have their knitted output stored in the right place in results by default. In this case, this document is pretty minimal (it just repeats the 
+code used to download and save), but later on we will use it to document our analysis.
 
 Now that we have new files (the code to download and the resulting data and output), we should commit
 our changes to the repository. In RStudio, you can do this by clicking on the Git tab on the
