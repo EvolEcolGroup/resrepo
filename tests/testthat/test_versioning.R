@@ -216,6 +216,9 @@ test_that("versioning with resources_path argument", {
   # the repo should still have a clean working directory
   expect_true(git_is_clean())
 
-
-
 })
+
+
+## @TODO 
+# find ways to break data versioning (cases when you close the repository 
+# but don't have the stuff in the rigth path)

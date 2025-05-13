@@ -19,20 +19,19 @@ example_repo <- git2r::init(example_dir, branch = "main")
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 vignette_dir<-getwd()
 knitr::opts_knit$set(root.dir = example_dir)
-# setwd(example_dir)
 example_dir
 ```
 
 In many scientific projects, data are simply too large to be stored in a git repository. 
-However, you still want to keep track of the data you used for my analysis, and often you will
+However, you still want to keep track of the data you used for your analysis, and often you will
 be using different code branches to explore alternative approaches (e.g. different data filtering).
-`res_repo` allows you to create versions of the data directories used in your projects, 
+`resrepo` allows you to create versions of the data directories used in your projects, 
 allowing you to easily switch between different versions of the data.
 
 # Setting up data versioning
 
 Let us start by recreating the example repository. This is the same repository
-we created in vignette basic_workflow; if you still have that repository, you don't need to run the code below:
+we created in vignette `workflow`; if you still have that repository, you don't need to run the code below:
 
 ```{r, results='hide'}
 library(resrepo)
@@ -56,26 +55,38 @@ git2r::add(path=".")
 git2r::commit(message="Save plot", all=TRUE)
 
 ```
+
 Let us check that we do have indeed a full repository:
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
 
-If we want to start versioning the data, we can use the function `version_setup`.
 
+When we want to start versioning the data, we can use the function `version_setup`. We only need to use the function once at the beginning of the project to initialise versioning. 
+You can specify the location of your data using the `resources_path` argument. 
+The function will create a subfolder named `versions` in this location.
+By default, this will end into your repository, but it doesn't have to, and it can
+be located anywhere on your system.
 ```{r}
-version_setup(quiet = TRUE)
+version_setup(quiet = TRUE, resources_path = NULL)
 
 ```
 
 Let us check what happened:
-```{r echo=FALSE}
+```{r}
 fs::dir_tree()
 ```
 
-We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, under the `initial` version,
-and that they have been replaced by symlinks. We can use these links as if they were directories, and check that they point correctly
-to the directories in `versions`.
+We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, `intermediate` is under the `initial` version, while `raw` is under the `starting` directory.
+In this vignette, we will be focusing only on versioning `data/intermediate`. Advanced users
+can also version `data/raw` but that will be covered in vignete LALALA. For now, 
+`raw_in_use.meta` will point to the starting version of `data/raw` and will not change.
+
+In the tree above, we can see that `data/intermediate` and `data/raw` are now light
+blue. This is because they are now links. We can use these links as if they were 
+directories, and check that they point correctly to the directories in `versions`.
+
+TODO: Create vignette for versioning data raw.
 
 ```{r}
 dir(path_resrepo("/data/raw"))
@@ -83,9 +94,11 @@ dir(path_resrepo("/data/raw"))
 
 However, note that the data are now NOT being tracked by git, as `versions` is in .gitignore. So, you want to make sure that you have a reliable way to back up your data (we provide a solution in the vignette on `Data mirroring outside a git repository`).
 
+TODO: Create vignette for data mirroring outside a git repository.
+
 # Adding a new version
 
-We might now want to revise the filtering of data that we are doing.This will
+We might now want to revise the filtering of data that we are doing. This will
 affect some intermediate data and results. Whilst results are tracked in the git
 repository, data are not. However, we might want to
 compare the alternative filtering approaches. We can use the `version_add()` 
@@ -107,7 +120,7 @@ fs::dir_tree()
 Imagine that we have just been told that the first 10 measurements of the penguins
 might be considered unreliable, as the scales were showing a low battery warning.
 We now will edit the code that merges and cleans the data, and modify it to 
-remove the first 10 penguins from the dataset. We us a pre-prepared script for this,
+remove the first 10 penguins from the dataset. We use a pre-prepared script for this,
 which we copy to the `code` directory:
 
 ```{r}
@@ -116,13 +129,18 @@ file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd
           overwrite = TRUE)
 ```
 
-We can now remove the old version of the intermediate data created by that script:
+If this was a "real" project, since the `new_filtering` version is a new branch of 
+the repository, we could edit the script in the `code` directory and commit the changes.
+
+We can now remove the old version of the intermediate data that included the 10
+penguins we want to remove in this version.
 ```{r}
 unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
 
-Note that the version of that directory in the `versions/initial` version of data is still
-there, as we have not removed it from the `versions/new_filtering` directory.
+Note that `penguins_na_omit.csv` is still in the `versions/initial` folder, as we
+have not removed it from `versions/initial` but only from the `versions/new_filtering` 
+directory.
 
 ```{r echo=FALSE}
 fs::dir_tree()
@@ -134,6 +152,11 @@ the data are written to the `versions/new_filtering/intermediate` directory.
 ```{r}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
+```{r echo=FALSE}
+fs::dir_tree()
+```
+
+
 We can now compare the datasets of our two versions, and we can see that our current version of
 the data, which is found in `new_filtering` version, has 10 fewer penguins than the `initial`
 version.
@@ -148,7 +171,10 @@ nrow(penguins_new_filtering)
 ```
 # Merging back into main
 
-If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). Before we merge, we need to commit the changes to the branch `new_filtering`.
+If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). At the same time, this means that we will replace the previous code with 
+the one in the new branch. You may want to keep both versions of the code if you are 
+interested in using both versions of the data. 
+If we are absolutely sure about merging back into the main branch, before doing it, we need to commit the changes to the branch `new_filtering`.
 
 TODO Make a gif on how to do this
 ```{r, eval=T, echo=FALSE}
@@ -173,21 +199,3 @@ git2r::is_head(git2r::branches()$main)
 
 ```
 
-# Outsource the data 
-
-Demonstrate how to use the function `version_setup` with the argument `resources_path` 
-to outsource the data. 
-
-
-## TO DO 
-- find ways to break data versioning (cases when you close the repository 
-  but don't have the stuff in the rigth path)
-- it would be nice to version just some part of the data (copy data_raw during 
-  `version_setup` by default and then version with `version_add`)
-
-
-
-
-```{r}
-
-```
