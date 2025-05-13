@@ -30,15 +30,21 @@ The aim of `resrepo` is to encourage and facilitate good practices when setting 
 potentially in directories that are backed up on the cloud, whilst maintaining the same paths as if the data were stored
 locally in the git repository.
 
+TODO: figure to show the general resrepo structure
+TODO: short text to explain the structure
+
+
+
 ## Similar tools
 Scientific projects contain both code and data: `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, making it easy to share your project with collaborators, thus ensuring reproducible science and a tidy repository that can used for publication of your work.
 
 ## Initialise the repository
 
 Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. For this
-vignette, we will create a "resrepo_example" git repository.
+vignette, we will create a "resrepo_example" git repository (if you are unfamiliar on how to to this, you can find thorough instructions at this link).
 
 TODO image of setting up a repository on GitHub
+TODO add link for instructions
 
 We will now use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
 ```{r}
