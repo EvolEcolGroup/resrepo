@@ -52,7 +52,7 @@ file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
           overwrite = TRUE)
 knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 git2r::add(path=".")
-git2r::commit(message="Save plot", all=TRUE)
+git2r::commit(message="Set up", all=TRUE)
 
 ```
 
@@ -152,6 +152,7 @@ the data are written to the `versions/new_filtering/intermediate` directory.
 ```{r}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
+
 ```{r echo=FALSE}
 fs::dir_tree()
 ```
@@ -198,4 +199,100 @@ system2("git", args = c("checkout main"))
 git2r::is_head(git2r::branches()$main)
 
 ```
+
+
+# Outsourcing the data 
+
+```{r , include = FALSE}
+example_dir <- file.path(tempdir(),"resrepo_example")
+unlink(example_dir,recursive = TRUE)
+dir.create(example_dir, showWarnings = FALSE)
+example_repo <- git2r::init(example_dir, branch = "main")
+git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
+vignette_dir<-getwd()
+knitr::opts_knit$set(root.dir = example_dir)
+example_dir
+```
+
+
+Often, data are too big to be stored within your git repository. Therefore, we may 
+want to store them into a different location: locally within your machine, in a 
+hard drive, or to a folder synced to the cloud. 
+In this section, we will show how to use the `version_setup` function to outsource your
+data. 
+
+Be aware that we can use the `version_setup` function only once when initializing the repository. Therefore, we need to create an empty repository: 
+```{r, results='hide'}
+init_resrepo()
+```
+
+
+We now need to create a folder in our desired external location.  
+```{r echo=TRUE}
+external_data_storage <- file.path(tempdir(), "external_data_storage")
+unlink(external_data_storage, recursive = TRUE)
+dir.create(external_data_storage)
+```
+
+
+For the purpose of this vignette, the above folder is created in a temporary location.
+For your project this could be a directory in your local machine, on a hard drive, or
+a folder synced to the cloud.
+
+
+Now we have an empty folder where we want to store our data, and an empty 
+repository for our project. 
+We can now use the `version_setup` function to set up the repository. 
+This time we can set the argument `resources_path` to the path of `external_data_storage`
+```{r}
+version_setup(quiet = TRUE, resources_path = external_data_storage)
+```
+
+
+We can now check that the repository has been set up correctly and we 
+see that `external_data_storage` is not found in the tree of our repository:
+```{r}
+fs::dir_tree()
+```
+
+
+We can now populate our repository with the necessary scripts. 
+```{r}
+file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s01_download_penguins.Rmd"),
+          overwrite = TRUE)
+file.copy(from = system.file("vignette_example/s02_merge_clean.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s02_merge_clean.Rmd"),
+          overwrite = TRUE)
+file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s03_pca.Rmd"),
+          overwrite = TRUE)
+```
+
+
+Now we add our data: 
+```{r}
+file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
+          to = path_resrepo("/data/raw/original/tux_measurements.csv"),
+          overwrite = TRUE)
+```
+
+
+Because we supplied the `resources_path` argument to the `version_setup` function,
+the `data/raw` and `data/intermediate` are now symlinks, pointing to the `external_data_storage` folder.
+
+
+We can now run our scripts:
+```{r}
+knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+```
+
+
+# TODO: why do we get an empty `versions` folder within our `external_data_storage`
+folder?
+
+
+
 
