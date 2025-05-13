@@ -22,7 +22,7 @@ knitr::opts_knit$set(root.dir = example_dir)
 # setwd(example_dir)
 ```
 
-# resrepo: easy research on git
+# Resrepo: easy research on git
 
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. There are three main elements to this: 
 
@@ -49,10 +49,12 @@ Here is a general overview of the structure:
 * code: this is, unsurprisingly, the folder for your code, which may be in R, or other languages if needed. 
 * data: `resrepo` will automatically create a *data* folder that contains two subfolders: *raw* is intended for your raw/initial set of data, needed to start running the analyses. *intermediate*, instead, is where most outputs should go (e.g., modifications of the raw data, tables, plots, intermediate input files). Because these folder may end up including huge files, by default the content of "data" will not be uploaded to GitHub, as it is automatically added to `.gitignore`. 
 * results: this folder should only be reserved for final files (e.g, summary tables, plots) that are intended for publication. Because this folder is intended for a limited number of small files, it is expected to be uploaded on GitHub.
-* writing: 
+* writing: this folder is intended for the write-up of your project. It can contain markdown files, or links to GoogleDocs or Word documents. It is not recommended to store large files in this folder.
 
-TODO: figure to show the general resrepo structure
-TODO: short text to explain the structure
+TODO: figure to show the general resrepo structure. *Is it needed? I think that the first `fs::dir_tree()` shows exactly this, thus I haven't created a figure yet.*
+
+TODO: short text to explain the structure. *Wasn't it just explained above?*
+
 Code: 
 
 
@@ -123,10 +125,9 @@ everything is in one place).
 
 ## Initialise the repository
 
-Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first).  
-For this vignette, we will create a "resrepo_example" git repository. 
+Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first). For this vignette, we will create a "resrepo_example" git repository. 
 
-TODO image of setting up a repository on GitHub
+TODO image of setting up a repository on GitHub. *I think this is not needed, as it is better explained in the link above. Or should I?*
 
 We will now use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
 ```{r}
@@ -145,9 +146,9 @@ Let us look at the content of our new repository:
 fs::dir_tree()
 ```
 
-Then, you should modify the main README.md, found at the root of the project,
+You should now modify the main README.md, found at the root of the project,
 to describe your project. That document will act as the landing page of your
-git repository in GitHub/GitLab. A full example of 
+git repository in GitHub/GitLab.
 
 
 ## Similar tools
@@ -183,8 +184,8 @@ We will then write a script to download data on three other species of penguins 
 dataset. We will call this script `s01_download_penguins.Rmd`, and store the data in `data/raw/s01_download_penguins`. 
 
 `resrepo` can generate a pre-edited Rmd file for you to use as a template for your analysis
-(this is better than the default template in RStudio, we will explore some of its additional
-features further below). To create a new Rmd file from the `resrepo` template Rmd file, use the `create_rmd` 
+. This is better than the default template in RStudio, and we will explore some of its additional
+features further below. To create a new Rmd file from the `resrepo` template Rmd file, use the `create_rmd` 
 function and specify the file name and which folder it should be in (you do not 
 need to include the `.Rmd` file extension).
 
@@ -213,11 +214,9 @@ of where the scripts are. Alternatively, you could use a relative path from the
 script, e.g. `../data/raw/s01_download_penguins`. The `..` means "go up one directory", 
 so from the `code` directory, it would go to the root of the repository, then 
 into `data/raw/s01_download_penguins`. If you want more information on relative paths,
-have a look at this [link] (https://www.redhat.com/en/blog/linux-path-absolute-relative).
+have a look at this [link](https://www.redhat.com/en/blog/linux-path-absolute-relative).
 
-Add the chunk about to the Rmd and save it:
-
-# WARNING: the sentence above should be clarified
+Add the chunk above to our s01_download_penguins.Rmd and save it.
 
 ```{r echo=FALSE, results="hide"}
 file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
@@ -229,7 +228,7 @@ file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", packa
 fs::dir_tree()
 ```
 
-With the following code, we will open the Rmd and knit it to download the data.
+You can now open the Rmd and knit it to download the data.
 ```{r, echo=F, results='hide'}
 knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
 ```
@@ -247,7 +246,7 @@ Now that we have new files (the code to download and the resulting data and outp
 our changes to the repository. In RStudio, you can do this by clicking on the Git tab on the
 right hand side, and then clicking on the "Commit" button. 
 
-TODO CREATE AN IMAGE OF THIS STEP
+![](../vignettes/img/git_commit.gif)
 
 ```{r echo=FALSE, results="hide"}
 
@@ -273,10 +272,12 @@ Have a look at this Rmd document. Note how we set all input paths at the very
 beginning of a script, so that it is easy to know what is needed to run
 that script. This habit makes it much easier to share the script with others.
 
-We can now knit the Rmd to merge the data and clean it. 
+You can now knit the Rmd to merge the data and clean it. 
 ```{r knit_merge_clean, echo=F, results='hide'}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
+
+# ERROR - I had to add library(resrepo) to the *s02_merge_clean.Rmd* to make it work. Also, `penguins <- rbind(tux_penguins, palmer_penguins)` did not work because there was an additional "X" column with row numbers in the palmer penguins data which needed to be removed before merging.
 
 We can see that the data was saved in the correct `/data/intermediate` subdirectory:
 ```{r echo=FALSE}
