@@ -40,11 +40,10 @@ Scientific projects contain both code and data: `git` is designed to manage soft
 
 ## Initialise the repository
 
-Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. For this
-vignette, we will create a "resrepo_example" git repository (if you are unfamiliar on how to to this, you can find thorough instructions at this link).
+Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first).  
+For this vignette, we will create a "resrepo_example" git repository. 
 
 TODO image of setting up a repository on GitHub
-TODO add link for instructions
 
 We will now use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
 ```{r}
