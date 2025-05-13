@@ -18,6 +18,10 @@ you can easily check in one place what is needed to run it.
 You should always use relative paths, either relative
 to the script or, if you use `resrepo::path_resrepo`, to the project root.
 ```{r input_paths}
+# load the resrepo package
+library(resrepo)
+
+# set the input directories:
 tux_dir <- path_resrepo("/data/raw/original")
 # alternatively:
 #tux_dir <- "../data/raw/original"
@@ -40,6 +44,9 @@ We can now read the data, using the paths that we set up at the beginning of our
 ```{r read_data}
 tux_penguins <- read.csv(file.path(tux_dir,"tux_measurements.csv"))
 palmer_penguins <- read.csv(file.path(palmer_dir, "palmer_penguins.csv"))
+
+# remove the first column of palmer_penguins
+palmer_penguins <- palmer_penguins[,-1]
 ```
 
 ## Merge and clean
