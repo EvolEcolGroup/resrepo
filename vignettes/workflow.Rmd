@@ -127,7 +127,9 @@ everything is in one place).
 
 Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first). For this vignette, we will create a "resrepo_example" git repository. 
 
-TODO image of setting up a repository on GitHub. *I think this is not needed, as it is better explained in the link above. Or should I?*
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/github_create_repo.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
 
 We will now use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
 ```{r}
