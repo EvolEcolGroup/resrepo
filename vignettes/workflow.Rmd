@@ -196,6 +196,9 @@ into `data/raw/s01_download_penguins`. If you want more information on relative 
 have a look at this [link] (https://www.redhat.com/en/blog/linux-path-absolute-relative).
 
 Add the chunk about to the Rmd and save it:
+
+# WARNING: the sentence above should be clarified
+
 ```{r echo=FALSE, results="hide"}
 file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
           to = path_resrepo("/code/s01_download_penguins.Rmd"),
