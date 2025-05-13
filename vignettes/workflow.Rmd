@@ -23,44 +23,14 @@ knitr::opts_knit$set(root.dir = example_dir)
 ```
 
 # resrepo: easy research on git
+
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. There are three main elements to this: 
-- first, it provides a template for a tidy repository structure that can be used for any project, with functions that help keeping a clear separation of code, data and results.
-- second, it provides functions to help versioning the data and results when they are too large to be tracked by git, allowing easy comparison of different branches (e.g. different data filtering).
-- third, it provides functions to help manage large data by using symlinks to store them outside the git repository,
-potentially in directories that are backed up on the cloud, whilst maintaining the same paths as if the data were stored
-locally in the git repository.
 
-TODO: figure to show the general resrepo structure
-TODO: short text to explain the structure
+* it provides a **template for a tidy repository structure** that can be used for any project, with functions that help keeping a clear separation of code, data and results.
+* it provides functions to help **versioning the data and results** when they are too large to be tracked by git, allowing easy comparison of different branches (e.g. different data filtering).
+* it provides functions to help **manage large data** by using symlinks to store them outside the git repository, potentially in directories that are backed up on the cloud, whilst maintaining the same paths as if the data were stored locally in the git repository.
 
-
-
-## Similar tools
-Scientific projects contain both code and data: `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, making it easy to share your project with collaborators, thus ensuring reproducible science and a tidy repository that can used for publication of your work.
-
-## Initialise the repository
-
-Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first).  
-For this vignette, we will create a "resrepo_example" git repository. 
-
-TODO image of setting up a repository on GitHub
-
-We will now use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
-```{r}
-getwd()
-```
-
-We can now initialise the repository:
-```{r}
-library(resrepo)
-init_resrepo()
-```
-
-Let us look at the content of our new repository:
-
-```{r}
-fs::dir_tree()
-```
+## General overview
 
 In `resrespo`, we keep data, code, results, and the write-up separate. This 
 allows for a tidy structure that can flexibly accommodate very complex projects.
@@ -70,9 +40,21 @@ related to the files that go into that particular directory.
 If you created the repository with `init_resrepo`, the function will automatically commit these changes for you, so that you have a clean repository template as your first commit, and you
 can best document the changes that you make as you progress.
 
-First, you should modify the main README.md, found at the root of the project,
-to describe your project. That document will act as the landing page of your
-git repository in GitHub/GitLab.
+### resrepo template
+
+The first way in which *resrepo* can facilitate good practices when managing git repositories, is to structure your folders so each type of file has their specific location. This helps to separate your data from your code (which is good coding practice) and creates an easy to navigate file structure for all your output.
+
+Here is a general overview of the structure:
+
+* code: this is, unsurprisingly, the folder for your code, which may be in R, or other languages if needed. 
+* data: `resrepo` will automatically create a *data* folder that contains two subfolders: *raw* is intended for your raw/initial set of data, needed to start running the analyses. *intermediate*, instead, is where most outputs should go (e.g., modifications of the raw data, tables, plots, intermediate input files). Because these folder may end up including huge files, by default the content of "data" will not be uploaded to GitHub, as it is automatically added to `.gitignore`. 
+* results: this folder should only be reserved for final files (e.g, summary tables, plots) that are intended for publication. Because this folder is intended for a limited number of small files, it is expected to be uploaded on GitHub.
+* writing: 
+
+TODO: figure to show the general resrepo structure
+TODO: short text to explain the structure
+Code: 
+
 
 ## Naming your code scripts
 
@@ -138,6 +120,39 @@ In that case, you can use the README.md in the `writing` directory to store the
 paths to those documents. By doing so, it means that a collaborator who has access 
 to the repository can also find the manuscript easily (i.e.
 everything is in one place).
+
+## Initialise the repository
+
+Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first).  
+For this vignette, we will create a "resrepo_example" git repository. 
+
+TODO image of setting up a repository on GitHub
+
+We will now use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
+```{r}
+getwd()
+```
+
+We can now initialise the repository:
+```{r}
+library(resrepo)
+init_resrepo()
+```
+
+Let us look at the content of our new repository:
+
+```{r}
+fs::dir_tree()
+```
+
+Then, you should modify the main README.md, found at the root of the project,
+to describe your project. That document will act as the landing page of your
+git repository in GitHub/GitLab. A full example of 
+
+
+## Similar tools
+
+Scientific projects contain both code and data: `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, making it easy to share your project with collaborators, thus ensuring reproducible science and a tidy repository that can used for publication of your work.
 
 <br>
 
@@ -214,7 +229,7 @@ file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", packa
 fs::dir_tree()
 ```
 
-Open the Rmd and knit it to download the data.
+With the following code, we will open the Rmd and knit it to download the data.
 ```{r, echo=F, results='hide'}
 knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
 ```
