@@ -282,8 +282,6 @@ You can now knit the Rmd to merge the data and clean it.
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
 
-# ERROR - I had to add library(resrepo) to the *s02_merge_clean.Rmd* to make it work. Also, `penguins <- rbind(tux_penguins, palmer_penguins)` did not work because there was an additional "X" column with row numbers in the palmer penguins data which needed to be removed before merging.
-
 We can see that the data was saved in the correct `/data/intermediate` subdirectory:
 ```{r echo=FALSE}
 fs::dir_tree()
