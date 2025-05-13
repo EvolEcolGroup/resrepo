@@ -222,3 +222,5 @@ test_that("versioning with resources_path argument", {
 ## @TODO 
 # find ways to break data versioning (cases when you close the repository 
 # but don't have the stuff in the rigth path)
+
+# write test to check that cannot set resources_path to the root 
