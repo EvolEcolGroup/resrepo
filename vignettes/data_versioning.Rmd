@@ -79,7 +79,7 @@ fs::dir_tree()
 
 We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, `intermediate` is under the `initial` version, while `raw` is under the `starting` directory.
 In this vignette, we will be focusing only on versioning `data/intermediate`. Advanced users
-can also version `data/raw` but that will be covered in vignete LALALA. For now, 
+can also version `data/raw` but that will be covered in vignette LALALA. For now, 
 `raw_in_use.meta` will point to the starting version of `data/raw` and will not change.
 
 In the tree above, we can see that `data/intermediate` and `data/raw` are now light
