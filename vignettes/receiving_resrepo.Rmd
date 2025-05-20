@@ -27,16 +27,16 @@ Welcome to your resrepo repository! If you are reading this it means that someon
 has giving you access to a resrepo repository. 
 This vignette covers how to: 
 
-- clone a resrepo repository;
-- obtain the data you need;
-- set up symlinks to the location of the data
+1. Clone a resrepo repository;
+2. Obtain the data you need;
+3. Set up symlinks to the location of the data
 
-## Clone a resrepo repository
+## 1 & 2. Clone a resrepo repository and download data
 
 @TODO: we may want to create a repository on GitHub to with the penguin data to clone 
 for this vignette (at the moment do stuff in background)
 
-```{r}
+```{r, echo=FALSE, results='hide'}
 library(resrepo)
 
 # create a new resrepo repository with code only
@@ -85,7 +85,6 @@ As you can see, this repository contains the folder `version_meta` which indicat
 repository has been versioned. If you are not familiar with the concept of versioning,
 please check the  `data versioning` vignette. 
 
-
 Again, as you can see from the above tree, the `data/intermediate` and `data/raw` are empty folders, 
 this is because no data are stored in the repository. 
 Instead, the `data/intermediate` and `data/raw` folders are actually symlinks pointing to 
@@ -94,10 +93,31 @@ Therefore, you need to take two steps:
 
 @TODO: does the first step make sense?
 
-1. Download the data from where they are stored and place them in a location of your choice (e.g. a folder on 
-   your local machine, a synced folder, etc..)
-2. Set up the symlinks to point to the location of the data you just downloaded
+@TODO: Clone git repository - create gif
 
+- Download the data from where they are stored and place them in a location of your choice (e.g. a folder on 
+   your local machine, a synced folder, etc..)
+- Set up the symlinks to point to the location of the data you just downloaded
+
+Once you have cloned the repository, and placed the data in your desired location,
+you can set up the symlinks to point to the location of the data.
+
+## 3. Setting up symlinks to data
+
+As an example, we will place the data in a temporary directory called `external_data_storage_new`.
+It is important that your data folder is structured in the exact same way as the data folder
+you were provided with, as otherwise `resrepo` will not be able to find the files.
+
+```{r}
+
+# create new external folder for data 
+external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
+unlink(external_data_storage_new, recursive = TRUE)
+dir.create(external_data_storage_new)
+
+# 
+
+```
 
 
 

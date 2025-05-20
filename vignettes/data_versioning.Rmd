@@ -243,7 +243,7 @@ a folder synced to the cloud.
 Now we have an empty folder where we want to store our data, and an empty 
 repository for our project. 
 We can now use the `version_setup` function to set up the repository. 
-This time we can set the argument `resources_path` to the path of `external_data_storage`
+This time we can set the argument `resources_path` to the path of `external_data_storage`.
 ```{r}
 version_setup(quiet = TRUE, resources_path = external_data_storage)
 ```
