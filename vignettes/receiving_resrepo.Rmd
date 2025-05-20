@@ -1,0 +1,110 @@
+---
+title: "Receiving a resrepo repository"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data versioning}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+example_dir <- file.path(tempdir(),"resrepo_example")
+unlink(example_dir,recursive = TRUE)
+dir.create(example_dir, showWarnings = FALSE)
+example_repo <- git2r::init(example_dir, branch = "main")
+git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
+vignette_dir<-getwd()
+knitr::opts_knit$set(root.dir = example_dir)
+example_dir
+```
+
+
+Welcome to your resrepo repository! If you are reading this it means that someone 
+has giving you access to a resrepo repository. 
+This vignette covers how to: 
+
+- clone a resrepo repository;
+- obtain the data you need;
+- set up symlinks to the location of the data
+
+## Clone a resrepo repository
+
+@TODO: we may want to create a repository on GitHub to with the penguin data to clone 
+for this vignette (at the moment do stuff in background)
+
+```{r}
+library(resrepo)
+
+# create a new resrepo repository with code only
+init_resrepo()
+file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s01_download_penguins.Rmd"),
+          overwrite = TRUE)
+file.copy(from = system.file("vignette_example/s02_merge_clean.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s02_merge_clean.Rmd"),
+          overwrite = TRUE)
+file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
+          to = path_resrepo("/code/s03_pca.Rmd"),
+          overwrite = TRUE)
+git2r::add(path=".")
+git2r::commit(message="Set up", all=TRUE)
+
+
+# create external folder for data 
+external_data_storage <- file.path(tempdir(), "external_data_storage")
+unlink(external_data_storage, recursive = TRUE)
+dir.create(external_data_storage)
+
+# version the repository
+version_setup(quiet = TRUE, resources_path = external_data_storage)
+
+# add version with script 
+version_add(intermediate_new_version = "new_filtering",
+            intermediate_description = "Filtering out some data")
+
+file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd", package="resrepo"),
+          to = path_resrepo("code/s02_merge_clean.Rmd"),
+          overwrite = TRUE)
+
+git2r::commit(message="Filter out 10 penguins", all=TRUE)
+
+```
+
+So you have cloned a resrepo repository with code in it, but the data to run the 
+analyses are stored somewhere else outside the cloned repository.
+```{r}
+fs::dir_tree()
+```
+
+
+As you can see, this repository contains the folder `version_meta` which indicates to us that this
+repository has been versioned. If you are not familiar with the concept of versioning,
+please check the  `data versioning` vignette. 
+
+
+Again, as you can see from the above tree, the `data/intermediate` and `data/raw` are empty folders, 
+this is because no data are stored in the repository. 
+Instead, the `data/intermediate` and `data/raw` folders are actually symlinks pointing to 
+an external folder containing different versions of the data. 
+Therefore, you need to take two steps:
+
+@TODO: does the first step make sense?
+
+1. Download the data from where they are stored and place them in a location of your choice (e.g. a folder on 
+   your local machine, a synced folder, etc..)
+2. Set up the symlinks to point to the location of the data you just downloaded
+
+
+
+
+
+
+
+
+
+
+
