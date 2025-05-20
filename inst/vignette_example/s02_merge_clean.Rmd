@@ -18,6 +18,10 @@ you can easily check in one place what is needed to run it.
 You should always use relative paths, either relative
 to the script or, if you use `resrepo::path_resrepo`, to the project root.
 ```{r input_paths}
+# load the resrepo package
+library(resrepo)
+
+# set the input directories:
 tux_dir <- path_resrepo("/data/raw/original")
 # alternatively:
 #tux_dir <- "../data/raw/original"
