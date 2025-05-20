@@ -33,7 +33,7 @@ allowing you to easily switch between different versions of the data.
 Let us start by recreating the example repository. This is the same repository
 we created in vignette `workflow`; if you still have that repository, you don't need to run the code below:
 
-```{r, results='hide'}
+```{r recreate_example_repo, results='hide'}
 library(resrepo)
 init_resrepo()
 file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
@@ -57,7 +57,7 @@ git2r::commit(message="Set up", all=TRUE)
 ```
 
 Let us check that we do have indeed a full repository:
-```{r echo=FALSE}
+```{r check_if_full_repo, echo=FALSE}
 fs::dir_tree()
 ```
 
@@ -67,13 +67,13 @@ You can specify the location of your data using the `resources_path` argument.
 The function will create a subfolder named `versions` in this location.
 By default, this will end into your repository, but it doesn't have to, and it can
 be located anywhere on your system.
-```{r}
+```{r version_setup}
 version_setup(quiet = TRUE, resources_path = NULL)
 
 ```
 
 Let us check what happened:
-```{r}
+```{r check_version_setup}
 fs::dir_tree()
 ```
 
@@ -88,7 +88,7 @@ directories, and check that they point correctly to the directories in `versions
 
 TODO: Create vignette for versioning data raw.
 
-```{r}
+```{r check_links}
 dir(path_resrepo("/data/raw"))
 ```
 
@@ -105,7 +105,7 @@ compare the alternative filtering approaches. We can use the `version_add()`
 function to create a new version of the data, which we can modify and compare 
 to the `initial` version we created earlier. It will also create a new branch in the git repository (with the same name):
 
-```{r}
+```{r version_add}
 version_add(intermediate_new_version = "new_filtering",
             intermediate_description = "Filtering out some data")
 ```
@@ -113,7 +113,7 @@ version_add(intermediate_new_version = "new_filtering",
 Now `data/raw` and `data/intermediate` are symlinks to the `new_filtering` 
 version of the data, which is found under `versions/new_filtering`. Each version will be under a new branch of the repository.
 
-```{r echo=FALSE}
+```{r check_version_add, echo=FALSE}
 fs::dir_tree()
 ```
 
@@ -123,7 +123,7 @@ We now will edit the code that merges and cleans the data, and modify it to
 remove the first 10 penguins from the dataset. We use a pre-prepared script for this,
 which we copy to the `code` directory:
 
-```{r}
+```{r copy_script_clean_data}
 file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd", package="resrepo"),
           to = path_resrepo("code/s02_merge_clean.Rmd"),
           overwrite = TRUE)
@@ -134,7 +134,7 @@ the repository, we could edit the script in the `code` directory and commit the 
 
 We can now remove the old version of the intermediate data that included the 10
 penguins we want to remove in this version.
-```{r}
+```{r remove_old_version}
 unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
 
@@ -142,14 +142,14 @@ Note that `penguins_na_omit.csv` is still in the `versions/initial` folder, as w
 have not removed it from `versions/initial` but only from the `versions/new_filtering` 
 directory.
 
-```{r echo=FALSE}
+```{r check_remove_old, echo=FALSE}
 fs::dir_tree()
 ```
 
 If we now knit the new version of the code, where we remove the first 10 penguins, 
 the data are written to the `versions/new_filtering/intermediate` directory.
 
-```{r}
+```{r knit_new_filtering}
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
 
@@ -162,7 +162,7 @@ We can now compare the datasets of our two versions, and we can see that our cur
 the data, which is found in `new_filtering` version, has 10 fewer penguins than the `initial`
 version.
 
-```{r}
+```{r compare_versions}
 penguins_new_filtering <- read.csv(path_resrepo("data/intermediate/s02_merge_clean/penguins_na_omit.csv"))
 
 penguins_initial <- read.csv(path_resrepo("/versions/initial/intermediate/s02_merge_clean/penguins_na_omit.csv"))
@@ -170,6 +170,7 @@ penguins_initial <- read.csv(path_resrepo("/versions/initial/intermediate/s02_me
 nrow(penguins_initial)
 nrow(penguins_new_filtering)
 ```
+
 # Merging back into main
 
 If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). At the same time, this means that we will replace the previous code with 
@@ -178,7 +179,7 @@ interested in using both versions of the data.
 If we are absolutely sure about merging back into the main branch, before doing it, we need to commit the changes to the branch `new_filtering`.
 
 TODO Make a gif on how to do this
-```{r, eval=T, echo=FALSE}
+```{r git_commit, eval=T, echo=FALSE}
 # commit changes
 git2r::commit(message="Filter out 10 penguins", all=TRUE)
 
@@ -188,7 +189,7 @@ Now we can merge the branch `new_filtering` into the branch `main`, and check
 out `main`.
 
 TODO Make a gif on how to do this
-```{r, eval=T, echo=FALSE}
+```{r git_merge, eval=T, echo=FALSE}
 # merge in branch
 system2("git", args = c("merge new_filtering"))
 
@@ -203,7 +204,7 @@ git2r::is_head(git2r::branches()$main)
 
 # Outsourcing the data 
 
-```{r , include = FALSE}
+```{r recreate_example_repo_02, include = FALSE}
 example_dir <- file.path(tempdir(),"resrepo_example")
 unlink(example_dir,recursive = TRUE)
 dir.create(example_dir, showWarnings = FALSE)
@@ -222,13 +223,13 @@ In this section, we will show how to use the `version_setup` function to outsour
 data. 
 
 Be aware that we can use the `version_setup` function only once when initializing the repository. Therefore, we need to create an empty repository: 
-```{r, results='hide'}
+```{r init_resrepo, results='hide'}
 init_resrepo()
 ```
 
 
 We now need to create a folder in our desired external location.  
-```{r echo=TRUE}
+```{r create_external_folder, echo=TRUE}
 external_data_storage <- file.path(tempdir(), "external_data_storage")
 unlink(external_data_storage, recursive = TRUE)
 dir.create(external_data_storage)
@@ -244,20 +245,20 @@ Now we have an empty folder where we want to store our data, and an empty
 repository for our project. 
 We can now use the `version_setup` function to set up the repository. 
 This time we can set the argument `resources_path` to the path of `external_data_storage`.
-```{r}
+```{r version_setup_external}
 version_setup(quiet = TRUE, resources_path = external_data_storage)
 ```
 
 
 We can now check that the repository has been set up correctly and we 
 see that `external_data_storage` is not found in the tree of our repository:
-```{r}
+```{r check_external_setup}
 fs::dir_tree()
 ```
 
 
 We can now populate our repository with the necessary scripts. 
-```{r}
+```{r copy_scripts_external}
 file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
           to = path_resrepo("/code/s01_download_penguins.Rmd"),
           overwrite = TRUE)
@@ -271,7 +272,7 @@ file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
 
 
 Now we add our data: 
-```{r}
+```{r copy_data_external}
 file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
           to = path_resrepo("/data/raw/original/tux_measurements.csv"),
           overwrite = TRUE)
@@ -283,7 +284,7 @@ the `data/raw` and `data/intermediate` are now symlinks, pointing to the `extern
 
 
 We can now run our scripts:
-```{r}
+```{r run_scripts_external}
 knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
