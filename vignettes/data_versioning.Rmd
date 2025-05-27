@@ -57,7 +57,7 @@ git2r::commit(message="Set up", all=TRUE)
 ```
 
 Let us check that we do have indeed a full repository:
-```{r check_if_full_repo, echo=FALSE}
+```{r check_if_full_repo, echo=TRUE}
 fs::dir_tree()
 ```
 
@@ -73,7 +73,7 @@ version_setup(quiet = TRUE, resources_path = NULL)
 ```
 
 Let us check what happened:
-```{r check_version_setup}
+```{r check_version_setup, echo=TRUE}
 fs::dir_tree()
 ```
 
@@ -113,7 +113,7 @@ version_add(intermediate_new_version = "new_filtering",
 Now `data/raw` and `data/intermediate` are symlinks to the `new_filtering` 
 version of the data, which is found under `versions/new_filtering`. Each version will be under a new branch of the repository.
 
-```{r check_version_add, echo=FALSE}
+```{r check_version_add, echo=TRUE}
 fs::dir_tree()
 ```
 
@@ -142,7 +142,7 @@ Note that `penguins_na_omit.csv` is still in the `versions/initial` folder, as w
 have not removed it from `versions/initial` but only from the `versions/new_filtering` 
 directory.
 
-```{r check_remove_old, echo=FALSE}
+```{r check_remove_old, echo=TRUE}
 fs::dir_tree()
 ```
 
@@ -153,7 +153,7 @@ the data are written to the `versions/new_filtering/intermediate` directory.
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 ```
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fs::dir_tree()
 ```
 
@@ -252,7 +252,7 @@ version_setup(quiet = TRUE, resources_path = external_data_storage)
 
 We can now check that the repository has been set up correctly and we 
 see that `external_data_storage` is not found in the tree of our repository:
-```{r check_external_setup}
+```{r check_external_setup, echo=TRUE}
 fs::dir_tree()
 ```
 
