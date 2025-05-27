@@ -25,8 +25,6 @@ This vignette covers how to:
 
 ## 1 & 2. Clone a resrepo repository and download data
 
-@TODO: we may want to create a repository on GitHub to with the penguin data to clone 
-for this vignette (at the moment do stuff in background)
 
 @TODO: Clone the resrepo_penguins repository - create gif
 
@@ -35,7 +33,7 @@ library(resrepo)
 directory_penguins <- file.path(tempdir(), "resrepo_penguins")
 if (!dir.exists(directory_penguins)) dir.create(directory_penguins)
 
-# we get an error here, possibly because resrepo_penguins is private
+# clone the penguin repository (public)
 git2r::clone("https://github.com/EvolEcolGroup/resrepo_penguins",
              local_path = directory_penguins,
              branch = "main",
@@ -46,7 +44,7 @@ git2r::clone("https://github.com/EvolEcolGroup/resrepo_penguins",
 So you have cloned a resrepo repository with code in it, but the data to run the 
 analyses are stored somewhere else outside the cloned repository.
 ```{r}
-fs::dir_tree()
+fs::dir_tree(path = directory_penguins)
 ```
 
 
