@@ -83,6 +83,9 @@ version_add <- function (path=".",
     #browser()
     git2r::branch_create(name = git_branch)
     git2r::checkout(branch = git_branch)
+    git2r::push(name = "origin",
+                refspec = paste0("refs/heads/", git_branch),
+                set_upstream = TRUE)
     # get url
     # repo_url <- git2r::remote_url()
     # add the remote (unlinked)
