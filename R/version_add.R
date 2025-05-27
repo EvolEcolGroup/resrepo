@@ -80,8 +80,16 @@ version_add <- function (path=".",
   if (git_branch %in%  names(git2r::branches())){
     stop("branch ",git_branch," already exists")
   } else {
+    #browser()
     git2r::branch_create(name = git_branch)
     git2r::checkout(branch = git_branch)
+    # get url
+    # repo_url <- git2r::remote_url()
+    # add the remote (unlinked)
+    #git2r::remote_add(repo = ".", name = git_branch, url = repo_url)
+    # link the remote 
+    #git2r::branch_set_upstream(branch = git_branch, name = git_branch)
+    #git2r::push("origin", paste0("refs/heads/", git_branch), set_upstream = TRUE)
   }
 
   # if source versions not given, use the current one, else check that they exist
