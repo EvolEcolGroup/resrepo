@@ -35,7 +35,7 @@ get_resrepo_git_creds <- function(){
         stop("You don't have a PAT set up with `gitcreds`. Please set it using gitcreds::gitcreds_set().")
       }
     )
-    git_env_var <- gitcreds::gitcreds_cache_envvar(url = git_host)
+    git_env_var <- gitcreds::gitcreds_cache_envvar(url = git_url)
 
     # HTTPS URL
     creds <- list(
