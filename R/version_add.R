@@ -36,7 +36,10 @@ version_add <- function (path=".",
                          intermediate_description,
                          raw_description = NULL,
                          git_branch = NULL, quiet = FALSE) {
+  # check for git credentials 
+  creds <- get_resrepo_git_creds()
   
+  # check version in use
   in_use <- get_versions_in_use()
   
   sanitise_version <- function (x){
@@ -80,19 +83,14 @@ version_add <- function (path=".",
   if (git_branch %in%  names(git2r::branches())){
     stop("branch ",git_branch," already exists")
   } else {
-    #browser()
     git2r::branch_create(name = git_branch)
     git2r::checkout(branch = git_branch)
-    git2r::push(name = "origin",
-                refspec = paste0("refs/heads/", git_branch),
-                set_upstream = TRUE)
-    # get url
-    # repo_url <- git2r::remote_url()
-    # add the remote (unlinked)
-    #git2r::remote_add(repo = ".", name = git_branch, url = repo_url)
-    # link the remote 
-    #git2r::branch_set_upstream(branch = git_branch, name = git_branch)
-    #git2r::push("origin", paste0("refs/heads/", git_branch), set_upstream = TRUE)
+    if (creds$type == "ssh" || creds$type == "https"){
+      git2r::push(name = "origin",
+                  refspec = paste0("refs/heads/", git_branch),
+                  set_upstream = TRUE, 
+                  credentials = creds$github_pat)
+    }
   }
 
   # if source versions not given, use the current one, else check that they exist
@@ -169,5 +167,10 @@ version_add <- function (path=".",
     commit_message <- paste(commit_message, "and", raw_new_version)
   }
   git2r::commit(message = commit_message, all = TRUE)
+    if (creds$type == "ssh" || creds$type == "https"){
+      git2r::push(name = "origin",
+                  refspec = paste0("refs/heads/", git_branch),
+                  credentials = creds$github_pat)
+    }
   return(TRUE)
 }
