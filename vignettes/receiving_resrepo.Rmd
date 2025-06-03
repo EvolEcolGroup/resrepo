@@ -7,14 +7,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-
 Welcome to your resrepo repository! If you are reading this it means that someone 
 has giving you access to a resrepo repository. 
 This vignette covers how to: 
@@ -28,8 +20,13 @@ This vignette covers how to:
 
 @TODO: Clone the resrepo_penguins repository - create gif
 
-```{r, echo=FALSE, results='hide'}
-library(resrepo)
+```{r setup, echo=FALSE, results='hide'}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+#library(resrepo)
 directory_penguins <- file.path(tempdir(), "resrepo_penguins")
 if (!dir.exists(directory_penguins)) dir.create(directory_penguins)
 
@@ -39,18 +36,28 @@ git2r::clone("https://github.com/EvolEcolGroup/resrepo_penguins",
              branch = "main",
              progress = TRUE)
 
+knitr::opts_knit$set(root.dir = directory_penguins)
+
 ```
+
 
 So you have cloned a resrepo repository with code in it, but the data to run the 
 analyses are stored somewhere else outside the cloned repository.
 ```{r}
-fs::dir_tree(path = directory_penguins)
+fs::dir_tree()
 ```
 
 
 As you can see, this repository contains the folder `version_meta` which indicates to us that this
 repository has been versioned. If you are not familiar with the concept of versioning,
 please check the  `data versioning` vignette. 
+
+Because this repository has been versioned, we need to run `version_setup()` to set up versioning in our 
+local repository 
+```{r}
+version_setup(quiet = TRUE, resources_path = NULL)
+```
+
 
 Again, as you can see from the above tree, the `data/intermediate` and `data/raw` are empty folders, 
 this is because no data are stored in the repository. 
@@ -80,11 +87,22 @@ external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
 unlink(external_data_storage_new, recursive = TRUE)
 dir.create(external_data_storage_new)
 
-# 
+# copy the data from the original external folder to the new one
+file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
+          to = external_data_storage_new,
+          overwrite = TRUE)
 
 ```
 
 
+Now that our `external_data_storage_new` folder contains the data, we can set up the symlinks
+
+To do so, we can use the function `update_links`.
+```{r}
+setwd(directory_penguins)
+update_links()
+resrepo::find_git_root(directory_penguins)
+```
 
 
 
