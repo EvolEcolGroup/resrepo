@@ -1,6 +1,6 @@
 #' Get git credentials if they are available
-#' 
-#' This function checks the current git remote URL and determines if the 
+#'
+#' This function checks the current git remote URL and determines if the
 #' credentials are set up for SSH or HTTPS access.
 #' @return A list containing the type of credentials, the URL, and the
 #' GitHub PAT if applicable.
@@ -10,12 +10,13 @@ get_resrepo_git_creds <- function(){
   # figure out if we are using ssh or https
   git_url <- git2r::remote_url()
   # @TODO is this correct?????
-  if (git_url == ""){
+  if (length(git_url)==0){
     creds <- list(
       type = "none",
       url = NULL,
       github_pat = NULL
     )
+    return(creds)
   }
   git_url <- system("git config --get remote.origin.url", intern = TRUE)
   if (grepl("^git@", git_url)) {
@@ -35,7 +36,7 @@ get_resrepo_git_creds <- function(){
       }
     )
     git_env_var <- gitcreds::gitcreds_cache_envvar(url = git_host)
-    
+
     # HTTPS URL
     creds <- list(
       type = "https",
