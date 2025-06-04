@@ -186,9 +186,27 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL){
   if (is.null(resources_path)) {
     versions_path <- path_resrepo("versions")
     if (!dir.exists(versions_path)) {
-      stop("The path ", versions_path, " does not exist!")
-      # we would like to have the version folder tho, common scenario when you clone
-      # an already versioned repository (bear in mind we don't track data and versions)
+      dir.create(versions_path, recursive = TRUE)
+      # need to create links to 'data/raw' and 'data/intermediate' in versions 
+      # create links
+      # check the version in use
+      raw_in_use <- readLines(con = path_resrepo("data/version_meta/raw_in_use.meta"))
+      intermediate_in_use <- readLines(con = path_resrepo("data/version_meta/intermediate_in_use.meta"))
+      # create substructure 
+      fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
+      fs::dir_create(path_resrepo(paste0("versions/", intermediate_in_use, "/intermediate")))
+      # link the directories
+      data_dir_link(
+        target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
+        link_dir = "data/raw"
+      )
+      data_dir_link(
+        target_dir = path_resrepo(paste0("versions/", intermediate_in_use, "/intermediate")),
+        link_dir = "data/intermediate"
+      )
+      # run git hooks
+      add_git_hooks()
+      return(TRUE)
     }
   } else {
   # check that resources_path exists and is a directory
