@@ -48,38 +48,24 @@ fs::dir_tree()
 ```
 
 
-As you can see, this repository contains the folder `version_meta` which indicates to us that this
-repository has been versioned. If you are not familiar with the concept of versioning,
-please check the  `data versioning` vignette. 
+As you can see from the above tree, `data` is an empty folder,  this is because 
+no data are stored in the repository. 
 
-Because this repository has been versioned, we need to run `version_setup()` to set up versioning in our 
-local repository 
-```{r}
-version_setup(quiet = TRUE, resources_path = NULL)
-```
-
-
-Again, as you can see from the above tree, the `data/intermediate` and `data/raw` are empty folders, 
-this is because no data are stored in the repository. 
-Instead, the `data/intermediate` and `data/raw` folders are actually symlinks pointing to 
-an external folder containing different versions of the data. 
 Therefore, you need to take two steps:
-
-@TODO: does the first step make sense?
 
 - Download the data from where they are stored and place them in a location of your choice (e.g. a folder on 
    your local machine, a synced folder, etc..)
 - Set up the symlinks to point to the location of the data you just downloaded
 
-Once you have cloned the repository, and placed the data in your desired location,
-you can set up the symlinks to point to the location of the data.
 
-## 3. Setting up symlinks to data
+Moreover, as you can see, this repository contains the folder `version_meta` which indicates to us that this
+repository has been versioned. If you are not familiar with the concept of versioning,
+please check the  `data versioning` vignette. 
+
 
 As an example, we will place the data in a temporary directory called `external_data_storage_new`.
 It is important that your data folder is structured in the exact same way as the data folder
 you were provided with, as otherwise `resrepo` will not be able to find the files.
-
 ```{r}
 
 # create new external folder for data 
@@ -87,22 +73,49 @@ external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
 unlink(external_data_storage_new, recursive = TRUE)
 dir.create(external_data_storage_new)
 
-# copy the data from the original external folder to the new one
-file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
-          to = external_data_storage_new,
-          overwrite = TRUE)
+# TODO
+# after this step we would like to create the substructure and copy the data in
 
 ```
 
+Because this repository has been versioned, we need to set up versioning in our 
+local repository 
 
-Now that our `external_data_storage_new` folder contains the data, we can set up the symlinks
+## 3. Setting up symlinks to data
 
-To do so, we can use the function `update_links`.
+Now that our `external_data_storage_new` folder contains the data, we can do this
+using `version_setup`
 ```{r}
-setwd(directory_penguins)
-update_links()
-resrepo::find_git_root(directory_penguins)
+version_setup(quiet = TRUE, resources_path = external_data_storage_new)
 ```
+
+
+```{r}
+fs::dir_tree()
+```
+
+
+We can now see that we have `data/intermediate` and `data/raw` folders. These 
+are both links to the correct version of our data, which are stored externally at 
+the `external_data_storage` folder. 
+```{r}
+fs::dir_tree(external_data_storage_new)
+```
+
+
+We can see that in `external_data_storage` the `starting` and `initial` folders
+are now links.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
