@@ -20,11 +20,11 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # that has version info, but we have yet to set up versioning on this
   # local copy
   # browser()
-  
-  # get root of the repository 
+
+  # get root of the repository
   root <- find_git_root()
   if (!is.null(resources_path)){
-    # check that path do not point to root directory 
+    # check that path do not point to root directory
     if (resources_path == ".") {
       stop("resources_path cannot be the root directory of the repository")
     } else if (resources_path == root){
@@ -92,7 +92,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
                recursive = TRUE)
     dir.exists(file.path(resources_path, "versions"))
     # create a link from the repository to the resources path
-    # need to create versions directory in our repository 
+    # need to create versions directory in our repository
     dir.create(path_resrepo("versions"), recursive = TRUE)
     dir.exists(path_resrepo("versions"))
     data_dir_link(
@@ -102,7 +102,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   }
   dir.create(path_resrepo("versions/starting"), recursive = TRUE)
   dir.create(path_resrepo("versions/initial"), recursive = TRUE)
-  
+
 
   # ingore the versions directory
   data_dir_ignore("versions")
@@ -158,7 +158,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   utils::write.csv(version_meta,
                    file = path_resrepo("data/version_meta/starting.meta"),
                    row.names = FALSE
-  )  
+  )
   # write the versions to file
   writeLines("starting",
              con = path_resrepo("data/version_meta/raw_in_use.meta"),
@@ -166,7 +166,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   writeLines("initial",
              con = path_resrepo("data/version_meta/intermediate_in_use.meta"),
              sep = "\n", useBytes = FALSE)
-  
+
   # add the meta files to git
   git2r::add(path=path_resrepo("data/version_meta"))
   # commit to the repository to remove the data from the current branch
@@ -174,7 +174,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   data_dir_ignore("data/raw")
   data_dir_ignore("data/intermediate")
   git2r::commit(message = "Update gitignore", all = TRUE)
-  # TODO add gitshooks back as function 
+  # TODO add gitshooks back as function
   add_git_hooks()
   # TODO check that we successfully made the githooks executable
   return(TRUE)
@@ -182,17 +182,17 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
 
 
 version_setup_cloned <- function(quiet = FALSE, resources_path = NULL){
-  # if resources_path is NULL check we have a versions directory 
+  # if resources_path is NULL check we have a versions directory
   if (is.null(resources_path)) {
     versions_path <- path_resrepo("versions")
     if (!dir.exists(versions_path)) {
       dir.create(versions_path, recursive = TRUE)
-      # need to create links to 'data/raw' and 'data/intermediate' in versions 
+      # need to create links to 'data/raw' and 'data/intermediate' in versions
       # create links
       # check the version in use
       raw_in_use <- readLines(con = path_resrepo("data/version_meta/raw_in_use.meta"))
       intermediate_in_use <- readLines(con = path_resrepo("data/version_meta/intermediate_in_use.meta"))
-      # create substructure 
+      # create substructure
       fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
       fs::dir_create(path_resrepo(paste0("versions/", intermediate_in_use, "/intermediate")))
       # link the directories
@@ -210,16 +210,14 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL){
     }
   } else {
   # check that resources_path exists and is a directory
-    if (!dir.exists(resources_path)) { # wrong path 
+    if (!dir.exists(resources_path)) { # wrong path
       stop("The path ", resources_path, " does not exist!")
     }
   versions_path <- file.path(resources_path)
     if (dir.exists(paste0(versions_path, "versions"))) {
       stop("If 'resources_path' is given, there should be no 'versions' directory in the 'resources_path'!")
     }
-    # create a "versions" directory in the resources path (otherwise what are you gonna link??)
-    dir.create(versions_path, recursive = TRUE) 
-    
+
     # create a link from the repository to the resources path
     data_dir_link(
       link_dir = "/versions",
@@ -227,12 +225,12 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL){
     )
   }
 
-  # need to create links to 'data/raw' and 'data/intermediate' in versions 
+  # need to create links to 'data/raw' and 'data/intermediate' in versions
   # create links
   # check the version in use
   raw_in_use <- readLines(con = path_resrepo("data/version_meta/raw_in_use.meta"))
   intermediate_in_use <- readLines(con = path_resrepo("data/version_meta/intermediate_in_use.meta"))
-  # create substructure 
+  # create substructure
   fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
   fs::dir_create(path_resrepo(paste0("versions/", intermediate_in_use, "/intermediate")))
   data_dir_link(
