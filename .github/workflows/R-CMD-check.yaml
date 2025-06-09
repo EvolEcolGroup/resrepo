@@ -51,7 +51,9 @@ jobs:
           needs: check
 
       - name: Install resrepo to use it in vignette
-        run: devtools::install()
+        run: |
+          devtools::install()
+          devtools::test(filter = "versioning")
         shell: Rscript {0}
 
 
