@@ -79,12 +79,10 @@ fs::dir_tree()
 
 We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, `intermediate` is under the `initial` version, while `raw` is under the `starting` directory.
 In this vignette, we will be focusing only on versioning `data/intermediate`. Advanced users
-can also version `data/raw` but that will be covered in vignette LALALA. For now, 
+can also version `data/raw` but that will be covered in vignette @TODO. For now, 
 `raw_in_use.meta` will point to the starting version of `data/raw` and will not change.
 
-In the tree above, we can see that `data/intermediate` and `data/raw` are now light
-blue. This is because they are now links. We can use these links as if they were 
-directories, and check that they point correctly to the directories in `versions`.
+`data/intermediate` and `data/raw` have now become links, which is why they are highlighted in a different colour (light purple) in the tree above. We can use these links as if they were directories, and check that they point correctly to the directories in `versions`.
 
 TODO: Create vignette for versioning data raw.
 
@@ -132,8 +130,8 @@ file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd
 If this was a "real" project, since the `new_filtering` version is a new branch of 
 the repository, we could edit the script in the `code` directory and commit the changes.
 
-We can now remove the old version of the intermediate data that included the 10
-penguins we want to remove in this version.
+We can now remove the full version of the intermediate dataset in the `new_filtering` folder so that we can replace it with a new version that excludes the first 10 penguins. 
+
 ```{r remove_old_version}
 unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
@@ -280,7 +278,7 @@ file.copy(from = system.file("vignette_example/tux_measurements.csv", package="r
 
 
 Because we supplied the `resources_path` argument to the `version_setup` function,
-the `data/raw` and `data/intermediate` are now symlinks, pointing to the `external_data_storage` folder.
+the `data/raw` and `data/intermediate` are now symlinks, pointing to the `external_data_storage` folder. 
 
 
 We can now run our scripts:
@@ -292,7 +290,7 @@ knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 
 
 # TODO: why do we get an empty `versions` folder within our `external_data_storage`
-folder?
+folder? 
 
 
 
