@@ -1,0 +1,123 @@
+---
+title: "Receiving a resrepo repository"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data versioning}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+Welcome to your resrepo repository! If you are reading this, it means that someone 
+has given you access to a resrepo repository. 
+This vignette covers how to: 
+
+1. Clone a resrepo repository
+2. Obtain the data you need
+3. And set up symlinks to the location of the data
+
+## 1 & 2. Clone a resrepo repository and download data
+
+@TODO: Clone the resrepo_penguins repository - create gif
+
+```{r setup, echo=FALSE, results='hide'}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(resrepo)
+
+directory_penguins <- file.path(tempdir(), "resrepo_penguins")
+if (!dir.exists(directory_penguins)) dir.create(directory_penguins)
+
+# clone the penguin repository (public)
+git2r::clone("https://github.com/EvolEcolGroup/resrepo_penguins",
+             local_path = directory_penguins,
+             branch = "main",
+             progress = TRUE)
+
+knitr::opts_knit$set(root.dir = directory_penguins)
+
+```
+
+
+So you have cloned a resrepo repository with code in it, but the data to run the 
+analyses are stored somewhere else outside the cloned repository.
+```{r}
+fs::dir_tree()
+```
+
+
+As you can see from the above tree, `data` is an empty folder,  this is because 
+no data are stored in the repository. 
+
+Therefore, you need to take two steps:
+
+- Download the data from where they are stored and place them in a location of your choice (e.g. a folder on 
+   your local machine, a synced folder, etc..)
+- Set up the symlinks to point to the location of the data you just downloaded
+
+Moreover, as you can see, this repository contains the folder `version_meta` which indicates to us that this
+repository has been versioned. If you are not familiar with the concept of versioning,
+please check the  `data versioning` vignette. 
+
+As an example, we will create a directory to act as our external data storage folder. Note that we we are creating this folder in the temporary directory, but you should choose a location anywhere on your local machine. We will call this folder `external_data_storage_new`.
+```{r}
+# create new external folder for data 
+external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
+#unlink(external_data_storage_new, recursive = TRUE)
+dir.create(external_data_storage_new)
+```
+
+It is important that the external data folder where you store your data is structured in the exact same way as your `data` folder within your resrepo repository. Otherwise `resrepo` will not be able to find the files.
+
+Ideally, the directory structure of the data shared with you for this project should already match the structure of the `data` folder in the repository. Check with the person who shared the repository with you if you are unsure about this.
+
+In the following example, we will create the substructure of the `data` folder, which contains `starting/raw` and `initial/intermediate` directories, 
+
+```{r}
+intermediate_path <- file.path(tempdir(), "external_data_storage_new/initial/intermediate")
+raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
+#unlink(intermediate_path, recursive = TRUE)
+#unlink(raw_path, recursive = TRUE)
+dir.create(intermediate_path, recursive = TRUE)
+dir.create(raw_path, recursive = TRUE)
+```
+
+And then we will copy the raw data into `external_data_storage_new/starting/raw`:
+```{r}
+file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
+          to = raw_path,
+          overwrite = TRUE)
+```
+
+## 3. Setting up symlinks to data
+
+If you have a repository that is not versioned (it does not contain any version.meta), then you can simply link your external data storage location to the `data` folder in your repository using the `data_dir_link` function:
+
+Because this repository has been versioned, we need to set up versioning in our 
+local repository. Now that our `external_data_storage_new` folder contains the data, we can do this
+using `version_setup`. 
+
+We need to supply the argument `resources_path` to `version_setup`, which is the path to the external data storage folder:
+```{r}
+version_setup(quiet = TRUE, resources_path = external_data_storage_new)
+```
+
+
+```{r}
+fs::dir_tree()
+```
+
+We can now see that we have `data/intermediate` and `data/raw` folders. These are both links which point to the `versions` folder, and `versions` points to our external data storage (easy isn't it!);
+
+  data/intermediate -> versions -> external_data_storage_new/initial/intermediate
+  data/raw -> versions -> external_data_storage_new/starting/raw
+
+We can also check the structure of the `external_data_storage_new` folder:
+```{r}
+fs::dir_tree(external_data_storage_new)
+```
+
+
+

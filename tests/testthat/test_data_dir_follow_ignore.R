@@ -18,8 +18,22 @@ test_that("data_dir follow and unfollow",{
   git2r::add(path=".")
   git2r::commit(message="initialise resrepo template", all=TRUE)
   # create a file, but it should be ignored
-  write.csv("blah", path_resrepo("/data/raw/test_standard/myfile1.csv"))
-  expect_true(length(git2r::status()$untracked)==0)
+  write.csv("blah", path_resrepo("/data/raw/myfile1.csv"))
+  #expect this file to be tracked
+  expect_true(length(git2r::status()$untracked)==1)
+  # now we ingore this directory
+  expect_error(data_dir_ignore("/data/raw"), "git has tracked")
+  # now we remove that file
+  file.remove(path_resrepo("/data/raw/myfile1.csv"))
+  file.remove(path_resrepo("/data/raw/README.md"))
+  git2r::commit(message="remove files from data dir", all=TRUE)
+  # and now we can ignore the directory
+  expect_true(data_dir_ignore("/data/raw"))
+
+  # we stopped here!
+  
+  
+  
   #now follow that directory
   expect_true(data_dir_follow("/data/raw/test_standard"))
   # and our file should appear in untracked

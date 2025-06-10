@@ -10,4 +10,4 @@ tux <- tibble::tibble(species = "Tux",
 # now scatter some missing data              
 tux[sample(1:50, 5), "body_mass_g"] <- NA
 tux[8,"bill_length_mm"] <- NA
-write.csv(tux, "./inst/template_extra/tux_measurements.csv", row.names = FALSE)
+utils::write.csv(tux, "./inst/vignette_example/tux_measurements.csv", row.names = FALSE)

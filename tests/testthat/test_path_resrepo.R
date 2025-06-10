@@ -24,9 +24,25 @@ test_that("initialise repository",{
                "path ")
   # check shortcuts
   expect_true(inherits(path_resrepo("/d/r/original",check_exists = TRUE),"character"))
-  
+
+})
+
+# test that we can use the version argument in the function
+test_that("version argument",{
+  git2r::status()
+  version_setup(quiet = TRUE)
+  version_add(intermediate_new_version = "test_version",
+              intermediate_source = "initial",
+              intermediate_description = "a version to test the function", quiet = TRUE)
+  # we have a new version for intermediate
+  expect_equal(path_resrepo("/data/intermediate", version = "test_version"),
+               path_resrepo("versions/test_version/data/intermediate"))
+  # the original path should not change for raw
+  expect_equal(path_resrepo("/data/raw", version = "starting"),
+               path_resrepo("versions/starting/data/raw"))
 })
 
 # and now clean up
 unlink (file.path(test_dir,"*"), recursive = TRUE)
 unlink (file.path(test_dir,".*"), recursive = TRUE)
+

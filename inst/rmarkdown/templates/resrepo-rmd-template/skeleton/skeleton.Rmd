@@ -47,7 +47,7 @@ See the `resrepo` vignette for more details and an example of reading and
 writing files using `path_resrepo`.
 
 ```{r set-directories}
-
+library(resrepo)
 ## set the relative filepath to the input data directory for this analysis
 data_dir <- path_resrepo("/data/raw/default")
 data_dir # print out

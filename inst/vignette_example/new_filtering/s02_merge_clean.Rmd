@@ -48,8 +48,12 @@ We will now merge the two datasets, and remove lines with missing data:
 ```{r merge_clean}
 # merge the two datasets
 penguins <- rbind(tux_penguins, palmer_penguins)
+
 # remove na
 penguins_na_omit <- na.omit(penguins)
+
+# we remove ten random penguins
+penguins_na_omit <- penguins_na_omit[-c(1:10),]
 ```
 
 ## Saving the data

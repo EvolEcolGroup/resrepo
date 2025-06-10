@@ -13,3 +13,4 @@ of the git repository (e.g. "/data/raw/my_new_dir")}
 \description{
 This function removes tracking for a data directory in git.
 }
+\keyword{internal}
