@@ -95,8 +95,6 @@ file.copy(from = system.file("vignette_example/tux_measurements.csv", package="r
 
 If you have a repository that is not versioned (it does not contain any version.meta), then you can simply link your external data storage location to the `data` folder in your repository using the `data_dir_link` function:
 
-@TODO data_dir_link for an unversioned repository to external data storage
-
 Because this repository has been versioned, we need to set up versioning in our 
 local repository. Now that our `external_data_storage_new` folder contains the data, we can do this
 using `version_setup`. 
