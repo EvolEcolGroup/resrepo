@@ -174,20 +174,36 @@ nrow(penguins_new_filtering)
 If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). At the same time, this means that we will replace the previous code with 
 the one in the new branch. You may want to keep both versions of the code if you are 
 interested in using both versions of the data. 
-If we are absolutely sure about merging back into the main branch, before doing it, we need to commit the changes to the branch `new_filtering`.
+If we are absolutely sure about merging back into the main branch, before doing it, we need to commit the changes to the branch `new_filtering`. 
 
-TODO Make a gif on how to do this
-```{r git_commit, eval=T, echo=FALSE}
+How to commit in RStudio:
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+```{r git_commit, eval=T, echo=FALSE, message=FALSE, results='hide'}
 # commit changes
 git2r::commit(message="Filter out 10 penguins", all=TRUE)
 
 ```
 
 Now we can merge the branch `new_filtering` into the branch `main`, and check
-out `main`.
+out `main`. To to this, we can use the GitHub interface, following the steps below.
 
-TODO Make a gif on how to do this
-```{r git_merge, eval=T, echo=FALSE}
+First, we need to push both branches to GitHub:
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/git_push.gif" alt="Pushing to GitHub in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+Now go to your repository page on GitHub. Click the "Pull requests" tab. Then click the "New pull request" button and select base branch (e.g., `main`) and compare branch (e.g., `new_filtering`). Click "Create pull request", and add a description. Click "Merge pull request" to complete the merge. Now you can delete the `new_filtering` branch.
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/resrepo_github_merge.gif" alt="Merging branches on GitHub" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+```{r git_merge, eval=T, echo=FALSE, results='hide'}
 # merge in branch
 system2("git", args = c("merge new_filtering"))
 
