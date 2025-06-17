@@ -46,6 +46,10 @@ example, if this document is called `plots`, we could use
 See the `resrepo` vignette for more details and an example of reading and 
 writing files using `path_resrepo`.
 
+TODO: Do we want to automatically create an intermediate dir and results dir
+that match the name of the Rmd script? Then the renv file could go directly 
+to the results folder
+
 ```{r set-directories}
 library(resrepo)
 ## set the relative filepath to the input data directory for this analysis
