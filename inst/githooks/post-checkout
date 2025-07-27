@@ -30,8 +30,9 @@ if  [[ -d ./data/intermediate && ! -L ./data/intermediate ]]; then
 fi
 
 # create the links (overwrite them if they exist already)
-ln -sfn ./versions/$VERSION_RAW/raw data/raw
-ln -sfn ./versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
+# move into data
+ln -sfn ../versions/$VERSION_RAW/raw data/raw
+ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
 
 echo "Links updated"
 exit 0

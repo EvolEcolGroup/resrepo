@@ -79,12 +79,10 @@ fs::dir_tree()
 
 We can see that both `data/raw` and `data/intermediate` have been moved into `versions`, `intermediate` is under the `initial` version, while `raw` is under the `starting` directory.
 In this vignette, we will be focusing only on versioning `data/intermediate`. Advanced users
-can also version `data/raw` but that will be covered in vignette LALALA. For now, 
+can also version `data/raw` but that will be covered in vignette @TODO. For now, 
 `raw_in_use.meta` will point to the starting version of `data/raw` and will not change.
 
-In the tree above, we can see that `data/intermediate` and `data/raw` are now light
-blue. This is because they are now links. We can use these links as if they were 
-directories, and check that they point correctly to the directories in `versions`.
+`data/intermediate` and `data/raw` have now become links, which is why they are highlighted in a different colour (light purple) in the tree above. We can use these links as if they were directories, and check that they point correctly to the directories in `versions`.
 
 TODO: Create vignette for versioning data raw.
 
@@ -132,8 +130,8 @@ file.copy(from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd
 If this was a "real" project, since the `new_filtering` version is a new branch of 
 the repository, we could edit the script in the `code` directory and commit the changes.
 
-We can now remove the old version of the intermediate data that included the 10
-penguins we want to remove in this version.
+We can now remove the full version of the intermediate dataset in the `new_filtering` folder so that we can replace it with a new version that excludes the first 10 penguins. 
+
 ```{r remove_old_version}
 unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
 ```
@@ -176,20 +174,36 @@ nrow(penguins_new_filtering)
 If we are happy with the new version, we can merge it back into the main branch. This will mean that our branch `main` will now use the new version of the data (with the 10 less penguins). At the same time, this means that we will replace the previous code with 
 the one in the new branch. You may want to keep both versions of the code if you are 
 interested in using both versions of the data. 
-If we are absolutely sure about merging back into the main branch, before doing it, we need to commit the changes to the branch `new_filtering`.
+If we are absolutely sure about merging back into the main branch, before doing it, we need to commit the changes to the branch `new_filtering`. 
 
-TODO Make a gif on how to do this
-```{r git_commit, eval=T, echo=FALSE}
+How to commit in RStudio:
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+```{r git_commit, eval=T, echo=FALSE, message=FALSE, results='hide'}
 # commit changes
 git2r::commit(message="Filter out 10 penguins", all=TRUE)
 
 ```
 
 Now we can merge the branch `new_filtering` into the branch `main`, and check
-out `main`.
+out `main`. To to this, we can use the GitHub interface, following the steps below.
 
-TODO Make a gif on how to do this
-```{r git_merge, eval=T, echo=FALSE}
+First, we need to push both branches to GitHub:
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/git_push.gif" alt="Pushing to GitHub in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+Now go to your repository page on GitHub. Click the "Pull requests" tab. Then click the "New pull request" button and select base branch (e.g., `main`) and compare branch (e.g., `new_filtering`). Click "Create pull request", and add a description. Click "Merge pull request" to complete the merge. Now you can delete the `new_filtering` branch.
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/resrepo_github_merge.gif" alt="Merging branches on GitHub" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+```{r git_merge, eval=T, echo=FALSE, results='hide'}
 # merge in branch
 system2("git", args = c("merge new_filtering"))
 
@@ -205,14 +219,8 @@ git2r::is_head(git2r::branches()$main)
 # Outsourcing the data 
 
 ```{r recreate_example_repo_02, include = FALSE}
-example_dir <- file.path(tempdir(),"resrepo_example")
-unlink(example_dir,recursive = TRUE)
-dir.create(example_dir, showWarnings = FALSE)
-example_repo <- git2r::init(example_dir, branch = "main")
-git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
-vignette_dir<-getwd()
-knitr::opts_knit$set(root.dir = example_dir)
-example_dir
+unlink("*",recursive = TRUE)
+example_repo <- git2r::init(".", branch = "main")
 ```
 
 
@@ -256,6 +264,13 @@ see that `external_data_storage` is not found in the tree of our repository:
 fs::dir_tree()
 ```
 
+However, the `data/raw` and `data/intermediate` directories are now symlinks to the
+`external_data_storage` folder, which is where the data will be stored.
+
+```{r check_external_storage, echo=TRUE}
+fs::dir_tree("../external_data_storage")
+```
+
 
 We can now populate our repository with the necessary scripts. 
 ```{r copy_scripts_external}
@@ -280,7 +295,7 @@ file.copy(from = system.file("vignette_example/tux_measurements.csv", package="r
 
 
 Because we supplied the `resources_path` argument to the `version_setup` function,
-the `data/raw` and `data/intermediate` are now symlinks, pointing to the `external_data_storage` folder.
+the `data/raw` and `data/intermediate` are now symlinks, pointing to the `external_data_storage` folder. 
 
 
 We can now run our scripts:
@@ -289,10 +304,18 @@ knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 ```
+There are still no data in the git repository:
 
+```{r check_knitted_external, echo=TRUE}
+fs::dir_tree()
+```
 
+But the data made it to our external folder:
+```{r check_external_storage_knit, echo=TRUE}
+fs::dir_tree("../external_data_storage")
+```
 # TODO: why do we get an empty `versions` folder within our `external_data_storage`
-folder?
+folder? 
 
 
 

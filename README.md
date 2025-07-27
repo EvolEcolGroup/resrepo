@@ -31,3 +31,7 @@ obtained with:
 ```
 vignette("workflow", package = "resrepo")
 ```
+
+## Notes
+
+Currently, in the vignette data_versioning.Rmd, when merging the two git branches (chunk git_merge) on Windows systems, a message 'ln: failed to create symbolic link 'data/raw': No such file or directory' may appear. This does not seem to affect the package's functionality and can be ignored, though we recommend verifying that files are saved as expected.
