@@ -39,6 +39,8 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - uses: r-lib/actions/setup-tinytex@v2  
+      - run: tlmgr --version
 
       - name: Get libgit2 for Ubuntu
         if: matrix.config.os == 'ubuntu-latest'
