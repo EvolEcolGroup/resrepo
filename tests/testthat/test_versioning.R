@@ -141,6 +141,7 @@ test_that("versioning", {
 
 # this file tests several functions related to versioning
 test_that("versioning with resources_path argument", {
+  setwd(tempdir())
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
