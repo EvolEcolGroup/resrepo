@@ -141,13 +141,22 @@ test_that("versioning", {
 
 # this file tests several functions related to versioning
 test_that("versioning with resources_path argument", {
+  setwd(tempdir())
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
   unlink(example_dir, recursive = TRUE)
-  dir.create(example_dir, showWarnings = FALSE)
+  # create the directory for this test
+  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+                user.name = "Test",
+                user.email = "test@example.org"
+  )
+  vignette_dir <- getwd()
+  # set our working directory in the git repository
   setwd(example_dir)
-  git2r::init(example_dir, branch = "main")
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))

@@ -2,7 +2,7 @@
 title: "Receiving a resrepo repository"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data versioning}
+  %\VignetteIndexEntry{Receiving a resrepo repository}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
