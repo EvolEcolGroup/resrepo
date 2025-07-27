@@ -55,7 +55,6 @@ jobs:
       - name: Install resrepo to use it in vignette
         run: |
           devtools::install()
-          devtools::test(filter = "versioning")
         shell: Rscript {0}
 
 
@@ -63,15 +62,3 @@ jobs:
         with:
           upload-snapshots: true
 
-      # Add this step to output the log file if there is a failure
-      - name: Output LaTeX Log File for Debugging
-        if: failure()
-        run: cat ./results/s01_download_penguins/s01_download_penguins.log
-        shell: bash
-        
-        
-      # Add this step to output the log file if there is a failure
-      - name: Output LaTeX Log File for Debugging
-        if: failure()
-        run: cat ./code/s01_download_penguins.log
-        shell: bash
