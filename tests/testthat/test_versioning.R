@@ -12,7 +12,6 @@ test_that("versioning", {
     user.name = "Test",
     user.email = "test@example.org"
   )
-  vignette_dir <- getwd()
   # set our working directory in the git repository
   setwd(example_dir)
   ############
@@ -129,7 +128,13 @@ test_that("versioning", {
   system2("git", args = c("checkout main"))
   expect_true(git2r::is_head(git2r::branches()$main))
   expect_true(grep("starting", fs::link_path("./data/raw")) == 1)
+  
+  cat(fs::link_path("./data/intermediate")) 
+  
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
+  
+
+  
   #########
   # merge new_filtering into main
   git_res <- system2("git", args = c("merge new_filtering"))
@@ -148,13 +153,13 @@ test_that("versioning with resources_path argument", {
   # wipe the directory in case it has been left behind from previous tests
   unlink(example_dir, recursive = TRUE)
   # create the directory for this test
-  expect_true(dir.create(example_dir, showWarnings = FALSE))
+#  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
   example_repo <- git2r::init(example_dir, branch = "main")
   git2r::config(example_repo,
                 user.name = "Test",
                 user.email = "test@example.org"
   )
-  vignette_dir <- getwd()
   # set our working directory in the git repository
   setwd(example_dir)
   init_resrepo()
