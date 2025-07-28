@@ -2,6 +2,9 @@
 
 set -e  # Exit immediately if a command exits with a non-zero status.
 
+# test whether we are on windows
+windows() { [[ -n "$WINDIR" ]]; }
+
 # Read the current version from the file
 # TODO this needs to read the second row and split by comma and remove ""
 VERSION_RAW=$(<./data/version_meta/raw_in_use.meta)
@@ -30,9 +33,12 @@ if  [[ -d ./data/intermediate && ! -L ./data/intermediate ]]; then
 fi
 
 # create the links (overwrite them if they exist already)
-# move into data
-ln -sfn ../versions/$VERSION_RAW/raw data/raw
-ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
-
+if windows; then
+  MSYS=winsymlinks:nativestrict ln -sfn ../versions/$VERSION_RAW/raw data/raw
+  MSYS=winsymlinks:nativestrict ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
+else
+  ln -sfn ../versions/$VERSION_RAW/raw data/raw
+  ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
+fi
 echo "Links updated"
 exit 0
