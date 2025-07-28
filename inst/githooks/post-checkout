@@ -38,12 +38,15 @@ rm -rf data/intermediate
 
 # create the links (overwrite them if they exist already)
 if windows; then
-  original_folder=$(cygpath -w "../versions/$VERSION_RAW/raw")
-  create_link_new_folder=$(cygpath -w "data/raw")
-  cmd <<< "mklink /j \"${create_link_new_folder}\" \"${original_folder}\"" > /dev/null
-  original_folder=$(cygpath -w "../versions/$VERSION_INTERMEDIATE/intermediate")
-  create_link_new_folder=$(cygpath -w "data/intermediate")
-  cmd <<< "mklink /j \"${create_link_new_folder}\" \"${original_folder}\"" > /dev/null
+  # original_folder=$(cygpath -w "../versions/$VERSION_RAW/raw")
+  # create_link_new_folder=$(cygpath -w "data/raw")
+  # cmd <<< "mklink /j \"${create_link_new_folder}\" \"${original_folder}\"" > /dev/null
+  # original_folder=$(cygpath -w "../versions/$VERSION_INTERMEDIATE/intermediate")
+  # create_link_new_folder=$(cygpath -w "data/intermediate")
+  # cmd <<< "mklink /j \"${create_link_new_folder}\" \"${original_folder}\"" > /dev/null
+  ln -sfn ../versions/$VERSION_RAW/raw data/raw
+  ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
+
 else
   ln -sfn ../versions/$VERSION_RAW/raw data/raw
   ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
