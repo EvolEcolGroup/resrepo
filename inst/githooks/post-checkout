@@ -32,6 +32,10 @@ if  [[ -d ./data/intermediate && ! -L ./data/intermediate ]]; then
   exit 1
 fi
 
+# remove the previous links
+rm -rf data/raw
+rm -rf data/intermediate
+
 # create the links (overwrite them if they exist already)
 if windows; then
   original_folder=$(cygpath -w "../versions/$VERSION_RAW/raw")
