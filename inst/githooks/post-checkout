@@ -34,8 +34,12 @@ fi
 
 # create the links (overwrite them if they exist already)
 if windows; then
-  MSYS=winsymlinks:nativestrict ln -sfn ../versions/$VERSION_RAW/raw data/raw
-  MSYS=winsymlinks:nativestrict ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
+  original_folder=$(cygpath -w "../versions/$VERSION_RAW/raw")
+  create_link_new_folder=$(cygpath -w "data/raw")
+  cmd <<< "mklink /j \"${create_link_new_folder}\" \"${original_folder}\"" > /dev/null
+  original_folder=$(cygpath -w "../versions/$VERSION_INTERMEDIATE/intermediate")
+  create_link_new_folder=$(cygpath -w "data/intermediate")
+  cmd <<< "mklink /j \"${create_link_new_folder}\" \"${original_folder}\"" > /dev/null
 else
   ln -sfn ../versions/$VERSION_RAW/raw data/raw
   ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
