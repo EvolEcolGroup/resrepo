@@ -25,7 +25,7 @@ example_dir
 In many scientific projects, data are simply too large to be stored in a git repository. 
 However, you still want to keep track of the data you used for your analysis, and often you will
 be using different code branches to explore alternative approaches (e.g. different data filtering).
-`resrepo` allows you to create versions of the data directories used in your projects, 
+`resrepo` allows you to manage data so that they are not tracked by your git repository and create versions of the data directories used in your projects, 
 allowing you to easily switch between different versions of the data.
 
 # Setting up data versioning
@@ -61,12 +61,11 @@ Let us check that we do have indeed a full repository:
 fs::dir_tree()
 ```
 
-
 When we want to start versioning the data, we can use the function `version_setup`. We only need to use the function once at the beginning of the project to initialise versioning. 
 You can specify the location of your data using the `resources_path` argument. 
 The function will create a subfolder named `versions` in this location.
 By default, this will end into your repository, but it doesn't have to, and it can
-be located anywhere on your system.
+be located anywhere on your system (see the end of this vignette for an example).
 ```{r version_setup}
 version_setup(quiet = TRUE, resources_path = NULL)
 
