@@ -35,7 +35,9 @@ test_that("versioning", {
   # silence knitr
   suppressMessages(
     capture.output(
-      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))))
+      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+    )
+  )
   expect_true(file.copy(
     from = system.file("vignette_example/s02_merge_clean.Rmd",
       package = "resrepo"
@@ -45,7 +47,9 @@ test_that("versioning", {
   ))
   suppressMessages(
     capture.output(
-      knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))))
+      knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+    )
+  )
   expect_true(file.copy(
     from = system.file("vignette_example/s03_pca.Rmd",
       package = "resrepo"
@@ -55,7 +59,9 @@ test_that("versioning", {
   ))
   suppressMessages(
     capture.output(
-      knit_to_results(path_resrepo("/code/s03_pca.Rmd"))))
+      knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+    )
+  )
   git2r::add(path = ".")
   git2r::commit(message = "Save plot", all = TRUE)
   # check that we are on main and there is nothing to commit
@@ -99,6 +105,16 @@ test_that("versioning", {
   ))
   # check that we are on a new branch and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$new_filtering))
+  # copy the new penguin filtering script
+  file.copy(
+    from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd", package = "resrepo"),
+    to = path_resrepo("code/s02_merge_clean.Rmd"),
+    overwrite = TRUE
+  )
+  # knit the new script
+  knit_to_results(path_resrepo("code/s02_merge_clean.Rmd"))
+  # commit changes
+  git2r::commit(message = "Remove penguins", all = TRUE)
   # check that allelement of git status are empty (i.e. we have a
   # cleaned working directory)
   expect_true(git_is_clean())
@@ -130,6 +146,11 @@ test_that("versioning", {
   expect_true(git2r::is_head(git2r::branches()$main))
   expect_true(grep("starting", fs::link_path("./data/raw")) == 1)
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
+
+  # Check that data/intermediate now points to the unfiltered penguin data
+  penguins_initial <- read.csv(path_resrepo("data/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+  penguins_new_filtering <- read.csv("versions/new_filtering/intermediate/s02_merge_clean/penguins_na_omit.csv")
+  expect_true(nrow(penguins_initial) > nrow(penguins_new_filtering))
   #########
   # merge new_filtering into main
   git_res <- system2("git", args = c("merge new_filtering"))
@@ -151,8 +172,8 @@ test_that("versioning with resources_path argument", {
   expect_true(dir.create(example_dir, showWarnings = FALSE))
   example_repo <- git2r::init(example_dir, branch = "main")
   git2r::config(example_repo,
-                user.name = "Test",
-                user.email = "test@example.org"
+    user.name = "Test",
+    user.email = "test@example.org"
   )
   vignette_dir <- getwd()
   # set our working directory in the git repository
@@ -166,8 +187,8 @@ test_that("versioning with resources_path argument", {
 
   ############
   # set up versioning
-  #external_data_storage <- tempfile()
-  #dir.create(external_data_storage)
+  # external_data_storage <- tempfile()
+  # dir.create(external_data_storage)
   external_data_storage <- file.path(tempdir(), "external_data_storage")
   # erase everything from the data storage folder
   unlink(external_data_storage, recursive = TRUE)
@@ -177,7 +198,7 @@ test_that("versioning with resources_path argument", {
   # copy in some data
   file.copy(
     from = system.file("vignette_example/tux_measurements.csv",
-                       package = "resrepo"
+      package = "resrepo"
     ),
     to = path_resrepo("/data/raw/original/tux_measurements.csv"),
     overwrite = TRUE
@@ -185,7 +206,7 @@ test_that("versioning with resources_path argument", {
   # test that the link to data raw is working correctly
   expect_true(setequal(
     list.files(path_resrepo("/data/raw")),
-    c("original","README.md")
+    c("original", "README.md")
   ))
   # check that we are still in main with nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -224,12 +245,11 @@ test_that("versioning with resources_path argument", {
   )
   # the repo should still have a clean working directory
   expect_true(git_is_clean())
-
 })
 
 
-## @TODO 
-# find ways to break data versioning (cases when you close the repository 
+## @TODO
+# find ways to break data versioning (cases when you close the repository
 # but don't have the stuff in the rigth path)
 
-# write test to check that cannot set resources_path to the root 
+# write test to check that cannot set resources_path to the root
