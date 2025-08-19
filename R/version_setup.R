@@ -97,7 +97,7 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     dir.exists(path_resrepo("versions"))
     data_dir_link(
       link_dir = "/versions",
-      target_dir = file.path(resources_path)
+      target_dir = file.path(resources_path, "versions")
     )
   }
   dir.create(path_resrepo("versions/starting"), recursive = TRUE)
