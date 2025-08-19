@@ -26,8 +26,7 @@ knitr::opts_knit$set(root.dir = example_dir)
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. There are three main elements to this: 
 
 * it provides a **template for a tidy repository structure** that can be used for any project, with functions that help keeping a clear separation of code, data and results.
-* it provides functions to help **versioning the data and results** when they are too large to be tracked by git, allowing easy comparison of different branches (e.g. different data filtering).
-* it provides functions to help **manage large data** by using symlinks to store them outside the git repository, potentially in directories that are backed up on the cloud, whilst maintaining the same paths as if the data were stored locally in the git repository.
+* it provides functionality to help **manage large data** that cannot be tracked on a git repository. This is achieved through **versioning the data and results** with the use of symlinks, allowing easy comparison of different versions (e.g. different data filtering) and enabling the storage data outside the git repository, potentially in directories that are backed up on the cloud. 
 
 ## General overview
 
