@@ -144,9 +144,9 @@ test_that("versioning", {
   system2("git", args = c("checkout main"))
   expect_true(git2r::is_head(git2r::branches()$main))
   expect_true(grep("starting", fs::link_path("./data/raw")) == 1)
-  
-  cat(fs::link_path("./data/intermediate")) 
-  
+
+  cat(fs::link_path("./data/intermediate"))
+
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
 
   # Check that data/intermediate now points to the unfiltered penguin data
@@ -250,8 +250,12 @@ test_that("versioning with resources_path argument", {
 })
 
 
-## @TODO
-# find ways to break data versioning (cases when you close the repository
-# but don't have the stuff in the rigth path)
+# @TODO find ways to break data versioning (cases when you clone the repository
+# but don't have the stuff in the right path)
 
-# write test to check that cannot set resources_path to the root
+# @TODO write test to check that cannot set resources_path to the root
+
+# @TODO write a test to check when you create versioned repo with version_setup
+# and then switch branches, the data still points to the right place
+
+# @TODO check that you cannot add a new data raw version without a new data intermediate version
