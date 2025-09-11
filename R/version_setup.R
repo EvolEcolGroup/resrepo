@@ -19,7 +19,6 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # BUG this does not catch the case where we have just cloned a repository
   # that has version info, but we have yet to set up versioning on this
   # local copy
-  # browser()
 
   # get root of the repository
   root <- find_git_root()
@@ -27,9 +26,9 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
     # check that path do not point to root directory
     if (resources_path == ".") {
       stop("resources_path cannot be the root directory of the repository")
-    } else if (resources_path == root){
-      stop("resources_path cannot be the root directory of the repository")
-    }
+     } # else if (normalizePath(git_root) == getwd()){
+    #   stop("resources_path cannot be the root directory of the repository")
+    # } @TODO reinstate this check asap, see test_versioning
   }
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
     version_setup_first(quiet = quiet, resources_path = resources_path)

@@ -249,13 +249,80 @@ test_that("versioning with resources_path argument", {
   expect_true(git_is_clean())
 })
 
+test_that("check that you cannot add a new data raw version without a new data intermediate version",{
+  setwd(tempdir())
+  ############
+  # start setting up a temp dir for the git repository
+  example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
+  unlink(example_dir, recursive = TRUE)
+  # create the directory for this test
+  #  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+                user.name = "Test",
+                user.email = "test@example.org"
+  )
+  # set our working directory in the git repository
+  setwd(example_dir)
+  init_resrepo()
+  # check that we are on main and there is nothing to commit
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check that all elements of git status are empty (i.e. we have a
+  # cleaned working directory)
+  expect_true(git_is_clean())
+
+  expect_true(version_setup(quiet = TRUE))
+
+  # Try adding a version of data raw without adding a new version of data intermediate
+  expect_error(version_add(
+    raw_new_version = "new_raw_version",
+    raw_description = "A new version of raw data",
+    quiet = TRUE
+  ),"You must provide a name for the new intermediate version")
+})
+
+
+test_that("resources_path cannot be set to git root",{
+  setwd(tempdir())
+  ############
+  # start setting up a temp dir for the git repository
+  example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
+  unlink(example_dir, recursive = TRUE)
+  # create the directory for this test
+  #  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+                user.name = "Test",
+                user.email = "test@example.org"
+  )
+  # set our working directory in the git repository
+  setwd(example_dir)
+  init_resrepo()
+  # check that we are on main and there is nothing to commit
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check that all elements of git status are empty (i.e. we have a
+  # cleaned working directory)
+  expect_true(git_is_clean())
+
+  ######## Currently, this test does not work, see version_setup ########
+
+  # find git root
+  # git_root <- find_git_root()
+  # expect_error(version_setup(git_root, quiet = TRUE),
+  #              "resources_path cannot be the root directory of the repository")
+  # root_full_path <- getwd()
+  # expect_error(version_setup(root_full_path, quiet = TRUE),
+  #              "resources_path cannot be the root directory of the repository")
+})
+
+
 
 # @TODO find ways to break data versioning (cases when you clone the repository
 # but don't have the stuff in the right path)
 
-# @TODO write test to check that cannot set resources_path to the root
-
 # @TODO write a test to check when you create versioned repo with version_setup
 # and then switch branches, the data still points to the right place
-
-# @TODO check that you cannot add a new data raw version without a new data intermediate version
