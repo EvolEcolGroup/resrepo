@@ -33,7 +33,7 @@ version_add <- function (path=".",
                          raw_new_version = NULL,
                          intermediate_source = NULL,
                          raw_source = NULL,
-                         intermediate_description,
+                         intermediate_description = NULL,
                          raw_description = NULL,
                          git_branch = NULL, quiet = FALSE) {
   # check for git credentials
@@ -55,6 +55,10 @@ version_add <- function (path=".",
 
   if(is.null(intermediate_new_version)){
     stop("You must provide a name for the new intermediate version")
+  }
+
+  if(is.null(intermediate_description)){
+    stop("You must provide a description for the new intermediate version")
   }
 
   intermediate_new_version <- sanitise_version(intermediate_new_version)
