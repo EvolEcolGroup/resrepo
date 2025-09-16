@@ -175,13 +175,17 @@ test_that("versioning with resources_path argument", {
   # create the directory for this test
 #  expect_true(dir.create(example_dir, showWarnings = FALSE))
   dir.create(example_dir, showWarnings = FALSE)
-  example_repo <- git2r::init(example_dir, branch = "main")
+  # create a subdirectory of example_dir
+  sub_dir <- file.path(example_dir, "subdir")
+  dir.create(sub_dir, showWarnings = FALSE)
+
+  example_repo <- git2r::init(sub_dir, branch = "main")
   git2r::config(example_repo,
     user.name = "Test",
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(example_dir)
+  setwd(sub_dir)
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -261,13 +265,17 @@ test_that("check that you cannot add a new data raw version without a new data i
   # create the directory for this test
   #  expect_true(dir.create(example_dir, showWarnings = FALSE))
   dir.create(example_dir, showWarnings = FALSE)
-  example_repo <- git2r::init(example_dir, branch = "main")
+  # create a subdirectory of example_dir
+  sub_dir <- file.path(example_dir, "subdir")
+  dir.create(sub_dir, showWarnings = FALSE)
+
+  example_repo <- git2r::init(sub_dir, branch = "main")
   git2r::config(example_repo,
                 user.name = "Test",
                 user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(example_dir)
+  setwd(sub_dir)
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -296,29 +304,32 @@ test_that("resources_path cannot be set to git root",{
   # create the directory for this test
   #  expect_true(dir.create(example_dir, showWarnings = FALSE))
   dir.create(example_dir, showWarnings = FALSE)
-  example_repo <- git2r::init(example_dir, branch = "main")
+  # create a subdirectory of example_dir
+  sub_dir <- file.path(example_dir, "subdir")
+  dir.create(sub_dir, showWarnings = FALSE)
+
+  example_repo <- git2r::init(sub_dir, branch = "main")
   git2r::config(example_repo,
                 user.name = "Test",
                 user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(example_dir)
+  setwd(sub_dir)
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
   # check that all elements of git status are empty (i.e. we have a
   # cleaned working directory)
   expect_true(git_is_clean())
-
   ######## Currently, this test does not work, see version_setup ########
 
   # find git root
-  # git_root <- find_git_root()
-  # expect_error(version_setup(git_root, quiet = TRUE),
-  #              "resources_path cannot be the root directory of the repository")
-  # root_full_path <- getwd()
-  # expect_error(version_setup(root_full_path, quiet = TRUE),
-  #              "resources_path cannot be the root directory of the repository")
+ git_root <- find_git_root()
+ expect_error(version_setup(git_root, quiet = TRUE),
+              "resources_path cannot be the root directory of the repository")
+ root_full_path <- getwd()
+ expect_error(version_setup(root_full_path, quiet = TRUE),
+              "resources_path cannot be the root directory of the repository")
 })
 
 

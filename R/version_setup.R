@@ -20,15 +20,13 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # that has version info, but we have yet to set up versioning on this
   # local copy
 
-  # get root of the repository
-  root <- find_git_root()
   if (!is.null(resources_path)){
     # check that path do not point to root directory
     if (resources_path == ".") {
       stop("resources_path cannot be the root directory of the repository")
-     } # else if (normalizePath(git_root) == getwd()){
-    #   stop("resources_path cannot be the root directory of the repository")
-    # } @TODO reinstate this check asap, see test_versioning
+     }  else if (normalizePath(resources_path) == getwd()){
+       stop("resources_path cannot be the root directory of the repository")
+     }
   }
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
     version_setup_first(quiet = quiet, resources_path = resources_path)

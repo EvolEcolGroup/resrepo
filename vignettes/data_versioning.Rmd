@@ -15,11 +15,15 @@ knitr::opts_chunk$set(
 example_dir <- file.path(tempdir(),"resrepo_example")
 unlink(example_dir,recursive = TRUE)
 dir.create(example_dir, showWarnings = FALSE)
-example_repo <- git2r::init(example_dir, branch = "main")
+
+# create a subdirectory of example_dir
+sub_dir <- file.path(example_dir, "subdir")
+dir.create(sub_dir, showWarnings = FALSE)
+
+example_repo <- git2r::init(sub_dir, branch = "main")
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 vignette_dir<-getwd()
-knitr::opts_knit$set(root.dir = example_dir)
-example_dir
+knitr::opts_knit$set(root.dir = sub_dir)
 ```
 
 This vignette will cover the data versioning functionality of the `resrepo` package, considering the following use cases:
@@ -284,7 +288,7 @@ However, the `data/raw` and `data/intermediate` directories are now symlinks to 
 We can see the structure of our external data storage folder looks like this:
 
 ```{r check_external_storage, echo=TRUE}
-fs::dir_tree("../external_data_storage")
+fs::dir_tree("../../external_data_storage")
 ```
 
 
@@ -324,5 +328,5 @@ fs::dir_tree()
 
 And the data are successfully stored in our external folder:
 ```{r check_external_storage_knit, echo=TRUE}
-fs::dir_tree("../external_data_storage")
+fs::dir_tree("../../external_data_storage")
 ```
