@@ -160,6 +160,8 @@ test_that("versioning", {
   expect_true(git2r::is_head(git2r::branches()$main))
   # but the data version is new_filtering as a consequence of the merge
   expect_true(grep("new_filtering", fs::link_path("./data/intermediate")) == 1)
+  penguins <- read.csv(path_resrepo("data/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+  expect_true(nrow(penguins) == nrow(penguins_new_filtering))
 })
 
 # this file tests several functions related to versioning
