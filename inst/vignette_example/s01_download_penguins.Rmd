@@ -26,21 +26,18 @@ data("penguins", package = "palmerpenguins")
 write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"), row.names = FALSE)
 ```
 
+***
+
 ## Recording R environment
 
 Part of ensuring our workflow is reproducible is to keep track of the R environment.
 We will automatically save our R environment into a file called `r_environment.json`.
 
 ```{r save-r-environment}
-if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
-  current_file <- rstudioapi::getSourceEditorContext()$path
-} else {
-  current_file <- NULL
-}
-filename <- tools::file_path_sans_ext(basename(current_file))
-filename
-renv_filename <- paste0(output_dir, "/renv_", filename, ".json") # define name file renv
-renv::lockfile_write(renv::lockfile_create(), file=renv_filename) # write renv file
-print(sessionInfo()) # session info rpinted not saved as file anymore
-
+filename_rmd <- "s01_download_penguins.Rmd"
+filename_renv <- paste0(res_dir, "/renv_", 
+                       tools::file_path_sans_ext(basename(filename_rmd)),
+                       ".json")
+renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+print(sessionInfo())
 ```

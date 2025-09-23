@@ -56,3 +56,19 @@ autoplot(penguin_pca, data = penguins, colour = "species")
 
 We can see that our tux penguins are very different from the other species from the 
 Palmer dataset.
+
+***
+
+## Recording R environment
+
+Part of ensuring our workflow is reproducible is to keep track of the R environment.
+We will automatically save our R environment into a file called `r_environment.json`.
+
+```{r save-r-environment}
+filename_rmd <- "s03_pca.Rmd"
+filename_renv <- paste0(res_dir, "/renv_", 
+                       tools::file_path_sans_ext(basename(filename_rmd)),
+                       ".json")
+renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+print(sessionInfo())
+```
