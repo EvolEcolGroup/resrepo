@@ -28,7 +28,7 @@ see https://bookdown.org/yihui/rmarkdown/output-formats.html.
 In this chunk we define the input and output directories: 
 
 * `data_dir`: data folders where inputs for this document's code are; 
-* `res_dir`: output folder where any outputs or results should be saved, e.g. 
+* `output_dir`: output folder where any outputs or results should be saved, e.g. 
 plots or intermediate data files.
 
 In an RMarkdown document within a `resrepo` repository, it easy to find a file 
@@ -57,10 +57,10 @@ data_dir <- path_resrepo("/data/raw/default")
 data_dir # print out
 
 ## and similar for where the results/outputs of this file go
-res_dir <- path_resrepo("/data/intermediate/plots")
-res_dir # print out
+output_dir <- path_resrepo("/data/intermediate/plots")
+output_dir # print out
 ## we also need to create this folder if it doesn't already exist
-dir.create(res_dir, showWarnings = FALSE)
+dir.create(output_dir, showWarnings = FALSE)
 
 ```
 
@@ -100,7 +100,7 @@ We will automatically save our R environment into a file called `r_environment.j
 
 ```{r save-r-environment}
 filename_rmd <- rstudioapi::getSourceEditorContext()$path
-filename_renv <- paste0(res_dir, "/renv_", 
+filename_renv <- paste0(output_dir, "/renv_", 
                        tools::file_path_sans_ext(basename(filename_rmd)),
                        ".json")
 renv::lockfile_write(renv::lockfile_create(), file=filename_renv)

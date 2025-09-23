@@ -73,7 +73,7 @@ We will automatically save our R environment into a file called `r_environment.j
 
 ```{r save-r-environment}
 filename_rmd <- "s02_merge_clean.Rmd"
-filename_renv <- paste0(res_dir, "/renv_", 
+filename_renv <- paste0(output_dir, "/renv_", 
                        tools::file_path_sans_ext(basename(filename_rmd)),
                        ".json")
 renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
