@@ -62,7 +62,11 @@ test_that("versioning", {
     )
   )
   git2r::add(path = ".")
-  git2r::commit(message = "Save plot", all = TRUE)
+  suppressMessages(
+    capture.output(
+      git2r::commit(message = "Save plot", all = TRUE)
+    )
+  )
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
   # check that all elements of git status are empty (i.e. we have a
@@ -111,9 +115,17 @@ test_that("versioning", {
     overwrite = TRUE
   )
   # knit the new script
-  knit_to_results(path_resrepo("code/s02_merge_clean.Rmd"))
+  suppressMessages(
+   capture.output(
+     knit_to_results(path_resrepo("code/s02_merge_clean.Rmd"))
+   )
+ )
   # commit changes
-  git2r::commit(message = "Remove penguins", all = TRUE)
+  suppressMessages(
+    capture.output(
+      git2r::commit(message = "Remove penguins", all = TRUE)
+    )
+  )
   # check that allelement of git status are empty (i.e. we have a
   # cleaned working directory)
   expect_true(git_is_clean())
@@ -141,12 +153,17 @@ test_that("versioning", {
   # note that we need to use system2 to run git commands as
   # git2r::checkout does not trigger hooks
   # TODO this is noisy, we should suppress the output
-  system2("git", args = c("checkout main"))
+
+  suppressMessages(
+    capture.output(
+      system2("git", args = c("checkout main"))
+    )
+  )
   expect_true(git2r::is_head(git2r::branches()$main))
   expect_true(grep("starting", fs::link_path("./data/raw")) == 1)
-  
-  cat(fs::link_path("./data/intermediate")) 
-  
+
+  cat(fs::link_path("./data/intermediate"))
+
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
 
   # Check that data/intermediate now points to the unfiltered penguin data
@@ -155,11 +172,17 @@ test_that("versioning", {
   expect_true(nrow(penguins_initial) > nrow(penguins_new_filtering))
   #########
   # merge new_filtering into main
-  git_res <- system2("git", args = c("merge new_filtering"))
+  suppressMessages(
+    capture.output(
+      git_res <- system2("git", args = c("merge new_filtering"))
+    )
+  )
   # we are still in main
   expect_true(git2r::is_head(git2r::branches()$main))
   # but the data version is new_filtering as a consequence of the merge
   expect_true(grep("new_filtering", fs::link_path("./data/intermediate")) == 1)
+  penguins <- read.csv(path_resrepo("data/intermediate/s02_merge_clean/penguins_na_omit.csv"))
+  expect_true(nrow(penguins) == nrow(penguins_new_filtering))
 })
 
 # this file tests several functions related to versioning
@@ -173,13 +196,17 @@ test_that("versioning with resources_path argument", {
   # create the directory for this test
 #  expect_true(dir.create(example_dir, showWarnings = FALSE))
   dir.create(example_dir, showWarnings = FALSE)
-  example_repo <- git2r::init(example_dir, branch = "main")
+  # create a subdirectory of example_dir
+  sub_dir <- file.path(example_dir, "subdir")
+  dir.create(sub_dir, showWarnings = FALSE)
+
+  example_repo <- git2r::init(sub_dir, branch = "main")
   git2r::config(example_repo,
     user.name = "Test",
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(example_dir)
+  setwd(sub_dir)
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -249,9 +276,129 @@ test_that("versioning with resources_path argument", {
   expect_true(git_is_clean())
 })
 
+test_that("check that you cannot add a new data raw version without a new data intermediate version",{
+  setwd(tempdir())
+  ############
+  # start setting up a temp dir for the git repository
+  example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
+  unlink(example_dir, recursive = TRUE)
+  # create the directory for this test
+  #  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
+  # create a subdirectory of example_dir
+  sub_dir <- file.path(example_dir, "subdir")
+  dir.create(sub_dir, showWarnings = FALSE)
 
-## @TODO
-# find ways to break data versioning (cases when you close the repository
-# but don't have the stuff in the rigth path)
+  example_repo <- git2r::init(sub_dir, branch = "main")
+  git2r::config(example_repo,
+                user.name = "Test",
+                user.email = "test@example.org"
+  )
+  # set our working directory in the git repository
+  setwd(sub_dir)
+  init_resrepo()
+  # check that we are on main and there is nothing to commit
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check that all elements of git status are empty (i.e. we have a
+  # cleaned working directory)
+  expect_true(git_is_clean())
 
-# write test to check that cannot set resources_path to the root
+  expect_true(version_setup(quiet = TRUE))
+
+  # Try adding a version of data raw without adding a new version of data intermediate
+  expect_error(version_add(
+    raw_new_version = "new_raw_version",
+    raw_description = "A new version of raw data",
+    quiet = TRUE
+  ),"You must provide a name for the new intermediate version")
+})
+
+
+test_that("resources_path cannot be set to git root",{
+  setwd(tempdir())
+  ############
+  # start setting up a temp dir for the git repository
+  example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
+  unlink(example_dir, recursive = TRUE)
+  # create the directory for this test
+  #  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
+  # create a subdirectory of example_dir
+  sub_dir <- file.path(example_dir, "subdir")
+  dir.create(sub_dir, showWarnings = FALSE)
+
+  example_repo <- git2r::init(sub_dir, branch = "main")
+  git2r::config(example_repo,
+                user.name = "Test",
+                user.email = "test@example.org"
+  )
+  # set our working directory in the git repository
+  setwd(sub_dir)
+  init_resrepo()
+  # check that we are on main and there is nothing to commit
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check that all elements of git status are empty (i.e. we have a
+  # cleaned working directory)
+  expect_true(git_is_clean())
+  ######## Currently, this test does not work, see version_setup ########
+
+  # find git root
+ git_root <- find_git_root()
+ expect_error(version_setup(git_root, quiet = TRUE),
+              "resources_path cannot be the root directory of the repository")
+ root_full_path <- getwd()
+ expect_error(version_setup(root_full_path, quiet = TRUE),
+              "resources_path cannot be the root directory of the repository")
+})
+
+test_that("clone a versioned repo",{
+  directory_penguins <- file.path(tempdir(), "resrepo_penguins")
+  if (!dir.exists(directory_penguins)) dir.create(directory_penguins)
+
+  # clone the penguin repository (public)
+  git2r::clone("https://github.com/EvolEcolGroup/resrepo_penguins",
+               local_path = directory_penguins,
+               branch = "test_intermediate_description4",
+               progress = FALSE)
+
+  setwd(directory_penguins)
+  expect_true(read.table("data/version_meta/intermediate_in_use.meta")=="test_intermediate_description4")
+
+  # create new external folder for data
+  external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
+  dir.create(external_data_storage_new)
+
+  intermediate_path <- file.path(tempdir(), "external_data_storage_new/initial/intermediate")
+  raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
+  dir.create(intermediate_path, recursive = TRUE)
+  dir.create(raw_path, recursive = TRUE)
+
+  file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
+            to = raw_path,
+            overwrite = TRUE)
+
+  expect_true(version_setup(quiet = TRUE, resources_path = external_data_storage_new))
+
+  # If we have cloned from a branch and then set up versioning, can we merge back into
+  # main
+  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
+  expect_true(git_is_clean())
+
+  # merge back into main
+  suppressMessages(
+    capture.output(
+      system2("git", args = c("checkout main"))
+    )
+  )
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check we are back to the initial version
+  expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
+})
+
+# @TODO find ways to break data versioning (cases when you clone the repository
+# but don't have the stuff in the right path)
+
+# @TODO write a test to check when you create versioned repo with version_setup
+# and then switch branches, the data still points to the right place

@@ -29,19 +29,19 @@
 
 
 version_add <- function (path=".",
-                         intermediate_new_version,
+                         intermediate_new_version = NULL,
                          raw_new_version = NULL,
                          intermediate_source = NULL,
                          raw_source = NULL,
-                         intermediate_description,
+                         intermediate_description = NULL,
                          raw_description = NULL,
                          git_branch = NULL, quiet = FALSE) {
-  # check for git credentials 
+  # check for git credentials
   creds <- get_resrepo_git_creds()
-  
+
   # check version in use
   in_use <- get_versions_in_use()
-  
+
   sanitise_version <- function (x){
     x_orig <- x
     x <- fs::path_sanitize(x)
@@ -52,8 +52,17 @@ version_add <- function (path=".",
     }
     return(x)
   }
-  
+
+  if(is.null(intermediate_new_version)){
+    stop("You must provide a name for the new intermediate version")
+  }
+
+  if(is.null(intermediate_description)){
+    stop("You must provide a description for the new intermediate version")
+  }
+
   intermediate_new_version <- sanitise_version(intermediate_new_version)
+
   # TODO check that this is new
   if (!is.null(raw_new_version)){
     raw_new_version <- sanitise_version(raw_new_version)
@@ -64,13 +73,13 @@ version_add <- function (path=".",
     raw_new_version <- in_use$raw
     create_raw <- FALSE
   }
-  
+
   # check that we have a clean working directory with git
   if (!git_is_clean()){
     stop("You have uncommitted changes; please commit or stash them ",
     "before adding a new version")
   }
-  
+
   # check if the versions directory exists
   if (!dir.exists(path_resrepo("versions"))){
     stop("versions does not exist; you need to use setup_version() first")
@@ -88,7 +97,7 @@ version_add <- function (path=".",
     if (creds$type == "ssh" || creds$type == "https"){
       git2r::push(name = "origin",
                   refspec = paste0("refs/heads/", git_branch),
-                  set_upstream = TRUE, 
+                  set_upstream = TRUE,
                   credentials = creds$github_pat)
     }
   }
@@ -110,33 +119,33 @@ version_add <- function (path=".",
       stop("source version ",intermediate_source," does not exist")
     }
   }
-  
+
   # create a new intermediate version
   fs::dir_copy(path_resrepo(paste("versions/",intermediate_source,sep="")),
                path_resrepo(paste("versions/",intermediate_new_version,sep="")))
   # add meta information on the version
   version_meta <- data.frame(data = "intermediate",
                              version = intermediate_new_version,
-                             date_created = Sys.Date(), 
+                             date_created = Sys.Date(),
                              description = intermediate_description,
                              stringsAsFactors = FALSE)
   utils::write.csv(version_meta,
                    file = path_resrepo(paste0("data/version_meta/",intermediate_new_version,".meta")), row.names = FALSE)
-  
+
   # if we need to create a new raw version
   if (create_raw){
     fs::dir_copy(path_resrepo(paste("versions/",raw_source,"/raw",sep="")),
                  path_resrepo(paste("versions/",raw_new_version,"/raw",sep="")))
     version_meta <- data.frame(data = "raw",
                                version = raw_new_version,
-                               date_created = Sys.Date(), 
+                               date_created = Sys.Date(),
                                description = raw_description,
                                stringsAsFactors = FALSE)
     utils::write.csv(version_meta,
                      file = path_resrepo(paste0("data/version_meta/",raw_new_version,".meta")), row.names = FALSE)
-    
+
   }
-  
+
   # update the links
   # first delete the old ones
   fs::link_delete(path_resrepo("data/raw"))
