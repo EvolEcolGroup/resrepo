@@ -63,3 +63,19 @@ We will now save the data into the appropriate `/data/intermediate` directory:
 
 write.csv(penguins_na_omit, file.path(output_dir, "penguins_na_omit.csv"))
 ```
+
+***
+
+## Recording R environment
+
+Part of ensuring our workflow is reproducible is to keep track of the R environment.
+We will automatically save our R environment into a file called `r_environment.json`.
+
+```{r save-r-environment}
+filename_rmd <- "s02_merge_clean.Rmd"
+filename_renv <- paste0(output_dir, "/renv_", 
+                       tools::file_path_sans_ext(basename(filename_rmd)),
+                       ".json")
+renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+print(sessionInfo())
+```
