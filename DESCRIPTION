@@ -27,6 +27,8 @@ RoxygenNote: 7.3.3
 Imports:
     fs,
     git2r,
+    gitcreds,
+    stringr
     stringr,
     renv,
     rstudioapi
@@ -35,6 +37,7 @@ Suggests:
     knitr,
     palmerpenguins,
     rmarkdown,
+    tinytex,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

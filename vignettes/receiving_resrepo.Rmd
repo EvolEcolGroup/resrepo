@@ -2,7 +2,7 @@
 title: "Receiving a resrepo repository"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data versioning}
+  %\VignetteIndexEntry{Receiving a resrepo repository}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -118,6 +118,5 @@ We can also check the structure of the `external_data_storage_new` folder:
 ```{r}
 fs::dir_tree(external_data_storage_new)
 ```
-
 
 

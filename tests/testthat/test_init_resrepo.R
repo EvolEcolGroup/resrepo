@@ -7,7 +7,11 @@ unlink (file.path(test_dir,".*"), recursive = TRUE)
 dir.create(test_dir, showWarnings = FALSE)
 setwd(test_dir)
 # initialise a git repository
-git2r::init(test_dir)
+example_repo <- git2r::init(test_dir, branch = "main")
+git2r::config(example_repo,
+              user.name = "Test",
+              user.email = "test@example.org"
+)
 
 test_that("initialise repository",{
   expect_true(init_resrepo())
