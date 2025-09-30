@@ -12,5 +12,5 @@ dummy_renv <- function() {
 
 # dummy function to avoid R CMD check NOTE about studioapi
 dummy_studioapi <- function() {
-  studioapi::getActiveProject()
+  rstudioapi::getActiveProject()
 }
