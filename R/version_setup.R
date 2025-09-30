@@ -24,7 +24,7 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
     # check that path do not point to root directory
     if (resources_path == ".") {
       stop("resources_path cannot be the root directory of the repository")
-     }  else if (normalizePath(resources_path) == getwd()){
+     }  else if (normalizePath(resources_path) == normalizePath(getwd())){
        stop("resources_path cannot be the root directory of the repository")
      }
   }
