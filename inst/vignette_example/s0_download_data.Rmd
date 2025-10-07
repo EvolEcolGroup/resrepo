@@ -14,12 +14,30 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Download penguin data
 
-We download the penguin data from the `palmerpenguins` and save it:
-```{r save_data}
+As an example, we stored the data for penguin measurements in a Zenodo repository 
+and can download them using the `inborutils` package.
 
+First, we will create an external data folder to store the data and will link to it from the `data/raw` folder. You can see how to do this in the `sharing_resrepo` vignette.
+
+```{r create_external_data_folder}
+# create new external folder for data 
+external_data_storage_review <- file.path(tempdir(), "external_data_storage_review")
+#unlink(external_data_storage_new, recursive = TRUE)
+dir.create(external_data_storage_review)
 ```
 
-***
+```{r save_data}
+library(inborutils)
+
+doi <- "10.5281/zenodo.17287488"
+inborutils::download_zenodo(doi, external_data_storage_review, quiet = TRUE)
+```
+
+Now we can see that the files have been downloaded to our external data folder.
+
+```{r check_data}
+list.files(external_data_storage_review)
+```
 
 ## Recording R environment
 

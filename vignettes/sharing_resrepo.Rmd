@@ -136,4 +136,26 @@ different sources and place them in the appropriate directory (see Section 2 abo
 
 After doing so, you can then use `version_setup` to set up the symlinks to the data as shown in Section 3 above.
 
-You can find an example of an `s0_download_data.Rmd` in the `inst/vignette_example` folder of the `resrepo` package.
+You can find an example of an `s0_download_data.Rmd` in the `inst/vignette_example` folder of the `resrepo` package or see the code below:
+
+```{r download_data_from_public, eval=FALSE}
+# First, we will create an external data folder to store the data and will link to it from the `data/raw` folder. You can see how to do this in the `sharing_resrepo` vignette.
+
+# create new external folder for data 
+external_data_storage_review <- file.path(tempdir(), "external_data_storage_review")
+#unlink(external_data_storage_new, recursive = TRUE)
+dir.create(external_data_storage_review)
+
+# load inborutils to download from zenodo
+library(inborutils)
+
+# download data from zenodo
+doi <- "10.5281/zenodo.17287488"
+inborutils::download_zenodo(doi, external_data_storage_review, quiet = TRUE)
+
+# Now we can see that the files have been downloaded to our external data folder.
+list.files(external_data_storage_review)
+```
+
+
+
