@@ -6,11 +6,11 @@
 \usage{
 version_add(
   path = ".",
-  intermediate_new_version,
+  intermediate_new_version = NULL,
   raw_new_version = NULL,
   intermediate_source = NULL,
   raw_source = NULL,
-  intermediate_description,
+  intermediate_description = NULL,
   raw_description = NULL,
   git_branch = NULL,
   quiet = FALSE

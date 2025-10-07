@@ -1,21 +1,27 @@
 ---
-title: "Receiving a resrepo repository"
+title: "Sharing a resrepo repository"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Receiving a resrepo repository}
+  %\VignetteIndexEntry{Sharing a resrepo repository}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-Welcome to your resrepo repository! If you are reading this, it means that someone 
-has given you access to a resrepo repository. 
-This vignette covers how to: 
+This vignette covers how to share a resrepo repository. This could be sharing
+with collaborators (or anyone planning to work on it), or sharing it with the
+public (e.g. as part of a publication). 
 
-1. Clone a resrepo repository
-2. Obtain the data you need
+If sharing with collaborators, to use it, they will simply need to:
+
+1. Clone the resrepo repository
+2. Obtain the data they need
 3. And set up symlinks to the location of the data
 
-## 1 & 2. Clone a resrepo repository and download data
+If sharing with the public or with reviewers, in addition, you will need to 
+upload the data to a publicly available location (e.g. Zenodo, Dryad, OSF, 
+etc..) and provide a script to download the data.
+
+## 1 & 2. Cloning a resrepo repository and downloading data
 
 @TODO: Clone the resrepo_penguins repository - create gif
 
@@ -119,4 +125,15 @@ We can also check the structure of the `external_data_storage_new` folder:
 fs::dir_tree(external_data_storage_new)
 ```
 
+## 4. Downloading data from a public location
 
+If you are sharing your repository with the public, you will need to upload your 
+data to a publicly available location (e.g. Zenodo, Dryad, OSF, etc..) and provide 
+a script to download the data. You may also require data from other public repositories (e.g. GBIF, GenBank, etc..).
+The script to download the data should be placed in the `code` folder of your resrepo repository, and should
+ideally be named `s0_download_data.Rmd`. It should download all the data from the
+different sources and place them in the appropriate directory (see Section 2 above).
+
+After doing so, you can then use `version_setup` to set up the symlinks to the data as shown in Section 3 above.
+
+You can find an example of an `s0_download_data.Rmd` in the `inst/vignette_example` folder of the `resrepo` package.
