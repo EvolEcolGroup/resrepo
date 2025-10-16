@@ -20,9 +20,11 @@ and can download them using the `inborutils` package.
 First, we will create an external data folder to store the data and will link to it from the `data/raw` folder. You can see how to do this in the `sharing_resrepo` vignette.
 
 ```{r create_external_data_folder}
-# create new external folder for data 
-external_data_storage_review <- file.path(tempdir(), "external_data_storage_review")
-#unlink(external_data_storage_new, recursive = TRUE)
+# create new external folder for data
+external_data_storage_review <- file.path(
+  tempdir(),
+  "external_data_storage_review"
+)
 dir.create(external_data_storage_review)
 ```
 
@@ -46,9 +48,11 @@ We will automatically save our R environment into a file called `r_environment.j
 
 ```{r save-r-environment}
 filename_rmd <- "s0_download_data.Rmd"
-filename_renv <- paste0(output_dir, "/renv_", 
-                       tools::file_path_sans_ext(basename(filename_rmd)),
-                       ".json")
-renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+filename_renv <- paste0(
+  output_dir, "/renv_",
+  tools::file_path_sans_ext(basename(filename_rmd)),
+  ".json"
+)
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
 print(sessionInfo())
 ```

@@ -24,14 +24,13 @@ library(resrepo)
 # set the input directories:
 tux_dir <- path_resrepo("/data/raw/original")
 # alternatively:
-#tux_dir <- "../data/raw/original"
 palmer_dir <- path_resrepo("/data/raw/s01_download_penguins")
 ```
 
 And the output paths:
 ```{r output_paths}
 output_dir <- path_resrepo("/data/intermediate/s02_merge_clean")
-if (!dir.exists(output_dir)){
+if (!dir.exists(output_dir)) {
   dir.create(output_dir)
 }
 ```
@@ -42,7 +41,7 @@ Note that we only create the directory if it does not exist, so that, if the scr
 
 We can now read the data, using the paths that we set up at the beginning of our script:
 ```{r read_data}
-tux_penguins <- read.csv(file.path(tux_dir,"tux_measurements.csv"))
+tux_penguins <- read.csv(file.path(tux_dir, "tux_measurements.csv"))
 palmer_penguins <- read.csv(file.path(palmer_dir, "palmer_penguins.csv"))
 ```
 
@@ -60,7 +59,6 @@ penguins_na_omit <- na.omit(penguins)
 
 We will now save the data into the appropriate `/data/intermediate` directory:
 ```{r save_data}
-
 write.csv(penguins_na_omit, file.path(output_dir, "penguins_na_omit.csv"))
 ```
 
@@ -73,9 +71,11 @@ We will automatically save our R environment into a file called `r_environment.j
 
 ```{r save-r-environment}
 filename_rmd <- "s02_merge_clean.Rmd"
-filename_renv <- paste0(output_dir, "/renv_", 
-                       tools::file_path_sans_ext(basename(filename_rmd)),
-                       ".json")
-renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+filename_renv <- paste0(
+  output_dir, "/renv_",
+  tools::file_path_sans_ext(basename(filename_rmd)),
+  ".json"
+)
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
 print(sessionInfo())
 ```

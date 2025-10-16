@@ -23,7 +23,10 @@ dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 # load the data
 data("penguins", package = "palmerpenguins")
 # write the data
-write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"), row.names = FALSE)
+write.csv(
+  x = penguins, file = file.path(output_dir, "palmer_penguins.csv"),
+  row.names = FALSE
+)
 ```
 
 ***
@@ -35,9 +38,11 @@ We will automatically save our R environment into a file called `r_environment.j
 
 ```{r save-r-environment}
 filename_rmd <- "s01_download_penguins.Rmd"
-filename_renv <- paste0(output_dir, "/renv_", 
-                       tools::file_path_sans_ext(basename(filename_rmd)),
-                       ".json")
-renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+filename_renv <- paste0(
+  output_dir, "/renv_",
+  tools::file_path_sans_ext(basename(filename_rmd)),
+  ".json"
+)
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
 print(sessionInfo())
 ```
