@@ -12,12 +12,12 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-example_dir <- file.path(tempdir(),"resrepo_example")
-unlink(example_dir,recursive = TRUE)
+example_dir <- file.path(tempdir(), "resrepo_example")
+unlink(example_dir, recursive = TRUE)
 dir.create(example_dir, showWarnings = FALSE)
 example_repo <- git2r::init(example_dir)
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
-vignette_dir<-getwd()
+vignette_dir <- getwd()
 knitr::opts_knit$set(root.dir = example_dir)
 ```
 
@@ -173,9 +173,12 @@ body mass and sex. We will store this data, of which we have a copy in the packa
 in the `data/raw/original` directory:
 
 ```{r}
-file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
-          to = path_resrepo("/data/raw/original/tux_measurements.csv"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/tux_measurements.csv",
+                     package = "resrepo"),
+  to = path_resrepo("/data/raw/original/tux_measurements.csv"),
+  overwrite = TRUE
+)
 ```
 
 Let's have a look at the repository:
@@ -202,14 +205,16 @@ We can replace the explanatory text and examples in this Rmd with only a simple 
 library(resrepo)
 # define the output directory (named after the script) and create it
 output_dir <- path_resrepo("/data/raw/s01_download_penguins")
-if (!dir.exists(output_dir)){
+if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 # load the data
 data("penguins", package = "palmerpenguins")
 # write the data
-write.csv(x = penguins, file = file.path(output_dir, "palmer_penguins.csv"),
-          row.names = FALSE)
+write.csv(
+  x = penguins, file = file.path(output_dir, "palmer_penguins.csv"),
+  row.names = FALSE
+)
 ```
 
 Note that, to set the output directory, we used the function `path_resrepo`, which
@@ -223,9 +228,12 @@ have a look at this [link](https://www.redhat.com/en/blog/linux-path-absolute-re
 Add the chunk above to our s01_download_penguins.Rmd and save it.
 
 ```{r echo=FALSE, results="hide"}
-file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s01_download_penguins.Rmd"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/s01_download_penguins.Rmd",
+                     package = "resrepo"),
+  to = path_resrepo("/code/s01_download_penguins.Rmd"),
+  overwrite = TRUE
+)
 ```
 
 We can see the script in the `code` directory:
@@ -256,9 +264,8 @@ our changes to the repository. In RStudio, open the *Git* tab on the right-hand 
 </div>
 
 ```{r echo=FALSE, results="hide"}
-
-git2r::add(path=".")
-git2r::commit(message="Added preprocess script", all=TRUE)
+git2r::add(path = ".")
+git2r::commit(message = "Added preprocess script", all = TRUE)
 ```
 
 We now want to merge our data on the new species with the reference dataset, 
@@ -266,9 +273,12 @@ and clean the data (e.g. remove missing data). We will copy over an Rmd from
 the package, which was originally created with `resrepo::create_rmd`: 
 
 ```{r}
-file.copy(from = system.file("vignette_example/s02_merge_clean.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s02_merge_clean.Rmd"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/s02_merge_clean.Rmd",
+                     package = "resrepo"),
+  to = path_resrepo("/code/s02_merge_clean.Rmd"),
+  overwrite = TRUE
+)
 ```
 
 We can check that the script is in the right place:
@@ -297,9 +307,11 @@ whether our tux penguin is clearly distinct from other penguin species. We use a
 from the package, which we copy over to our repository:
 
 ```{r}
-file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s03_pca.Rmd"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/s03_pca.Rmd", package = "resrepo"),
+  to = path_resrepo("/code/s03_pca.Rmd"),
+  overwrite = TRUE
+)
 ```
 
 Open it. Again, note our input and output paths are all set at the top of the script,
@@ -317,9 +329,8 @@ fs::dir_tree()
 Now you just need to commit your changes as you did above, and we have a full repository with data, code
 and results, with a clear structure that should be easy to interpret.
 ```{r echo=FALSE, results="hide"}
-
-git2r::add(path=".")
-git2r::commit(message="Save plot", all=TRUE)
+git2r::add(path = ".")
+git2r::commit(message = "Save plot", all = TRUE)
 
 git2r::status()
 ```

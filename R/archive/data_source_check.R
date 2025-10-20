@@ -15,15 +15,19 @@ data_source_check <- function(path = NULL) {
     path <- find_git_root()
   }
   if (!file.exists(file.path(path, "data/data_source_list.csv"))) {
-    stop(paste0("data_source_list.csv can not be found;",
-                "are you in the root directory of your repository?"))
+    stop(paste0(
+      "data_source_list.csv can not be found; ",
+      "are you in the root directory of your repository?"
+    ))
   }
 
   data_sources <- utils::read.csv(file.path(path, "/data/data_source_list.csv"))
   # check that there are two columsn with correct names
   if (!all(c("directory", "source", "url") %in% names(data_sources))) {
-    message(paste0("data_source_list.csv does not include the three ",
-                   "mandatory columns: 'directory', 'source' and 'url'"))
+    message(paste0(
+      "data_source_list.csv does not include the three ",
+      "mandatory columns: 'directory', 'source' and 'url'"
+    ))
   }
   if (any(is.na(data_sources$source), is.na(data_sources$url))) {
     stop(
@@ -32,11 +36,14 @@ data_source_check <- function(path = NULL) {
       "dirs in which files that are synchronised with git"
     )
   }
-  raw_dirs <- list.dirs(file.path(path, "data/raw"), full.names = FALSE,
-                        recursive = FALSE)
+  raw_dirs <- list.dirs(file.path(path, "data/raw"),
+    full.names = FALSE,
+    recursive = FALSE
+  )
   raw_dirs <- paste0("/data/raw/", raw_dirs)
   intermediate_dirs <- list.dirs(file.path(path, "data/intermediate"),
-                                 full.names = FALSE, recursive = FALSE)
+    full.names = FALSE, recursive = FALSE
+  )
   if (length(intermediate_dirs) > 0) {
     intermediate_dirs <- paste0("/data/intermediate/", intermediate_dirs)
   }

@@ -22,15 +22,19 @@ version_switch <- function(version, fail_on_error = TRUE) {
   fs::link_delete(path_resrepo("data/intermediate"))
   # then create the new ones
   data_dir_link(target_dir = path_resrepo(paste(
-    "versions/", version, "/raw", sep = ""
+    "versions/", version, "/raw",
+    sep = ""
   )), link_dir = "data/raw")
   data_dir_link(target_dir = path_resrepo(
     paste("versions/", version, "/intermediate", sep = "")
   ), link_dir = "data/intermediate")
   writeLines(version,
-             con = path_resrepo(paste0("data/version_meta/current_version",
-                                       "_in_use_by_resrepo.meta")),
-             sep = "\n", useBytes = FALSE)
+    con = path_resrepo(paste0(
+      "data/version_meta/current_version",
+      "_in_use_by_resrepo.meta"
+    )),
+    sep = "\n", useBytes = FALSE
+  )
   message("switched to ", version)
   return(TRUE)
 }

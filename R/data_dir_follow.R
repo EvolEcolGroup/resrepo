@@ -15,8 +15,10 @@ data_dir_follow <- function(path) {
   ignore_line <- paste0("!", path)
   my_gitignore <- readLines(path_resrepo("/.gitignore"))
   if (!ignore_line %in% my_gitignore) {
-    cat(paste0(ignore_line, "\n"), file = path_resrepo("/.gitignore"),
-        append = TRUE)
+    cat(paste0(ignore_line, "\n"),
+      file = path_resrepo("/.gitignore"),
+      append = TRUE
+    )
   } else {
     warning(path, " is already being followed by git")
   }

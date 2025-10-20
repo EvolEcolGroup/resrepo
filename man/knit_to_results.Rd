@@ -4,30 +4,30 @@
 \alias{knit_to_results}
 \title{Knit RMarkdown file to results folder}
 \usage{
-knit_to_results(inputFile, encoding, envir = parent.frame(), rename_md = TRUE)
+knit_to_results(input_file, encoding, envir = parent.frame(), rename_md = TRUE)
 }
 \arguments{
-\item{inputFile}{The name of the R Markdown file to be rendered.}
+\item{input_file}{The name of the R Markdown file to be rendered.}
 
 \item{encoding}{Ignored. The encoding is always assumed to be UTF-8.}
 
 \item{envir}{The environment in which the code chunks are to be evaluated
-during knitting. If new.env() is used to guarantee an empty new environment,
-note that save.image() will not, by default save, save the objects created
-in the Rmd.}
+during knitting. If new.env() is used to guarantee an empty new
+environment, note that save.image() will not, by default save, save the
+objects created in the Rmd.}
 
 \item{rename_md}{Logical. If TRUE, the generated .md file will be renamed to
 README.md to be display on GitHub.}
 }
 \description{
 This function is used in the YAML of an RMarkdown file so that when it is
-knitted, the output file is sent to the \code{~/results} directory rather than
-the directory in which the \code{.Rmd} file is located.
-The output file can be \code{.pdf}, \code{.html}, \code{.md} etc.
+knitted, the output file is sent to the \code{~/results} directory rather
+than the directory in which the \code{.Rmd} file is located. The output file
+can be \code{.pdf}, \code{.html}, \code{.md} etc.
 }
 \details{
-NB. This function does NOT cause any objects that are written to file in
-your \code{.Rmd} code to be written to the new results directory by default.
-To ensure all objects are written to the correct directories, specify an
+NB. This function does NOT cause any objects that are written to file in your
+\code{.Rmd} code to be written to the new results directory by default. To
+ensure all objects are written to the correct directories, specify an
 \code{output_dir} directly in the code.
 }

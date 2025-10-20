@@ -43,12 +43,12 @@ if (!dir.exists(directory_penguins)) dir.create(directory_penguins)
 
 # clone the penguin repository (public)
 git2r::clone("https://github.com/EvolEcolGroup/resrepo_penguins",
-             local_path = directory_penguins,
-             branch = "main",
-             progress = TRUE)
+  local_path = directory_penguins,
+  branch = "main",
+  progress = TRUE
+)
 
 knitr::opts_knit$set(root.dir = directory_penguins)
-
 ```
 
 
@@ -74,9 +74,8 @@ please check the  `data versioning` vignette.
 
 As an example, we will create a directory to act as our external data storage folder. Note that we we are creating this folder in the temporary directory, but you should choose a location anywhere on your local machine. We will call this folder `external_data_storage_new`.
 ```{r}
-# create new external folder for data 
+# create new external folder for data
 external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
-#unlink(external_data_storage_new, recursive = TRUE)
 dir.create(external_data_storage_new)
 ```
 
@@ -87,19 +86,21 @@ Ideally, the directory structure of the data shared with you for this project sh
 In the following example, we will create the substructure of the `data` folder, which contains `starting/raw` and `initial/intermediate` directories, 
 
 ```{r}
-intermediate_path <- file.path(tempdir(), "external_data_storage_new/initial/intermediate")
+intermediate_path <- file.path(tempdir(),
+                               "external_data_storage_new/initial/intermediate")
 raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
-#unlink(intermediate_path, recursive = TRUE)
-#unlink(raw_path, recursive = TRUE)
 dir.create(intermediate_path, recursive = TRUE)
 dir.create(raw_path, recursive = TRUE)
 ```
 
 And then we will copy the raw data into `external_data_storage_new/starting/raw`:
 ```{r}
-file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
-          to = raw_path,
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/tux_measurements.csv",
+                     package = "resrepo"),
+  to = raw_path,
+  overwrite = TRUE
+)
 ```
 
 ## 3. Setting up symlinks to data
@@ -144,11 +145,13 @@ After doing so, you can then use `version_setup` to set up the symlinks to the d
 You can find an example of an `s0_download_data.Rmd` in the `inst/vignette_example` folder of the `resrepo` package or see the code below:
 
 ```{r download_data_from_public, eval=FALSE}
-# First, we will create an external data folder to store the data and will link to it from the `data/raw` folder. You can see how to do this in the `sharing_resrepo` vignette.
+# First, we will create an external data folder to store
+# the data and will link to it from the `data/raw` folder.
+# You can see how to do this in the `sharing_resrepo` vignette.
 
-# create new external folder for data 
-external_data_storage_review <- file.path(tempdir(), "external_data_storage_review")
-#unlink(external_data_storage_new, recursive = TRUE)
+# create new external folder for data
+external_data_storage_review <- file.path(tempdir(),
+                                          "external_data_storage_review")
 dir.create(external_data_storage_review)
 
 # load inborutils to download from zenodo
@@ -158,7 +161,8 @@ library(inborutils)
 doi <- "10.5281/zenodo.17287488"
 inborutils::download_zenodo(doi, external_data_storage_review, quiet = TRUE)
 
-# Now we can see that the files have been downloaded to our external data folder.
+# Now we can see that the files have been downloaded to
+# our external data folder.
 list.files(external_data_storage_review)
 ```
 

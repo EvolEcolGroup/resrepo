@@ -14,6 +14,8 @@
 #'
 create_rmd <- function(filename) {
   filename <- path_resrepo(filename) # sanitise the filepath input
-  rmarkdown::draft(file = filename, template = "resrepo-rmd-template",
-                   package = "resrepo", create_dir = "default", edit = FALSE)
+  rmarkdown::draft(
+    file = filename, template = "resrepo-rmd-template",
+    package = "resrepo", create_dir = "default", edit = FALSE
+  )
 }

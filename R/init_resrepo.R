@@ -7,24 +7,33 @@
 #'
 #' @export
 
-init_resrepo <- function (path=".") {
+init_resrepo <- function(path = ".") {
   git_root <- find_git_root()
-  template_dir <- system.file("template",package="resrepo")
-  copy_results <- file.copy(from=list.files(template_dir,full.names = TRUE,
-                                     all.files=TRUE,no..=TRUE),
-            to = git_root, recursive = TRUE, overwrite = TRUE)
+  template_dir <- system.file("template", package = "resrepo")
+  copy_results <- file.copy(
+    from = list.files(template_dir,
+      full.names = TRUE,
+      all.files = TRUE, no.. = TRUE
+    ),
+    to = git_root, recursive = TRUE, overwrite = TRUE
+  )
   # make gitignore a hidden file
-  file.rename(from = file.path(git_root,"gitignore"), 
-    to = file.path(git_root,".gitignore"))
+  file.rename(
+    from = file.path(git_root, "gitignore"),
+    to = file.path(git_root, ".gitignore")
+  )
   # create hidden file with resrepo version
   # TODO add a line saying not to delete this file
-  writeLines(text = as.character(utils::packageVersion("resrepo")),
-             con = path_resrepo(".resrepo_version"))
+  writeLines(
+    text = as.character(utils::packageVersion("resrepo")),
+    con = path_resrepo(".resrepo_version")
+  )
   dir.create(path_resrepo("/data/raw/original"))
-  if (all(copy_results)){
-    # commit initial repository (without any commits version_setup will give an error)
-    git2r::add(path=".")
-    git2r::commit(message="Initialise resrepo", all=TRUE)
+  if (all(copy_results)) {
+    # commit initial repository
+    # (without any commits version_setup will give an error)
+    git2r::add(path = ".")
+    git2r::commit(message = "Initialise resrepo", all = TRUE)
     return(TRUE)
   } else {
     warning("something went wrong; not all files were included in the template")
