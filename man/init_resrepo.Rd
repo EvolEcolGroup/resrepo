@@ -7,7 +7,7 @@
 init_resrepo(path = ".")
 }
 \arguments{
-\item{path}{optional path for the a resrepo; by defalt, we use the current
+\item{path}{optional path for the a resrepo; by default, we use the current
 working directory}
 }
 \description{

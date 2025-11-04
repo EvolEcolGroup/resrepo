@@ -17,3 +17,4 @@ TRUE if the directory is tracked
 This function sets up a data directory to be tracked by git. It does so by
 adding the appropriate directory exception to \code{.gitignore}.
 }
+\keyword{internal}

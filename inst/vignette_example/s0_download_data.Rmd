@@ -1,0 +1,58 @@
+---
+title: "Download penguin data"
+author: "Hackathon"
+date: "2025-10-07"
+knit: resrepo::knit_to_results
+output: 
+  pdf_document:
+    keep_md: yes
+---
+
+```{r setup_rmd, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Download penguin data
+
+As an example, we stored the data for penguin measurements in a Zenodo repository 
+and can download them using the `inborutils` package.
+
+First, we will create an external data folder to store the data and will link to it from the `data/raw` folder. You can see how to do this in the `sharing_resrepo` vignette.
+
+```{r create_external_data_folder}
+# create new external folder for data
+external_data_storage_review <- file.path(
+  tempdir(),
+  "external_data_storage_review"
+)
+dir.create(external_data_storage_review)
+```
+
+```{r save_data}
+library(inborutils)
+
+doi <- "10.5281/zenodo.17287488"
+inborutils::download_zenodo(doi, external_data_storage_review, quiet = TRUE)
+```
+
+Now we can see that the files have been downloaded to our external data folder.
+
+```{r check_data}
+list.files(external_data_storage_review)
+```
+
+## Recording R environment
+
+Part of ensuring our workflow is reproducible is to keep track of the R environment.
+We will automatically save our R environment into a file called `r_environment.json`.
+
+```{r save-r-environment}
+filename_rmd <- "s0_download_data.Rmd"
+filename_renv <- paste0(
+  output_dir, "/renv_",
+  tools::file_path_sans_ext(basename(filename_rmd)),
+  ".json"
+)
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
+print(sessionInfo())
+```

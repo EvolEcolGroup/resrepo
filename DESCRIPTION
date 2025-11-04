@@ -1,19 +1,44 @@
 Package: resrepo
 Title: Easy git repo management for reproducible science
-Version: 0.0.0.9001
+Version: 0.2.0.9000
 Authors@R: 
-    person("Andrea", "Manica", , "am351@cam.ac.uk", role = c("aut", "cre"))
+    c(
+        person("Andrea", "Manica", email = "am351@cam.ac.uk", role = c("aut", "cre")),
+        person("Evie", "Carter", role = "ctb"),
+        person("Andrea Vittorio", "Pozzi", role = "ctb"),
+        person("Margherita", "Colucci", role = "ctb"),
+        person("Cecilia", "Padilla-Iglesias", role = "ctb"),
+        person("Michela", "Leonardi", role = "ctb"),
+        person("Paul", "Whitelaw", role = "ctb"),
+        person("Eirlys", "Tysall", role = "ctb"),
+        person("Ondrej", "Pelanek", role = "ctb"),
+        person("Zhe", "Xue", role = "ctb"),
+        person("Anahit", "Hovhannisyan", role = "ctb"),
+        person("Dominik", "Jud", role = "ctb"),
+        person("Cassandra", "Gunasekaram", role = "ctb"),
+        person("Elizabeth", "Pearmain", role = "ctb"),
+        person("James", "Kennerley", role = "ctb")
+    )
 Description: A package to manage git repositories used for research that contain a with a mix of code and data. resrepo is based on a well documented template with clear guidelines on how the repository should be structured, what file naming conventions to use, and how to manage large data that can not be stored in git repositories, encouraging reproducible science. In particular, resrepo provides tools to ensure that data are available and up-to-date both locally and in the cloud, as well as simplifying the process of locating directories within the repository from R scripts.
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
-Suggests:
+RoxygenNote: 7.3.3
+Imports:
     fs,
     git2r,
+    gitcreds,
+    stringr,
+    renv,
+    rstudioapi
+Suggests:
+    ggfortify,
     knitr,
     palmerpenguins,
     rmarkdown,
-    testthat (>= 3.0.0)
+    tinytex,
+    testthat (>= 3.0.0),
+    spelling
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Language: en-GB

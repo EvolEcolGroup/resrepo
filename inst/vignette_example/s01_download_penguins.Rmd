@@ -1,0 +1,48 @@
+---
+title: "Test Rmd for resrepo"
+author: "Andrea"
+date: "2022-12-09"
+knit: resrepo::knit_to_results
+output: 
+  pdf_document:
+    keep_md: yes
+---
+
+```{r setup_rmd, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Download penguin data
+
+We download the penguin data from the `palmerpenguins` and save it:
+```{r save_data}
+library(resrepo)
+# define the output directory (named after the script)
+output_dir <- path_resrepo("/data/raw/s01_download_penguins")
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+# load the data
+data("penguins", package = "palmerpenguins")
+# write the data
+write.csv(
+  x = penguins, file = file.path(output_dir, "palmer_penguins.csv"),
+  row.names = FALSE
+)
+```
+
+***
+
+## Recording R environment
+
+Part of ensuring our workflow is reproducible is to keep track of the R environment.
+We will automatically save our R environment into a file called `r_environment.json`.
+
+```{r save-r-environment}
+filename_rmd <- "s01_download_penguins.Rmd"
+filename_renv <- paste0(
+  output_dir, "/renv_",
+  tools::file_path_sans_ext(basename(filename_rmd)),
+  ".json"
+)
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
+print(sessionInfo())
+```

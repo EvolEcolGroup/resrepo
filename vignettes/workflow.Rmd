@@ -1,8 +1,8 @@
 ---
-title: "workflow"
+title: "Basic workflow"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{workflow}
+  %\VignetteIndexEntry{Basic workflow}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -12,23 +12,126 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-example_dir <- file.path(tempdir(),"resrepo_example")
-unlink(example_dir,recursive = TRUE)
+example_dir <- file.path(tempdir(), "resrepo_example")
+unlink(example_dir, recursive = TRUE)
 dir.create(example_dir, showWarnings = FALSE)
 example_repo <- git2r::init(example_dir)
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
-vignette_dir<-getwd()
+vignette_dir <- getwd()
 knitr::opts_knit$set(root.dir = example_dir)
-# setwd(example_dir)
 ```
 
 # resrepo: easy research on git
 
-The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. Scientific projects contain both code and data. `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, ensuring reproducible science and a tidy repository that can used for publication of your project.
+The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. There are three main elements to this: 
+
+* it provides a **template for a tidy repository structure** that can be used for any project, with functions that help keeping a clear separation of code, data and results.
+* it provides functionality to help **manage large data** that cannot be tracked on a git repository. This is achieved through **versioning the data and results** with the use of symlinks, allowing easy comparison of different versions (e.g. different data filtering) and enabling the storage data outside the git repository, potentially in directories that are backed up on the cloud. 
+
+## General overview
+
+In `resrespo`, we keep data, code, results, and the write-up separate. This 
+allows for a tidy structure that can flexibly accommodate very complex projects.
+Note that there are a number of README.md files, which provide instructions and advice
+related to the files that go into that particular directory.
+
+If you created the repository with `init_resrepo`, the function will automatically commit these changes for you, so that you have a clean repository template as your first commit, and you
+can best document the changes that you make as you progress.
+
+### resrepo template
+
+The first way in which *resrepo* can facilitate good practices when managing git repositories, is to structure your folders so each type of file has their specific location. This helps to separate your data from your code (which is good coding practice) and creates an easy to navigate file structure for all your output.
+
+Here is a general overview of the structure:
+
+* **code**: this is, unsurprisingly, the folder for your code, which may be in R, or other languages if needed. 
+* **data**: `resrepo` will automatically create a *data* folder that contains two subfolders: *raw* is intended for your raw/initial set of data, needed to start running the analyses. *intermediate*, instead, is where most outputs should go (e.g., modifications of the raw data, tables, plots, intermediate input files). Because these folder may end up including huge files, by default the content of "data" will not be uploaded to GitHub, as it is automatically added to `.gitignore`. 
+* **results**: this folder should only be reserved for final files (e.g, summary tables, plots) that are intended for publication. Because this folder is intended for a limited number of small files, it is expected to be uploaded on GitHub.
+* **writing**: this folder is intended for the write-up of your project. It can contain markdown files, or links to GoogleDocs or Word documents. It is not recommended to store large files in this folder.
+
+TODO: figure to show the general resrepo structure. *Is it needed? I think that the first `fs::dir_tree()` shows exactly this, thus I haven't created a figure yet.*
+
+TODO: short text to explain the structure. *Wasn't it just explained above?*
+
+
+## Naming your code scripts
+
+The names of your scripts should be informative and follow a logical order. We recommend
+that you use a prefix to indicate the order of the scripts, such as `s01`, `s02`, etc.,
+with an underscore separating a short but descriptive title. Avoid spaces (they should
+be replaced with underscores) and capital letters (not all file systems/languages are case
+sensitive). For example, a script
+that downloads remote sensing data from a public server could be named `s01_download_remote_sense.Rmd`.
+A script to run a clustering analysis from the data could be named `s02_clustering.Rmd`.
+Avoid naming your files starting with a number (e.g. instead of “01_process_data.R” use “s01_process_data.R”)
+Do not use generic names such as “Figure_01”, “Figure_02”, etc. for your files and folders. Use more descriptive names as numbers change. It will make your life easier when you will need to work again on the project.
+
+
+## Set up data directories
+
+For most projects, you will need some data for your scripts to work. There are 
+two main categories of data: "raw" data, which are primary data (e.g. 
+measurements you made in the lab or the field, FASTQ files generated by a 
+sequencer, remote sensing data downloaded from NASA); and "intermediate" data 
+(data that you generated from raw, and that in turn will be used as the base of
+further analysis). 
+
+In `resrepo`, we store data in one or more sub-directories 
+within `/data/raw` or `/data/intermediate`, depending on their category. 
+The template has a `/raw/original` subdir, which you could use if you have a 
+simple project with relatively
+few data files, but you are free to remove it and create alternative ones. For data that
+you collected or generated, you can use any name (e.g. `data/raw/fastq`, 
+`data/raw/focal_obs`, etc.). If data are generated by a script, then they should be
+placed in a subdirectory with the same name of that script, implicitly documenting
+their provenance. So, if you downloaded
+data from a remote server in a script called `s01_download_remote_sense.Rmd`, the data
+should be stored in `/data/raw/s01_download_remote_sense`. If you generated data in a script
+called `s02_clustering.Rmd`, the data should be stored in `/data/intermediate/s02_clustering`.
+Feel free to have further subdirectories within these directories if you have a large
+amount of data.
+
+No files should be stored directly in `/data/raw` or `/data/intermediate`, 
+they should always be put in a first level sub-directory. If you are not 
+generating any intermediate data, you can simply ignore the `/data/intermediate` directory.
+
+## Generating results
+Some analyses will generate outputs that we want to use in the paper (e.g. plots or tables).
+We suggest that you put those in the `results` directory, to separate them from intermediate
+data (which are generally used for further analysis). As with data, we suggest that you
+create a subdirectory for each script that generates results. So, if you have a script
+`s02_clustering.Rmd` that generates a plot, you should save that plot in 
+`/results/s02_clustering`. In this example, the same script could generate both a large
+amount of data describing the membership to clusters (which we decided to store as data) and a plot
+(which belongs in results). There are many instances where the same output could be
+thought as either data or results; don't worry too much about it, as long as you annotate
+your code well, you will be able to find where the information is.
+
+
+## Writing it all up
+
+Git is not really designed to handle Word or OpenOffice files. Ideally, text is 
+kept in markdown files, but that format does not lend itself nicely to formatting
+for submission (e.g. bibliography from a reference manager). Having said that, 
+you could, in principle, track Word/OpenOffice documents in the `writing` directory, 
+as they are rarely large enough to cause trouble. If you are writing
+collaboratively, you are more likely to use GoogleDoc or shared Word documents.
+In that case, you can use the README.md in the `writing` directory to store the 
+paths to those documents. By doing so, it means that a collaborator who has access 
+to the repository can also find the manuscript easily (i.e.
+everything is in one place).
 
 ## Initialise the repository
 
-Start by creating a blank repository, clone it on your computer, and use `resrepo` to initialise it. First, make sure that your working directory is set within the `git` repository:
+Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first) or you can follow the gif below. For this vignette, we will create a "resrepo_example" git repository. 
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/github_create_repo.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+Then, you can clone the repository on your computer. You can do this in RStudio by clicking on the *File* tab, then *New Project...*, *Version Control*, *Git*, and pasting the URL of your repository. 
+
+We will now use `resrepo` to initialise the repository. First, make sure that your working directory is set within the `git` repository:
 ```{r}
 getwd()
 ```
@@ -39,148 +142,20 @@ library(resrepo)
 init_resrepo()
 ```
 
-Let us look at the content of our repository:
+Let us look at the content of our new repository:
 
 ```{r}
 fs::dir_tree()
 ```
 
-In `resrespo`, we keep data, code, results, and the write-up separate. This 
-allows for a tidy structure that can flexibly accommodate very complex projects.
-Note that there are a number of README.md files, which provide instructions and advice
-related to the files that go into that particular directory.
-
-If you created the repository with `init_resrepo`, it would be a good idea to commit the changes, so that you have a clean repository template as your first commit, and you
-can best document the changes that you make as you progress.
-
-```{r echo=FALSE, results=FALSE}
-git2r::add(path=".")
-git2r::commit(message="initialise resrepo template", all=TRUE)
-```
-
-First, you should modify the main README.md, found at the root of the project,
+You should now modify the main README.md, found at the root of the project,
 to describe your project. That document will act as the landing page of your
 git repository in GitHub/GitLab.
 
-## Set up data directories
 
-Next, you will need to bring some data into your repository. There are two main categories of data: "raw" data, which are primary data (e.g. measurements you made in the lab or the field, fastq files generated by a sequencer, remote sensing data downloaded from NASA); and "intermediate" data (data that you generated from raw, and that in turn will be used as the base of further analysis). In `resrepo`, we store data in one or more sub-directories within `/data/raw` or `/data/intermediate`, depending on their category. The template has a `/raw/default` subdir, which you could use if you have a simple project with relatively
-few data files, but you are free to remove it and create alternative ones.
+## Similar tools
 
-For each first level sub-directory within `/data/raw` and `/data/intermediate`, there should be an entry in the file `data_source_list.csv`. The file describes where the data can be found (e.g. directly tracked on git, Zenodo, OneDrive, etc.). For repeatable science, it is important that the provenance of data
-is clear. For finished projects, you want to make sure that you use permanent repositories (e.g. Zenodo),
-not your personal OneDrive! When a `resrepo` has just been initialised, we only have an entry for `/data/raw/default`:
-```{r}
-read.csv("./data/data_source_list.csv")
-```
-
-Note however that this entry is incomplete, as the `source` and `url` elements
-are empty. By default, a `resrepo` does not track data files (as they are often too large for git), and each sub-directory should have a remote source that will allow other users to get the data needed
-for the analysis. There should be one source for each first-level subdirectory (e.g. `/data/raw/defaults` or `/data/intermediate/rnaseq`); you are then free to further structure (or not) your data within multiple, higher level sub-directories within each first level sub-directory. If your datasets are small and stored as text files, you might decide to track them directly within your git repository. In that case, set the `source` and `url` as `git` in the `data_source_list.csv` table for that sub-directory, and modify `.gitignore` accordingly.
-
-We can check that all entries are present and complete with:
-```{r, error=TRUE}
-data_source_check()
-```
-
-If we decided to mirror our data
-on OneDrive, we can simply edit the information:
-
-```{r}
-data_source_edit(dir = "/data/raw/default",
-                 source = "onedrive",
-                 url = "https://my_one_drive/link_to_default_folder")
-```
-
-Note that you will need the link to the OneDrive folder where you will keep a
-copy of the data. `resrepo` does not update the data files for you, so you
-will have to manually keep the cloud source up-to-date (but see the
-vignette on symbolic_links for a set up where mirroring is automatic).
-
-If we inspect the data_source_list.csv file, we have:
-```{r}
-read.csv("./data/data_source_list.csv")
-```
-
-The notes are optional, but they allow you to add
-additional information on where the data come from.
-
-And now all checks will pass:
-```{r}
-data_source_check()
-```
-Now data sources have been arranged, commit changes for a clean repository.
-
-```{r echo=FALSE, results="hide"}
-
-git2r::add(path="./data")
-git2r::commit(message="Added data sources", all=TRUE)
-
-git2r::status()
-```
-
-No files should be stored directly in `/data/raw` or `/data/intermediate`, they should always be put in a first level sub-directory (otherwise we can not define the provenance in `data_source_list.csv`). If you decide to remove the `/raw/default` subdir and use a custom directory, make sure that the `data_source_list.csv` table is updated accordingly. If you are not generating any intermediate data, you can simply ignore the `/data/intermediate` directory.
-
-## Adding some code and generating results
-
-Git is designed to track code, and it does so elegantly out of the box. For code portability,
-however, it is important to use relative paths in your scripts. So, from the `/code` directory, data
-can be found as `../data/raw/default`. The other option is to use:
-```{r}
-data_dir <- path_resrepo("/data/raw/default")
-data_dir
-```
-
-`path_resrespo` allows the use of paths relative to the root of the git
-repository, irrespective of where the scripts are (e.g.
-deep in a subdirectory of `code`).
-
-It is also important that code saves data in the `results` directory. 
-If you have many scripts, it is often better to have them each writing results into separate sub-directories, as it helps tracking where each result file comes from. So, for example,
-`/code/s01_preprocessing.R` would write files into `/results/s01_preprocessing`. 
-This strategy also allows to have a simple command at the beginning of a script which wipes the results directory before generating the new set of results (thus avoiding the risk of having old files from obsolete analyses floating around the repository).
-
-An added challenge is posed by RMarkdown (Rmd) files, as they, by default, knit in the
-same directory as the script (and thus would put the output into `code`). The function
-`knit_to_results` changes this behaviour: when you click 'knit', the output will 
-automatically be knitted to a folder under `results` with the same name as the `Rmd` file itself. 
-
-To use the `knit_to_results` function, add it to the the YAML section of the 
-RMarkdown document under the `knit` parameter. 
-
-For example, if this is the YAML header of the RMarkdown file `code/s02_plots.Rmd` 
-which is the 2nd step in an analysis workflow and produces some plots:
-
-```
----
-title: "Step 2: plots"
-author: "Your name"
-date: "2022-01-30"
-knit: resrepo::knit_to_results
-output: pdf_document
----
-```
-then the output of knitting this file will be a PDF document of the same name, in 
-a `results` folder of the same name: `results/s02_plots/s02_plots.pdf`.
-
-If the code in this Rmd file also saves plots to file (e.g. using `png()` or `ggsave()` functions),
-you should ensure they are also written to the output folder `results/s02_plots`. This
-way all the outputs from one Rmd file are in the same place, and can easily be linked back
-to the script that produced them (`code/s02_plots.Rmd`).
-
-
-## Writing it all up
-
-Git is not really designed to handle Word or OpenOffice files. Ideally, text is 
-kept in markdown files, but that format does not let itself nicely to formatting
-for submission (e.g. bibliography from a reference manager). Having said that, 
-you could, in principle, track Word/OpenOffice documents in the `writing` directory, 
-as they are rarely large enough to cause trouble. If you are writing
-collaboratively, you are more likely to use GoogleDoc or shared Word documents.
-In that case, you can use the README.md in the `writing` directory to store the 
-paths to those documents. By doing so, it means that a collaborator who has access 
-to the repository can also find the manuscript easily (i.e.
-everything is in one place).
+Scientific projects contain both code and data: `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, making it easy to share your project with collaborators, thus ensuring reproducible science and a tidy repository that can used for publication of your work.
 
 <br>
 
@@ -190,201 +165,180 @@ everything is in one place).
 
 # A step by step example
 
-We will now illustrate how to populate a `resrespo` for a simple project. 
+We will now illustrate how to populate a simple project with `resrespo`.
 
-The first step is to download some data and put them in `/data/raw/default`. 
-We will use some data from the package `palmerpenguins`, and copy them into our repository:
+In this project, we have gone to the field and measured several individuals of
+a new imaginary species of penguin called Tux. We have collected data on their bill length and depth, flipper length,
+body mass and sex. We will store this data, of which we have a copy in the package, as a CSV file named "tux_measurements.csv"
+in the `data/raw/original` directory:
+
 ```{r}
-data("penguins", package = "palmerpenguins")
-write.csv(x = penguins,
-          file = path_resrepo("/data/raw/default/penguins.csv"))
+file.copy(
+  from = system.file("vignette_example/tux_measurements.csv",
+                     package = "resrepo"),
+  to = path_resrepo("/data/raw/original/tux_measurements.csv"),
+  overwrite = TRUE
+)
 ```
 
-```{r echo=FALSE}
+Let's have a look at the repository:
+```{r}
 fs::dir_tree()
 ```
 
-By default, the data are not tracked, so this file will not appear on your Git 
-tab on the right hand side of RStudio. We can use a command from the `git2r` library
-to check this (but you won't need it, you can just check the Git tab in Rstudio):
+We will then write a script to download data on three other species of penguins from the `palmerpenguins`
+dataset. We will call this script `s01_download_penguins.Rmd`, and store the data in `data/raw/s01_download_penguins`. 
 
-```{r}
-git2r::status()
-```
-
-We will now process the data: we want to create a version of the dataset without NAs
-(of course, you will normally have much more complex data processing). 
-
-
-We will write a simple script to put in code, and we will call it `s01-preprocess_penguins.R`.
-We want the script to save a new version of the dataset. This should go in `/data/intermediate`,
-in a new directory. It is good practice to use the same name as the script, so
-that you can easily track down where the files come from.
-We first need to create this directory:
-```{r}
-data_source_add(dir = "/data/intermediate/s01-preprocess_penguins",
-                source = "onedrive",
-                url = "https://my_one_drive/link_to_penguins_folder")
-```
-
-```{r echo=FALSE}
-fs::dir_tree()
-```
-And that the source list is fully valid:
-```{r}
-data_source_check()
-```
-
-Let us copy in from the package a script to preprocess the data:
-
-```{r echo=FALSE, results="hide"}
-file.copy(system.file("template_extra/s01-preprocess_penguins.R",
-                      package="resrepo"),
-          path_resrepo("/code/s01-preprocess_penguins.R"))
-```
-
-Now that we have a directory where we can store our intermediate dataset, we can
-create our script that will generate it. The script will include:
-```{r echo=FALSE}
-readLines(path_resrepo("/code/s01-preprocess_penguins.R"))
-```
-
-```{r echo=FALSE}
-fs::dir_tree()
-```
-
-Let's now execute the script (if running R from the command line, 
-you might use `Rscript`):
-
-```{r}
-source(path_resrepo("/code/s01-preprocess_penguins.R"))
-```
-And we can see that the resulting dataset was stored as expected in the intermediate data
-directory.
-
-```{r echo=FALSE}
-fs::dir_tree()
-```
-
-The only files that should be visible to git are the source list table (which
-was updated when we created a new data source) and the script, but not the data
-files that we created (as we are ignoring the data directories):
-```{r}
-git2r::status()
-```
-
-We should now commit our changes to our git repository.
-```{r echo=FALSE, results="hide"}
-
-git2r::add(path=".")
-git2r::commit(message="Added preprocess script", all=TRUE)
-```
-
-And check that after that, we have a clean repository:
-```{r}
-git2r::status()
-```
-
-For other parts of the analysis, a RMarkdown document might be more suitable
-than a plain script. 
-
-To create a new Rmd file from the `resrepo` template Rmd file, use the `create_rmd` 
-function and specify the filename and which folder it should be in (you do not 
+`resrepo` can generate a pre-edited Rmd file for you to use as a template for your analysis
+. This is better than the default template in RStudio, and we will explore some of its additional
+features further below. To create a new Rmd file from the `resrepo` template Rmd file, use the `create_rmd` 
+function and specify the file name and which folder it should be in (you do not 
 need to include the `.Rmd` file extension).
+
+
 ```{r}
-create_rmd("code/s02-plots")
+create_rmd("code/s01_download_penguins")
 ```
 
-We can see that a new Rmd file has appeared.
-```{r}
-fs::dir_tree()
+We can replace the explanatory text and examples in this Rmd with only a simple chunk of code:
+```{r eval = FALSE}
+library(resrepo)
+# define the output directory (named after the script) and create it
+output_dir <- path_resrepo("/data/raw/s01_download_penguins")
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+# load the data
+data("penguins", package = "palmerpenguins")
+# write the data
+write.csv(
+  x = penguins, file = file.path(output_dir, "palmer_penguins.csv"),
+  row.names = FALSE
+)
 ```
 
-You can now open this file and edit it to do your analyses. For this vignette, 
-we will replace it with a pre-written analysis file to continue the example.
+Note that, to set the output directory, we used the function `path_resrepo`, which
+allows us to use paths relative to the root of the git repository, irrespective 
+of where the scripts are. Alternatively, you could use a relative path from the 
+script, e.g. `../data/raw/s01_download_penguins`. The `..` means "go up one directory", 
+so from the `code` directory, it would go to the root of the repository, then 
+into `data/raw/s01_download_penguins`. If you want more information on relative paths,
+have a look at this [link](https://www.redhat.com/en/blog/linux-path-absolute-relative).
 
-We will use an Rmd file that generates a plot. 
-```{r}
-file.copy(from = system.file("template_extra/s02-plots.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s02-plots.Rmd"),
-          overwrite = TRUE)
-```
+Add the chunk above to our s01_download_penguins.Rmd and save it.
 
-The Rmd file `s02-plots.Rmd` includes example code to read in the data:
-```{r}
-data_dir <- path_resrepo("/data/intermediate/s01-preprocess_penguins/")
-penguins <- read.csv(file.path(data_dir,"penguins_na_omit.csv"))
-```
-
-And then to plot mass against flipper length whilst saving a png of the plot
-in the appropriate `/results` subdirectory:
-
-```{r plot_in_results, eval=FALSE}
-# create directory to store the results
-dir.create(path_resrepo('/results/s02-plots'), 
-           showWarnings = FALSE)
-res_dir <- path_resrepo('/results/s02-plots')
-# create plot from intermediate data
-penguins_plot <- plot(x = penguins_na_omit$body_mass_g, 
-                      y = penguins_na_omit$flipper_length_mm
-                      )
-# and save it
-png(file.path(res_dir, "penguins_plot.png"))
-print(penguins_plot)
-dev.off()
-
-```
-
-We can now knit that Rmd (in this case to an md document, which we could easily browse in github). You can do that from RStudio by clicking the Knit button.
-```{r, echo=F, results='hide'}
-knit_to_results(path_resrepo("/code/s02-plots.Rmd"))
-```
-
-We can see that our PDF and plot were saved in the right place.
-```{r}
-fs::dir_tree()
-```
-`results` are tracked by default:
-```{r}
-git2r::status()
-```
-
-Now we just need to commit our changes, and we have a full repository with code
-and results, and a traceable source of data. Before we publish, we would move
-those data directories to something like Zenodo rather than using OneDrive/Dropbox.
 ```{r echo=FALSE, results="hide"}
+file.copy(
+  from = system.file("vignette_example/s01_download_penguins.Rmd",
+                     package = "resrepo"),
+  to = path_resrepo("/code/s01_download_penguins.Rmd"),
+  overwrite = TRUE
+)
+```
 
-git2r::add(path=".")
-git2r::commit(message="Save plot", all=TRUE)
+We can see the script in the `code` directory:
+```{r}
+fs::dir_tree()
+```
+
+You can now open the Rmd and knit it to download the data.
+```{r, echo=F, results='hide'}
+knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+```
+
+We can see that the data was saved in the right place:
+```{r}
+fs::dir_tree()
+```
+
+Note that knitting our Rmd also created the new directory `results/s01_download_penguins` 
+to store the knitted markdown. Standard Rmd documents save the outputs in the same directory as the code, which would break the rule of separation of code and outputs. To avoid this, rmd documents created with `resrepo::create_rmd()`, have their knitted output stored in the right place in results by default. In this case, this document is pretty minimal (it just repeats the 
+code used to download and save), but later on we will use it to document our analysis.
+
+Now that we have new files (the code to download and the resulting data and output), we should commit
+our changes to the repository. In RStudio, open the *Git* tab on the right-hand side, click the *Commit* button, write a descriptive commit message, and then click *Commit* to finalize.
+
+
+<div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+  <img src="../vignettes/img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+</div>
+
+```{r echo=FALSE, results="hide"}
+git2r::add(path = ".")
+git2r::commit(message = "Added preprocess script", all = TRUE)
+```
+
+We now want to merge our data on the new species with the reference dataset, 
+and clean the data (e.g. remove missing data). We will copy over an Rmd from 
+the package, which was originally created with `resrepo::create_rmd`: 
+
+```{r}
+file.copy(
+  from = system.file("vignette_example/s02_merge_clean.Rmd",
+                     package = "resrepo"),
+  to = path_resrepo("/code/s02_merge_clean.Rmd"),
+  overwrite = TRUE
+)
+```
+
+We can check that the script is in the right place:
+```{r}
+fs::dir_tree()
+```
+
+Have a look at this Rmd document. Note how we set all input paths at the very
+beginning of a script, so that it is easy to know what is needed to run
+that script. This habit makes it much easier to share the script with others.
+
+You can now knit the Rmd to merge the data and clean it. 
+```{r knit_merge_clean, echo=F, results='hide'}
+knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+```
+
+We can see that the data was saved in the correct `/data/intermediate` subdirectory:
+```{r}
+fs::dir_tree()
+```
+
+Again, note that a markdown output was placed in an appropriate subdirectory of `results`.
+
+We are now ready to do some analysis. We will start with a PCA, with the aim of testing
+whether our tux penguin is clearly distinct from other penguin species. We use a script
+from the package, which we copy over to our repository:
+
+```{r}
+file.copy(
+  from = system.file("vignette_example/s03_pca.Rmd", package = "resrepo"),
+  to = path_resrepo("/code/s03_pca.Rmd"),
+  overwrite = TRUE
+)
+```
+
+Open it. Again, note our input and output paths are all set at the top of the script,
+to make it easy to understand what is needed to run the script. 
+You should now run (knit) your script. 
+```{r, echo=F, results='hide', message=FALSE}
+knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+```
+
+Let's check the repository once again:
+```{r}
+fs::dir_tree()
+```
+
+Now you just need to commit your changes as you did above, and we have a full repository with data, code
+and results, with a clear structure that should be easy to interpret.
+```{r echo=FALSE, results="hide"}
+git2r::add(path = ".")
+git2r::commit(message = "Save plot", all = TRUE)
 
 git2r::status()
 ```
 
 
-## FAQ
 
-How do I decide whether to put certain files in `data/intermediate` or `results`?
+### Some tips on how to use GitHub
 
-In principle, it does not matter that much where you put them, as long as they are not
-too large. Sometimes the same file can be both a result and data. However, for very large
-files, which you don't want to track directly in git, it is easiest to put them under
-`data/intermediate` as `data` are not tracked by default.
-
-
-### NOTES to integrate into the above
-
-**Naming files and folders**
-Never have spaces in your directory or file names (underscore can be used).
-Please, only use lowercase letters when naming files and folders. 
-Avoid naming your files starting with a number (e.g. instead of “01_process_data.R” use “s01_process_data.R”)
-Do not use generic names such as “Figure_01”, “Figure_02”, etc. for your files and folders. Use more descriptive names as numbers change. It will make your life easier when you will need to work again on the project.
-Naming your results folder as the script that created it (easy to find it after)  
-
-**File size**
-Small data (<1MB or so) can be kept on GitHub. For all the other data/files please use an alternate source (Google Drive, OneDrive, DropBox, etc.). We will work on scripts to retrieve data from different sources.  
-
-
-**This are git specific advice, we could create a separate document with some git tips.**
 
 **Commit**
 Think carefully about your commit messages and branch names, as they will be very useful for returning to past changes for both you and others (for example when a project is made publicly available). Please make them informative.  
@@ -396,7 +350,7 @@ Do not name a branch with the name of a branch that has been merged/deleted rece
 **Binary files**
 Do not upload binary data (e.g.*.rds): changes in such files are too heavy to be handled by GitHub.  
 
-## Github setup
+## GitHub setup
 If you already have a ssh key, follow these steps:
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys 
 
@@ -409,7 +363,4 @@ Source: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/
 
 **3. Test connection**
 Source: https://docs.github.com/cn/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection  
-
-### Worked example (branch)  
-**Summary**
 

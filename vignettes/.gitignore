@@ -1,2 +1,8 @@
 *.html
 *.R
+
+# ignore OSX hidden file 
+*.DS_Store
+
+# ignore R-related files
+*.Rhistory

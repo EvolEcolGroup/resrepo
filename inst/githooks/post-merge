@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -e  # Exit immediately if a command exits with a non-zero status.
+
+# test whether we are on windows
+windows() { [[ -n "$WINDIR" ]]; }
+
+# Read the current version from the file
+# TODO this needs to read the second row and split by comma and remove ""
+VERSION_RAW=$(<./data/version_meta/raw_in_use.meta)
+VERSION_INTERMEDIATE=$(<./data/version_meta/intermediate_in_use.meta)
+
+# Check that the raw version directory exists
+if [[ ! -d ./versions/$VERSION_RAW ]]; then
+  echo "Error: the version $VERSION_RAW does not exist!" >&2
+  exit 1
+fi
+
+# Check that the intermediate version directory exists
+if [[ ! -d ./versions/$VERSION_INTERMEDIATE ]]; then
+  echo "Error: the version $VERSION_INTERMEDIATE does not exist!" >&2
+  exit 1
+fi
+
+# Check that the data paths are NOT directories (should be a link or not exist)
+if [[ -d ./data/raw && ! -L ./data/raw ]]; then
+  echo "Error: data/raw should not be a directory, but a symbolic link to a directory" >&2
+  exit 1
+fi
+if  [[ -d ./data/intermediate && ! -L ./data/intermediate ]]; then
+  echo "Error: data/intermediate should not be a directory, but a symbolic link to a directory" >&2
+  exit 1
+fi
+
+# remove the previous links
+rm -rf data/raw
+rm -rf data/intermediate
+
+# create the links (overwrite them if they exist already)
+if windows; then
+  VERSION_RAW_WIN=$(cygpath -w "./versions/$VERSION_RAW/raw")
+  RAW_WIN=$(cygpath -w "data/raw")
+  cmd <<< "mklink /j \"${RAW_WIN}\" \"${VERSION_RAW_WIN}\"" > /dev/null
+  VERSION_INTERMEDIATE_WIN=$(cygpath -w "./versions/$VERSION_INTERMEDIATE/intermediate")
+  INTERMEDIATE_WIN=$(cygpath -w "data/intermediate")
+  cmd <<< "mklink /j \"${INTERMEDIATE_WIN}\" \"${VERSION_INTERMEDIATE_WIN}\"" > /dev/null
+else
+  ln -sfn ../versions/$VERSION_RAW/raw data/raw
+  ln -sfn ../versions/$VERSION_INTERMEDIATE/intermediate data/intermediate
+fi
+
+echo "Links updated"
+exit 0

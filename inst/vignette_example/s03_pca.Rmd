@@ -1,0 +1,78 @@
+---
+title: "PCA of penguins data"
+author: "Andrea"
+date: "2025-01-23"
+knit: resrepo::knit_to_results
+output: 
+  pdf_document:
+    keep_md: yes
+---
+
+```{r setup_rmd, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+It is useful to set your input directories all at the top of your script, so that
+you can easily check in one place what is needed to run it. 
+You should always use relative paths, either relative
+to the script or, if you use `resrepo::path_resrepo`, to the project root.
+```{r input_paths}
+library(resrepo)
+penguin_dir <- path_resrepo("/data/intermediate/s02_merge_clean")
+# alternatively:
+# penguin_dir <- "../data/intermediate/s02_merge_clean")
+```
+
+And the output paths:
+```{r output_paths, eval=FALSE}
+output_dir <- path_resrepo("/data/intermediate/s03_pca")
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+```
+
+Note that we only create the directory if it does not exist, so that, if the script is run multiple times, it will generate an error if the directory already exists.
+
+## Reading data
+
+We can now read the data, using the paths that we set up at the beginning of our script:
+```{r read_data}
+penguins <- read.csv(file.path(penguin_dir, "penguins_na_omit.csv"))
+```
+
+## PCA
+
+We will now run a principal component analysis:
+```{r pca}
+penguin_pca <- prcomp(penguins[, c("bill_length_mm", "bill_depth_mm",
+                                   "flipper_length_mm", "body_mass_g")],
+                      scale = TRUE)
+```
+
+And plot the penguins:
+```{r pca_plot, fig.width=6, fig.height=6}
+library(ggplot2)
+library(ggfortify)
+autoplot(penguin_pca, data = penguins, colour = "species")
+```
+
+We can see that our tux penguins are very different from the other species from the 
+Palmer dataset.
+
+***
+
+## Recording R environment
+
+Part of ensuring our workflow is reproducible is to keep track of the R environment.
+We will automatically save our R environment into a file called `r_environment.json`.
+
+```{r save-r-environment}
+filename_rmd <- "s03_pca.Rmd"
+filename_renv <- paste0(
+  output_dir, "/renv_",
+  tools::file_path_sans_ext(basename(filename_rmd)),
+  ".json"
+)
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
+print(sessionInfo())
+```
