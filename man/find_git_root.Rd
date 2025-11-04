@@ -7,8 +7,8 @@
 find_git_root(path = ".")
 }
 \arguments{
-\item{path}{option string giving the path to use a starting point (i.e. that is
-part of the repository)}
+\item{path}{option string giving the path to use a starting point (i.e. that
+is part of the repository)}
 }
 \description{
 Returns the path of the current git repository

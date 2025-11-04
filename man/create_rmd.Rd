@@ -2,19 +2,19 @@
 % Please edit documentation in R/create_rmd.R
 \name{create_rmd}
 \alias{create_rmd}
-\title{Create a new Rmarkdown file from the template}
+\title{Create a new R Markdown file from the template}
 \usage{
 create_rmd(filename)
 }
 \arguments{
 \item{filename}{file path to new Rmd file to be created, excluding file
-extension. Can be in a subfolder, e.g. \code{"code/s01_process_data"}.
-This will be passed through the \code{path_resrepo()} function so should be
+extension. Can be in a subfolder, e.g. \code{"code/s01_process_data"}. This
+will be passed through the \code{path_resrepo()} function so should be
 specified from the top level of the repository.}
 }
 \description{
-Creates and writes to file a new Rmarkdown (.Rmd) file from the \code{resrepo}
-template. The YAML header contains the \code{knit_to_results} function,
-and the template includes code chunks for setting input and output
+Creates and writes to file a new R Markdown (.Rmd) file from the
+\code{resrepo} template. The YAML header contains the \code{knit_to_results}
+function, and the template includes code chunks for setting input and output
 directories using resrepo functions.
 }

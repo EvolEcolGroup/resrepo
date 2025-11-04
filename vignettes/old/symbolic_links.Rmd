@@ -14,18 +14,18 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 # define base directory
-base_dir <- file.path(tempdir(),"mydrive")
-#clean it up if it already existed and had old content
-unlink (base_dir, recursive = TRUE)
+base_dir <- file.path(tempdir(), "mydrive")
+# clean it up if it already existed and had old content
+unlink(base_dir, recursive = TRUE)
 # define the directories
-onedrive_dir <- file.path(base_dir ,"onedrive/gitdata")
-git_dir <- file.path(base_dir ,"git/project1")
+onedrive_dir <- file.path(base_dir, "onedrive/gitdata")
+git_dir <- file.path(base_dir, "git/project1")
 # create them
 dir.create(onedrive_dir, recursive = TRUE)
 dir.create(git_dir, recursive = TRUE)
-vignette_dir<-getwd()
+vignette_dir <- getwd()
 # initialise the git repository
-example_repo <- git2r::init(path=git_dir)
+example_repo <- git2r::init(path = git_dir)
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 # set the working directory for markdown here
 knitr::opts_knit$set(root.dir = git_dir)
@@ -35,9 +35,9 @@ knitr::opts_knit$set(root.dir = git_dir)
 ```{r echo=FALSE, results="hide"}
 # now that that the working directory is in the git repository
 # we set up the resrepo for the project
-resrepo::init_resrepo()  # make all the resrepo folders
-git2r::add(path=".")  # add all the new files to git
-git2r::commit(message="initialise resrepo template", all=TRUE)  # commit them
+resrepo::init_resrepo() # make all the resrepo folders
+git2r::add(path = ".") # add all the new files to git
+git2r::commit(message = "initialise resrepo template", all = TRUE) # commit them
 ```
 
 # Using symbolic links in resrepo
@@ -62,11 +62,11 @@ system.
 In this vignette, we have assume the following drive structure:
 
 ```{r echo=FALSE}
-fs::dir_tree(path=base_dir)
+fs::dir_tree(path = base_dir)
 ```
 
 with `./git` being the directory that contains your git repositories (which are
-likely connected to their GitHub or Gitlab remotes), and `./onedrive` being the
+likely connected to their GitHub or GitLab remotes), and `./onedrive` being the
 directory mirrored on the cloud. Our project repository (initialised with
 `init_resrepo()` as shown in the main vignette) is found in
 `./git/project1`. In our mirrored
@@ -88,7 +88,7 @@ data_source_delete("/data/raw/default")
 We start by initialising a mirror directory in `./onedrive/gitdata/`. The full path
 to that directory is stored in the variable `onedrive_dir`:
 ```{r}
-onedrive_dir <- file.path(base_dir,"onedrive/gitdata")
+onedrive_dir <- file.path(base_dir, "onedrive/gitdata")
 init_mirror(onedrive_dir)
 ```
 
@@ -97,7 +97,7 @@ That directory contains all the data subdirectories found in our git project,
 but not the other subdirectories (i.e. code, results, writing):
 
 ```{r echo=FALSE}
-fs::dir_tree(path=base_dir)
+fs::dir_tree(path = base_dir)
 ```
 We now want to add a data subdirectory that will actually hold our data (i.e. 
 under /data/raw). We will call it `data_input` (so, `/data/raw/data_input`).
@@ -109,7 +109,8 @@ So, first, create the directory in onedrive:
 
 ```{r}
 # create the new directory
-dir.create(file.path(onedrive_dir,"project1/data/raw/data_input"), recursive = TRUE)
+dir.create(file.path(onedrive_dir, "project1/data/raw/data_input"),
+           recursive = TRUE)
 ```
 ```{r echo=FALSE}
 fs::dir_tree(base_dir)
@@ -117,13 +118,17 @@ fs::dir_tree(base_dir)
 
 And now we create the symbolic link:
 ```{r}
-data_dir_link(link_dir = "/data/raw/data_input",
-              target_dir = file.path(base_dir,
-                                     "onedrive/gitdata/project1/data/raw/data_input"))
+data_dir_link(
+  link_dir = "/data/raw/data_input",
+  target_dir = file.path(
+    base_dir,
+    "onedrive/gitdata/project1/data/raw/data_input"
+  )
+)
 ```
 
 ```{r echo=FALSE}
-fs::dir_tree(path=base_dir)
+fs::dir_tree(path = base_dir)
 ```
 
 We can see that we now have what looks like a directory called `data_input` in
@@ -137,9 +142,11 @@ data_source_check()
 ```
 After adding it, all is well:
 ```{r}
-data_source_add(dir = "/data/raw/data_input",
-                source = "onedrive",
-                url = "https://my_one_drive/link_to_data_input")
+data_source_add(
+  dir = "/data/raw/data_input",
+  source = "onedrive",
+  url = "https://my_one_drive/link_to_data_input"
+)
 data_source_check()
 ```
 
@@ -148,12 +155,14 @@ name under one drive. If we write a file within our git repository, we can see
 that the file is actually stored on onedrive:
 
 ```{r}
-write.csv("some content to put in the file",
-          path_resrepo("/data/raw/data_input/new_data_file.csv"))
+write.csv(
+  "some content to put in the file",
+  path_resrepo("/data/raw/data_input/new_data_file.csv")
+)
 ```
 
 ```{r echo=FALSE}
-fs::dir_tree(path=base_dir)
+fs::dir_tree(path = base_dir)
 ```
 However, we can retrieve the file by targeting the directory within our `git`
 repository:

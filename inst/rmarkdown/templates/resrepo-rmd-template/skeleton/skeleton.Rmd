@@ -1,5 +1,5 @@
 ---
-title: "Resrepo Rmarkdown template"
+title: "Resrepo R Markdown template"
 author: "Your Name"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 knit: resrepo::knit_to_results
@@ -31,7 +31,7 @@ In this chunk we define the input and output directories:
 * `output_dir`: output folder where any outputs or results should be saved, e.g. 
 plots or intermediate data files.
 
-In an RMarkdown document within a `resrepo` repository, it easy to find a file 
+In an R Markdown document within a `resrepo` repository, it easy to find a file 
 or folder by using the function `path_resrepo`. 
 
 You can use `path_resrepo` to read in a particular file, or create a variable 
@@ -100,10 +100,10 @@ We will automatically save our R environment into a file called `r_environment.j
 
 ```{r save-r-environment}
 filename_rmd <- rstudioapi::getSourceEditorContext()$path
-filename_renv <- paste0(output_dir, "/renv_", 
-                       tools::file_path_sans_ext(basename(filename_rmd)),
-                       ".json")
-renv::lockfile_write(renv::lockfile_create(), file=filename_renv)
+filename_renv <- paste0(output_dir, "/renv_",
+                        tools::file_path_sans_ext(basename(filename_rmd)),
+                        ".json")
+renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
 print(sessionInfo())
 ```
 

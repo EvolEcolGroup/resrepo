@@ -12,14 +12,13 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-example_dir <- file.path(tempdir(),"resrepo_example")
-unlink(example_dir,recursive = TRUE)
+example_dir <- file.path(tempdir(), "resrepo_example")
+unlink(example_dir, recursive = TRUE)
 dir.create(example_dir, showWarnings = FALSE)
 example_repo <- git2r::init(example_dir)
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
-vignette_dir<-getwd()
+vignette_dir <- getwd()
 knitr::opts_knit$set(root.dir = example_dir)
-# setwd(example_dir)
 ```
 
 In many scientific projects, data are simply too large to be stored in a git repository. 
@@ -31,7 +30,7 @@ allowing you to easily switch between different versions of the data.
 # Ignoring data in your repository
 
 The first step is to ignore the data in your repository. `git` is not designed for very large files,
-and indeed Github has a limit of XXX TODO on the size of files that can be uploaded.
+and indeed GitHub has a limit of XXX TODO on the size of files that can be uploaded.
 `resrepo` offers a simple function that will remove your data from the repository, and
 avoid tracking any further data.
 
@@ -41,24 +40,34 @@ we created in vignette basic_workflow; if you still have that repository, you do
 ```{r, echo=FALSE}
 library(resrepo)
 init_resrepo()
-file.copy(from = system.file("vignette_example/tux_measurements.csv", package="resrepo"),
-          to = path_resrepo("/data/raw/original/tux_measurements.csv"),
-          overwrite = TRUE)
-file.copy(from = system.file("vignette_example/s01_download_penguins.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s01_download_penguins.Rmd"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/tux_measurements.csv",
+                     package = "resrepo"),
+  to = path_resrepo("/data/raw/original/tux_measurements.csv"),
+  overwrite = TRUE
+)
+file.copy(
+  from = system.file("vignette_example/s01_download_penguins.Rmd",
+                     package = "resrepo"),
+  to = path_resrepo("/code/s01_download_penguins.Rmd"),
+  overwrite = TRUE
+)
 knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
-file.copy(from = system.file("vignette_example/s02_merge_clean.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s02_merge_clean.Rmd"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/s02_merge_clean.Rmd",
+                     package = "resrepo"),
+  to = path_resrepo("/code/s02_merge_clean.Rmd"),
+  overwrite = TRUE
+)
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
-file.copy(from = system.file("vignette_example/s03_pca.Rmd", package="resrepo"),
-          to = path_resrepo("/code/s03_pca.Rmd"),
-          overwrite = TRUE)
+file.copy(
+  from = system.file("vignette_example/s03_pca.Rmd", package = "resrepo"),
+  to = path_resrepo("/code/s03_pca.Rmd"),
+  overwrite = TRUE
+)
 knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
-git2r::add(path=".")
-git2r::commit(message="Save plot", all=TRUE)
-
+git2r::add(path = ".")
+git2r::commit(message = "Save plot", all = TRUE)
 ```
 
 Let us check that we do have indeed a full repository:

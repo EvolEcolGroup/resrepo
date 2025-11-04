@@ -9,8 +9,8 @@ path_relative(path, base = getwd())
 \arguments{
 \item{path}{the full path}
 
-\item{base}{optional, the base with respect to which the relative path is built. It defaults
-to the current working directory in R.}
+\item{base}{optional, the base with respect to which the relative path is
+built. It defaults to the current working directory in R.}
 }
 \description{
 Given an absolute path, it returns the relative path with respect to a base

@@ -1,6 +1,6 @@
 
 # list all files in data:
-data_dir<-"./"
+data_dir <- "./"
 list.files(data_dir, recursive = TRUE)
 
 # check that the data directory does include valid directories

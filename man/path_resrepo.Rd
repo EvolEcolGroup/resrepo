@@ -9,16 +9,16 @@ path_resrepo(path, version = NULL, check_exists = FALSE)
 \arguments{
 \item{path}{directory within a resrepo}
 
-\item{version}{version of the data to use (only valid if the path starts
-with "/data" or the relevant shortcut)}
+\item{version}{version of the data to use (only valid if the path starts with
+"/data" or the relevant shortcut)}
 
 \item{check_exists}{boolean whether we should check if it exists}
 }
 \description{
-Given a path relative to the root of a resrepo (e.g. \verb{/data/raw/default}), it returns
-the full path to it. It works both on files and directories. The first level
-directories can be shortened to the first letter, so \verb{/r/cleaning} will
-be expanded to \verb{/results/cleaning}. The same applies for the second level
-directories withing \verb{/data}: \verb{/d/r/} becomes \verb{/data/raw/} and \verb{/d/i/}
-becomes \verb{/data/intermediates/}
+Given a path relative to the root of a resrepo (e.g. \verb{/data/raw/default}), it
+returns the full path to it. It works both on files and directories. The
+first level directories can be shortened to the first letter, so
+\verb{/r/cleaning} will be expanded to \verb{/results/cleaning}. The same applies for
+the second level directories within \verb{/data}: \verb{/d/r/} becomes \verb{/data/raw/}
+and \verb{/d/i/} becomes \verb{/data/intermediates/}
 }

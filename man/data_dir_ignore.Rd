@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_dir_ignore.R
 \name{data_dir_ignore}
 \alias{data_dir_ignore}
-\title{Untrack a data directory with git}
+\title{Stop tracking a data directory with git}
 \usage{
 data_dir_ignore(path)
 }

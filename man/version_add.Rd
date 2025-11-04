@@ -29,7 +29,7 @@ the raw data will be kept in the currently used version}
 copy from. If NULL, it will be the current version}
 
 \item{raw_source}{The name of the raw version to copy from. If NULL,
-it will be the current version. Ingored if \code{raw_new_version} is NULL.}
+it will be the current version. Ignored if \code{raw_new_version} is NULL.}
 
 \item{intermediate_description}{A description of the new intermediate version}
 
