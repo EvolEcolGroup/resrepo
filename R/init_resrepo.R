@@ -2,7 +2,7 @@
 #'
 #' Initialise a resrepo, creating all the necessary files and directories.
 #'
-#' @param path optional path for the a resrepo; by defalt, we use the current
+#' @param path optional path for the a resrepo; by default, we use the current
 #' working directory
 #'
 #' @export

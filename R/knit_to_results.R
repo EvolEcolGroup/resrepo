@@ -1,6 +1,6 @@
-#' Knit RMarkdown file to results folder
+#' Knit R Markdown file to results folder
 #'
-#' This function is used in the YAML of an RMarkdown file so that when it is
+#' This function is used in the YAML of an R Markdown file so that when it is
 #' knitted, the output file is sent to the \code{~/results} directory rather
 #' than the directory in which the \code{.Rmd} file is located. The output file
 #' can be \code{.pdf}, \code{.html}, \code{.md} etc.

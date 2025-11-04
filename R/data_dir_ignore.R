@@ -1,4 +1,4 @@
-#' Untrack a data directory with git
+#' Stop tracking a data directory with git
 #'
 #' This function removes tracking for a data directory in git.
 #'

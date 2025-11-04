@@ -30,7 +30,7 @@ allowing you to easily switch between different versions of the data.
 # Ignoring data in your repository
 
 The first step is to ignore the data in your repository. `git` is not designed for very large files,
-and indeed Github has a limit of XXX TODO on the size of files that can be uploaded.
+and indeed GitHub has a limit of XXX TODO on the size of files that can be uploaded.
 `resrepo` offers a simple function that will remove your data from the repository, and
 avoid tracking any further data.
 

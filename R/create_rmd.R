@@ -1,6 +1,6 @@
-#' Create a new Rmarkdown file from the template
+#' Create a new R Markdown file from the template
 #'
-#' Creates and writes to file a new Rmarkdown (.Rmd) file from the
+#' Creates and writes to file a new R Markdown (.Rmd) file from the
 #' \code{resrepo} template. The YAML header contains the \code{knit_to_results}
 #' function, and the template includes code chunks for setting input and output
 #' directories using resrepo functions.

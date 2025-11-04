@@ -66,7 +66,7 @@ fs::dir_tree(path = base_dir)
 ```
 
 with `./git` being the directory that contains your git repositories (which are
-likely connected to their GitHub or Gitlab remotes), and `./onedrive` being the
+likely connected to their GitHub or GitLab remotes), and `./onedrive` being the
 directory mirrored on the cloud. Our project repository (initialised with
 `init_resrepo()` as shown in the main vignette) is found in
 `./git/project1`. In our mirrored

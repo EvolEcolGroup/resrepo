@@ -17,7 +17,7 @@
 #' @param intermediate_source The name of the intermediate version to
 #'   copy from. If NULL, it will be the current version
 #' @param raw_source The name of the raw version to copy from. If NULL,
-#'   it will be the current version. Ingored if `raw_new_version` is NULL.
+#'   it will be the current version. Ignored if `raw_new_version` is NULL.
 #' @param intermediate_description A description of the new intermediate version
 #' @param raw_description A description of the new raw version. Ignored if
 #'  `raw_new_version` is NULL.

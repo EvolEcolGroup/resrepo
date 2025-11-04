@@ -2,7 +2,7 @@
 % Please edit documentation in R/knit_to_results.R
 \name{knit_to_results}
 \alias{knit_to_results}
-\title{Knit RMarkdown file to results folder}
+\title{Knit R Markdown file to results folder}
 \usage{
 knit_to_results(input_file, encoding, envir = parent.frame(), rename_md = TRUE)
 }
@@ -20,7 +20,7 @@ objects created in the Rmd.}
 README.md to be display on GitHub.}
 }
 \description{
-This function is used in the YAML of an RMarkdown file so that when it is
+This function is used in the YAML of an R Markdown file so that when it is
 knitted, the output file is sent to the \code{~/results} directory rather
 than the directory in which the \code{.Rmd} file is located. The output file
 can be \code{.pdf}, \code{.html}, \code{.md} etc.

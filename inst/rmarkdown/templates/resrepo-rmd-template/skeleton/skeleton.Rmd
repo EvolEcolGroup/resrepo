@@ -1,5 +1,5 @@
 ---
-title: "Resrepo Rmarkdown template"
+title: "Resrepo R Markdown template"
 author: "Your Name"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 knit: resrepo::knit_to_results
@@ -31,7 +31,7 @@ In this chunk we define the input and output directories:
 * `output_dir`: output folder where any outputs or results should be saved, e.g. 
 plots or intermediate data files.
 
-In an RMarkdown document within a `resrepo` repository, it easy to find a file 
+In an R Markdown document within a `resrepo` repository, it easy to find a file 
 or folder by using the function `path_resrepo`. 
 
 You can use `path_resrepo` to read in a particular file, or create a variable 

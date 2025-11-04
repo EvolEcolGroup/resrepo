@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Reading data
 
-In a RMarkdown document within a `resrepo` repository, it easy to find data
+In a R Markdown document within a `resrepo` repository, it easy to find data
 by using the function `path_resrepo`:
 ```{r read_data1}
 library(resrepo)
