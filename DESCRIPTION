@@ -1,6 +1,6 @@
 Package: resrepo
 Title: Easy git repo management for reproducible science
-Version: 0.2.0.9000
+Version: 0.3.0
 Authors@R: 
     c(
         person("Andrea", "Manica", email = "am351@cam.ac.uk", role = c("aut", "cre")),

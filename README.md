@@ -10,13 +10,12 @@ The aim of `resrepo` is to encourage and facilitate good practices when setting 
 
 ## Install the library
 
-You will need to install the library from GitHub. For this step, you will need to
-use `devtools` (if you haven't done so already, install it from CRAN with `install.packages("devtools")`.
-Once you have `devtools`, simply use:
+`resrepo` is still under development and is not yet available on CRAN. You can get
+a preview from GitHub; it is reasonably complete, and we already use it for our own projects,
+but please beware that it is under testing. With `pak`, you can simply use:
 ```
-devtools::install_github("EvolEcolGroup/resrepo")
+pak::pak("EvolEcolGroup/resrepo")
 ```
-
 
 ## Overview of functionality
 
@@ -26,12 +25,9 @@ requirements depend on your OS):
 ```
 devtools::install_github("EvolEcolGroup/resrepo", build_vignette = TRUE)
 ```
-If you built the vignettes, you can read them directly in R. For example, the overview of the workflow can be
+If you built the vignettes, you can read them directly in R.
+For example, the overview of the workflow can be
 obtained with:
 ```
-vignette("workflow", package = "resrepo")
+vignette("resrepo", package = "resrepo")
 ```
-
-## Notes
-
-Currently, in the vignette data_versioning.Rmd, when merging the two git branches (chunk git_merge) on Windows systems, a message 'ln: failed to create symbolic link 'data/raw': No such file or directory' may appear. This does not seem to affect the package's functionality and can be ignored, though we recommend verifying that files are saved as expected.
