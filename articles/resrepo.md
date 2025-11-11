@@ -56,14 +56,6 @@ Here is a general overview of the structure:
   It can contain markdown files, or links to GoogleDocs or Word
   documents. It is not recommended to store large files in this folder.
 
-TODO: figure to show the general resrepo structure. *Is it needed? I
-think that the first
-[`fs::dir_tree()`](https://fs.r-lib.org/reference/dir_tree.html) shows
-exactly this, thus I haven’t created a figure yet.*
-
-TODO: short text to explain the structure. *Wasn’t it just explained
-above?*
-
 ### Naming your code scripts
 
 The names of your scripts should be informative and follow a logical
@@ -161,7 +153,7 @@ that your working directory is set within the `git` repository:
 
 ``` r
 getwd()
-#> [1] "/tmp/RtmpHg6U3F/resrepo_example"
+#> [1] "/tmp/Rtmpi8EDl9/resrepo_example"
 ```
 
 We can now initialise the repository:

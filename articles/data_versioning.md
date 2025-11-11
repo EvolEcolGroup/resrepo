@@ -237,10 +237,10 @@ we have switched to a new branch in the git repository called
 ``` r
 git2r::branches()
 #> $main
-#> [e6e5c4] (Local) main
+#> [ffea41] (Local) main
 #> 
 #> $new_filtering
-#> [2464cd] (Local) (HEAD) new_filtering
+#> [b3165e] (Local) (HEAD) new_filtering
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the

@@ -178,7 +178,7 @@ folder:
 
 ``` r
 fs::dir_tree(external_data_storage_new)
-#> /tmp/Rtmp01TWPN/external_data_storage_new
+#> /tmp/Rtmpc0NHS7/external_data_storage_new
 #> ├── initial
 #> │   └── intermediate
 #> └── starting
