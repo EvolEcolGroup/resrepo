@@ -62,7 +62,7 @@ plot(penguin_pca$x[, 1], penguin_pca$x[, 2],
 # Add legend
 legend("topright",
        legend = levels(as.factor(penguins$species)),
-       col = 1:length(levels(as.factor(penguins$species))),
+       col = seq_along(levels(as.factor(penguins$species))),
        pch = 19,
        title = "Species")
 ```
