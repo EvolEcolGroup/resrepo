@@ -126,7 +126,7 @@ everything is in one place).
 Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first) or you can follow the gif below. For this vignette, we will create a "resrepo_example" git repository. 
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/github_create_repo.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/github_create_repo.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 Then, you can clone the repository on your computer. You can do this in RStudio by clicking on the *File* tab, then *New Project...*, *Version Control*, *Git*, and pasting the URL of your repository. 
@@ -260,7 +260,7 @@ our changes to the repository. In RStudio, open the *Git* tab on the right-hand 
 
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 ```{r echo=FALSE, results="hide"}

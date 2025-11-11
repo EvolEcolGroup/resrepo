@@ -27,7 +27,7 @@ etc..)
 The following GIF shows how to clone a `resrepo` repository using GitHub and RStudio.
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/git_clone_repo.gif" alt="Cloning a repository using GitHub and RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/git_clone_repo.gif" alt="Cloning a repository using GitHub and RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 ```{r setup, echo=FALSE, results='hide'}

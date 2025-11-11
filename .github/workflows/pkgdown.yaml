@@ -2,7 +2,7 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, fix_website]
   pull_request:
   release:
     types: [published]
@@ -27,7 +27,7 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: r-lib/actions/setup-tinytex@v2  
+      - uses: r-lib/actions/setup-tinytex@v2
       - run: tlmgr --version
 
       - name: Get libgit2 for Ubuntu
