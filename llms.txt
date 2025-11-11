@@ -1,0 +1,73 @@
+# resrepo
+
+# Research repository (resrepo) template
+
+The aim of `resrepo` is to encourage and facilitate good practices when
+setting up and managing `git` repositories for scientific research
+projects. Scientific projects contain both code and data. `git` is
+designed to manage software code, but it is not suited to track large
+data files. There are extensions of `git`, such as `git-lfs` and
+`git-annex` that can handle data, but they can be complex to set up and
+difficult to use, especially when sharing your repository among
+collaborators. `resrepo` encourages good habits to manage your data
+alongside your code in plain `git`, ensuring reproducible science and a
+tidy repository that can used for publication of your project.
+
+## Install the library
+
+`resrepo` is still under development and is not yet available on CRAN.
+You can get a preview from GitHub; it is reasonably complete, and we
+already use it for our own projects, but please beware that it is under
+testing. With `pak`, you can simply use:
+
+    pak::pak("EvolEcolGroup/resrepo")
+
+## Overview of functionality
+
+You can build the vignettes when installing `resrepo` (note that you
+will need to have the necessary tools to build vignettes already
+installed; requirements depend on your OS):
+
+    devtools::install_github("EvolEcolGroup/resrepo", build_vignette = TRUE)
+
+If you built the vignettes, you can read them directly in R. For
+example, the overview of the workflow can be obtained with:
+
+    vignette("resrepo", package = "resrepo")
+
+# Package index
+
+## All functions
+
+- [`create_rmd()`](https://evolecolgroup.github.io/resrepo/reference/create_rmd.md)
+  : Create a new R Markdown file from the template
+- [`find_git_root()`](https://evolecolgroup.github.io/resrepo/reference/find_git_root.md)
+  : Find the root of a git repository
+- [`get_versions_in_use()`](https://evolecolgroup.github.io/resrepo/reference/get_versions_in_use.md)
+  : Get versions of data currently in use
+- [`init_mirror()`](https://evolecolgroup.github.io/resrepo/reference/init_mirror.md)
+  : Initialise a resrepo
+- [`init_resrepo()`](https://evolecolgroup.github.io/resrepo/reference/init_resrepo.md)
+  : Initialise a resrepo
+- [`knit_to_results()`](https://evolecolgroup.github.io/resrepo/reference/knit_to_results.md)
+  : Knit R Markdown file to results folder
+- [`path_relative()`](https://evolecolgroup.github.io/resrepo/reference/path_relative.md)
+  : Convert a path to relative
+- [`path_resrepo()`](https://evolecolgroup.github.io/resrepo/reference/path_resrepo.md)
+  : Convert a path from its relative position within a resrepo
+- [`update_links()`](https://evolecolgroup.github.io/resrepo/reference/update_links.md)
+  : Update links to the data directories
+- [`version_add()`](https://evolecolgroup.github.io/resrepo/reference/version_add.md)
+  : Add a version of the data directories
+- [`version_setup()`](https://evolecolgroup.github.io/resrepo/reference/version_setup.md)
+  : Set up versioning for data in a resrepo
+
+# Articles
+
+### All vignettes
+
+- [Data
+  versioning](https://evolecolgroup.github.io/resrepo/articles/data_versioning.md):
+- [resrepo](https://evolecolgroup.github.io/resrepo/articles/resrepo.md):
+- [Sharing a resrepo
+  repository](https://evolecolgroup.github.io/resrepo/articles/sharing_resrepo.md):
