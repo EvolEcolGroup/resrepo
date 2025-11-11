@@ -33,7 +33,6 @@ Imports:
     renv,
     rstudioapi
 Suggests:
-    ggfortify,
     knitr,
     palmerpenguins,
     rmarkdown,

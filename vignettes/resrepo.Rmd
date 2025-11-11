@@ -171,7 +171,8 @@ in the `data/raw/original` directory:
 ```{r}
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/data/raw/original/tux_measurements.csv"),
   overwrite = TRUE
 )
@@ -226,7 +227,8 @@ Add the chunk above to our s01_download_penguins.Rmd and save it.
 ```{r echo=FALSE, results="hide"}
 file.copy(
   from = system.file("vignette_example/s01_download_penguins.Rmd",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/code/s01_download_penguins.Rmd"),
   overwrite = TRUE
 )
@@ -271,7 +273,8 @@ the package, which was originally created with `resrepo::create_rmd`:
 ```{r}
 file.copy(
   from = system.file("vignette_example/s02_merge_clean.Rmd",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/code/s02_merge_clean.Rmd"),
   overwrite = TRUE
 )

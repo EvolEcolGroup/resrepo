@@ -26,11 +26,11 @@ update_links <- function(quiet = FALSE) {
   # check that the data paths are NOT directories (they should be a link
   # or not exist)
   if (dir.exists(path_resrepo("data/raw")) &&
-        !fs::is_link(path_resrepo("data/raw"))) {
+    !fs::is_link(path_resrepo("data/raw"))) {  #nolint
     stop("data/raw should not be a directory, but a link to a directory")
   }
   if (dir.exists(path_resrepo("data/intermediate")) &&
-        !fs::is_link(path_resrepo("data/intermediate"))) {
+    !fs::is_link(path_resrepo("data/intermediate"))) {  #nolint
     stop(
       "data/intermediate should not be a directory, but ",
       "a link to a directory"
@@ -48,7 +48,7 @@ update_links <- function(quiet = FALSE) {
   # if the link exists but points to the wrong directory, delete
   # the link
   if (fs::is_link(raw_path) &&
-        !identical(fs::link_path(raw_path), version_raw_path)) {
+    !identical(fs::link_path(raw_path), version_raw_path)) {  #nolint
     fs::link_delete(raw_path)
   }
   if (fs::is_link(intermediate_path) &&
@@ -67,7 +67,8 @@ update_links <- function(quiet = FALSE) {
   }
   if (!fs::is_link(intermediate_path)) {
     fs::link_create(version_intermediate_path, intermediate_path,
-                    symbolic = TRUE)
+      symbolic = TRUE
+    )
   }
 
   return(invisible(TRUE))
