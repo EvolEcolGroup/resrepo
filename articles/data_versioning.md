@@ -115,7 +115,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```
@@ -165,7 +168,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -237,10 +243,10 @@ we have switched to a new branch in the git repository called
 ``` r
 git2r::branches()
 #> $main
-#> [ffea41] (Local) main
+#> [a69e34] (Local) main
 #> 
 #> $new_filtering
-#> [b3165e] (Local) (HEAD) new_filtering
+#> [6e864f] (Local) (HEAD) new_filtering
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the
@@ -282,7 +288,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -373,7 +382,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -440,7 +452,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -703,7 +718,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> └── writing
 #>     └── README.md

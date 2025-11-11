@@ -153,7 +153,7 @@ that your working directory is set within the `git` repository:
 
 ``` r
 getwd()
-#> [1] "/tmp/Rtmpi8EDl9/resrepo_example"
+#> [1] "/tmp/RtmpeQtDzb/resrepo_example"
 ```
 
 We can now initialise the repository:
@@ -221,7 +221,8 @@ package, as a CSV file named “tux_measurements.csv” in the
 ``` r
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/data/raw/original/tux_measurements.csv"),
   overwrite = TRUE
 )
@@ -382,7 +383,8 @@ over an Rmd from the package, which was originally created with
 ``` r
 file.copy(
   from = system.file("vignette_example/s02_merge_clean.Rmd",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/code/s02_merge_clean.Rmd"),
   overwrite = TRUE
 )
@@ -525,7 +527,10 @@ fs::dir_tree()
 #> │   │   └── s02_merge_clean.pdf
 #> │   └── s03_pca
 #> │       ├── README.md
-#> │       └── s03_pca.pdf
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```

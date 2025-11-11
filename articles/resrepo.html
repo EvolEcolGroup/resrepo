@@ -232,7 +232,7 @@ First, make sure that your working directory is set within the
 <code>git</code> repository:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpi8EDl9/resrepo_example"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmpeQtDzb/resrepo_example"</span></span></code></pre></div>
 <p>We can now initialise the repository:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://evolecolgroup.github.io/resrepo/">resrepo</a></span><span class="op">)</span></span>
@@ -292,7 +292,8 @@ package, as a CSV file named “tux_measurements.csv” in the
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span>
 <span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vignette_example/tux_measurements.csv"</span>,</span>
-<span>                     package <span class="op">=</span> <span class="st">"resrepo"</span><span class="op">)</span>,</span>
+<span>    package <span class="op">=</span> <span class="st">"resrepo"</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/data/raw/original/tux_measurements.csv"</span><span class="op">)</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -430,7 +431,8 @@ over an Rmd from the package, which was originally created with
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span>
 <span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"vignette_example/s02_merge_clean.Rmd"</span>,</span>
-<span>                     package <span class="op">=</span> <span class="st">"resrepo"</span><span class="op">)</span>,</span>
+<span>    package <span class="op">=</span> <span class="st">"resrepo"</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/code/s02_merge_clean.Rmd"</span><span class="op">)</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -556,7 +558,10 @@ the script. You should now run (knit) your script.</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
 <p>Now you just need to commit your changes as you did above, and we

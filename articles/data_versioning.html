@@ -177,7 +177,10 @@ have that repository, you don’t need to run the code below:</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
 <p>When we want to start versioning the data, we can use the function
@@ -221,7 +224,10 @@ part of this vignette for an example).</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -285,10 +291,10 @@ called <code>new_filtering</code>, as indicated by (HEAD) below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">git2r</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/git2r/reference/branches.html" class="external-link">branches</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $main</span></span>
-<span><span class="co">#&gt; [ffea41] (Local) main</span></span>
+<span><span class="co">#&gt; [a69e34] (Local) main</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $new_filtering</span></span>
-<span><span class="co">#&gt; [b3165e] (Local) (HEAD) new_filtering</span></span></code></pre></div>
+<span><span class="co">#&gt; [6e864f] (Local) (HEAD) new_filtering</span></span></code></pre></div>
 <p>Now <code>data/raw</code> and <code>data/intermediate</code> are
 symlinks to the <code>new_filtering</code> version of the data, which is
 found under <code>versions/new_filtering</code>. Each version will be
@@ -326,7 +332,10 @@ is supposed to represent the data in their original format).</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -408,7 +417,10 @@ version that excludes the first 10 penguins.</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -470,7 +482,10 @@ version that excludes the first 10 penguins.</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -704,7 +719,10 @@ files:</p>
 <span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
-<span><span class="co">#&gt; │       └── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #00BBBB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>

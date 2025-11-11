@@ -10,6 +10,12 @@ that data are available and up-to-date both locally and in the cloud, as
 well as simplifying the process of locating directories within the
 repository from R scripts.
 
+## See also
+
+Useful links:
+
+- <https://evolecolgroup.github.io/resrepo/>
+
 ## Author
 
 **Maintainer**: Andrea Manica <am351@cam.ac.uk>

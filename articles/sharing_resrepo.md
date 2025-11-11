@@ -96,8 +96,10 @@ folder, which contains `starting/raw` and `initial/intermediate`
 directories,
 
 ``` r
-intermediate_path <- file.path(tempdir(),
-                               "external_data_storage_new/initial/intermediate")
+intermediate_path <- file.path(
+  tempdir(),
+  "external_data_storage_new/initial/intermediate"
+)
 raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
 dir.create(intermediate_path, recursive = TRUE)
 dir.create(raw_path, recursive = TRUE)
@@ -109,7 +111,8 @@ And then we will copy the raw data into
 ``` r
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = raw_path,
   overwrite = TRUE
 )
@@ -178,7 +181,7 @@ folder:
 
 ``` r
 fs::dir_tree(external_data_storage_new)
-#> /tmp/Rtmpc0NHS7/external_data_storage_new
+#> /tmp/RtmpxAIUII/external_data_storage_new
 #> ├── initial
 #> │   └── intermediate
 #> └── starting
@@ -211,8 +214,10 @@ below:
 # You can see how to do this in the `sharing_resrepo` vignette.
 
 # create new external folder for data
-external_data_storage_review <- file.path(tempdir(),
-                                          "external_data_storage_review")
+external_data_storage_review <- file.path(
+  tempdir(),
+  "external_data_storage_review"
+)
 dir.create(external_data_storage_review)
 
 # load inborutils to download from zenodo
