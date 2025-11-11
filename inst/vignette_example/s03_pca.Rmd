@@ -53,7 +53,7 @@ And plot the penguins:
 ```{r pca_plot, fig.width=6, fig.height=6}
 library(ggplot2)
 library(ggfortify)
-autoplot(penguin_pca, data = penguins, colour = "species")
+# autoplot(penguin_pca, data = penguins, colour = "species")
 ```
 
 We can see that our tux penguins are very different from the other species from the 
