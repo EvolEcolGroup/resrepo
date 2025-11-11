@@ -18,12 +18,16 @@ init_resrepo()
 test_that("initialise repository", {
   # get path of directory
   expect_true(inherits(path_resrepo("/data/raw"), "character"))
-  expect_true(inherits(path_resrepo("/data/raw", check_exists = TRUE),
-                       "character"))
+  expect_true(inherits(
+    path_resrepo("/data/raw", check_exists = TRUE),
+    "character"
+  ))
   # get path of file
   expect_true(inherits(path_resrepo("/data/README.md"), "character"))
-  expect_true(inherits(path_resrepo("/data/README.md", check_exists = TRUE),
-                       "character"))
+  expect_true(inherits(
+    path_resrepo("/data/README.md", check_exists = TRUE),
+    "character"
+  ))
   # throw errors if check fails
   expect_error(
     path_resrepo("/data/raw/test_dir", check_exists = TRUE),
@@ -34,8 +38,10 @@ test_that("initialise repository", {
     "path "
   )
   # check shortcuts
-  expect_true(inherits(path_resrepo("/d/r/original", check_exists = TRUE),
-                       "character"))
+  expect_true(inherits(
+    path_resrepo("/d/r/original", check_exists = TRUE),
+    "character"
+  ))
 })
 
 # test that we can use the version argument in the function

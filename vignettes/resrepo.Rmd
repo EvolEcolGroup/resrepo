@@ -49,10 +49,6 @@ Here is a general overview of the structure:
 * **results**: this folder should only be reserved for final files (e.g, summary tables, plots) that are intended for publication. Because this folder is intended for a limited number of small files, it is expected to be uploaded on GitHub.
 * **writing**: this folder is intended for the write-up of your project. It can contain markdown files, or links to GoogleDocs or Word documents. It is not recommended to store large files in this folder.
 
-TODO: figure to show the general resrepo structure. *Is it needed? I think that the first `fs::dir_tree()` shows exactly this, thus I haven't created a figure yet.*
-
-TODO: short text to explain the structure. *Wasn't it just explained above?*
-
 
 ## Naming your code scripts
 
@@ -126,7 +122,7 @@ everything is in one place).
 Start by creating a blank repository on GitHub (or equivalent server), and clone it on your computer. Instructions to do so can be found at [this link](https://happygitwithr.com/new-github-first#new-github-first) or you can follow the gif below. For this vignette, we will create a "resrepo_example" git repository. 
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/github_create_repo.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/github_create_repo.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 Then, you can clone the repository on your computer. You can do this in RStudio by clicking on the *File* tab, then *New Project...*, *Version Control*, *Git*, and pasting the URL of your repository. 
@@ -175,7 +171,8 @@ in the `data/raw/original` directory:
 ```{r}
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/data/raw/original/tux_measurements.csv"),
   overwrite = TRUE
 )
@@ -230,7 +227,8 @@ Add the chunk above to our s01_download_penguins.Rmd and save it.
 ```{r echo=FALSE, results="hide"}
 file.copy(
   from = system.file("vignette_example/s01_download_penguins.Rmd",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/code/s01_download_penguins.Rmd"),
   overwrite = TRUE
 )
@@ -260,7 +258,7 @@ our changes to the repository. In RStudio, open the *Git* tab on the right-hand 
 
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 ```{r echo=FALSE, results="hide"}
@@ -275,7 +273,8 @@ the package, which was originally created with `resrepo::create_rmd`:
 ```{r}
 file.copy(
   from = system.file("vignette_example/s02_merge_clean.Rmd",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = path_resrepo("/code/s02_merge_clean.Rmd"),
   overwrite = TRUE
 )

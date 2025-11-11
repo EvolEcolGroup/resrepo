@@ -51,9 +51,20 @@ penguin_pca <- prcomp(penguins[, c("bill_length_mm", "bill_depth_mm",
 
 And plot the penguins:
 ```{r pca_plot, fig.width=6, fig.height=6}
-library(ggplot2)
-library(ggfortify)
-autoplot(penguin_pca, data = penguins, colour = "species")
+plot(penguin_pca$x[, 1], penguin_pca$x[, 2],
+     col = as.factor(penguins$species),   # colour by species
+     pch = 19,                            # solid points
+     cex = 1.5,                           # point size
+     xlab = "PC1",
+     ylab = "PC2",
+     main = "PCA of Penguins")
+
+# Add legend
+legend("topright",
+       legend = levels(as.factor(penguins$species)),
+       col = seq_along(levels(as.factor(penguins$species))),
+       pch = 19,
+       title = "Species")
 ```
 
 We can see that our tux penguins are very different from the other species from the 

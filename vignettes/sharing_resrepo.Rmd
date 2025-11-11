@@ -27,7 +27,7 @@ etc..)
 The following GIF shows how to clone a `resrepo` repository using GitHub and RStudio.
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/git_clone_repo.gif" alt="Cloning a repository using GitHub and RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/git_clone_repo.gif" alt="Cloning a repository using GitHub and RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 ```{r setup, echo=FALSE, results='hide'}
@@ -86,8 +86,10 @@ Ideally, the directory structure of the data shared with you for this project sh
 In the following example, we will create the substructure of the `data` folder, which contains `starting/raw` and `initial/intermediate` directories, 
 
 ```{r}
-intermediate_path <- file.path(tempdir(),
-                               "external_data_storage_new/initial/intermediate")
+intermediate_path <- file.path(
+  tempdir(),
+  "external_data_storage_new/initial/intermediate"
+)
 raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
 dir.create(intermediate_path, recursive = TRUE)
 dir.create(raw_path, recursive = TRUE)
@@ -97,7 +99,8 @@ And then we will copy the raw data into `external_data_storage_new/starting/raw`
 ```{r}
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = raw_path,
   overwrite = TRUE
 )
@@ -150,8 +153,10 @@ You can find an example of an `s0_download_data.Rmd` in the `inst/vignette_examp
 # You can see how to do this in the `sharing_resrepo` vignette.
 
 # create new external folder for data
-external_data_storage_review <- file.path(tempdir(),
-                                          "external_data_storage_review")
+external_data_storage_review <- file.path(
+  tempdir(),
+  "external_data_storage_review"
+)
 dir.create(external_data_storage_review)
 
 # load inborutils to download from zenodo

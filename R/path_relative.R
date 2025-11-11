@@ -12,8 +12,10 @@
 path_relative <- function(path, base = getwd()) {
   # based on Stackoverflow:
   # https://stackoverflow.com/questions/36726186/function-for-constructing-relative-paths-in-r #nolint
-  common <- sub("^([^|]*)[^|]*(?:\\|\\1[^|]*)$", "^\\1/?",
-                paste0(base, "|", path))
+  common <- sub(
+    "^([^|]*)[^|]*(?:\\|\\1[^|]*)$", "^\\1/?",
+    paste0(base, "|", path)
+  )
 
   paste0(
     gsub("[^/]+/?", "../", sub(common, "", base)),
