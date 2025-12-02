@@ -44,10 +44,12 @@ path_resrepo <- function(path, version = NULL, check_exists = FALSE) {
   # add the resrepo path
   # NB. produces double backslashes
   full_path <- file.path(normalizePath(git_root), path)
-  full_path <- gsub("\\\\", "/",
-                    # sanitize path: convert any double backslashes
-                    # to single forward slashes
-                    full_path)
+  full_path <- gsub(
+    "\\\\", "/",
+    # sanitize path: convert any double backslashes
+    # to single forward slashes
+    full_path
+  )
 
   # check it exists
   if (check_exists) {

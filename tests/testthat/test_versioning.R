@@ -380,7 +380,7 @@ test_that("clone a versioned repo", {
 
   setwd(directory_penguins)
   expect_true(read.table("data/version_meta/intermediate_in_use.meta") ==
-                "test_intermediate_description4")
+    "test_intermediate_description4") # nolint
 
   # create new external folder for data
   external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")

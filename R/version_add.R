@@ -139,8 +139,10 @@ version_add <- function(path = ".",
     stringsAsFactors = FALSE
   )
   utils::write.csv(version_meta,
-    file = path_resrepo(paste0("data/version_meta/",
-                               intermediate_new_version, ".meta")),
+    file = path_resrepo(paste0(
+      "data/version_meta/",
+      intermediate_new_version, ".meta"
+    )),
     row.names = FALSE
   )
 
@@ -158,8 +160,10 @@ version_add <- function(path = ".",
       stringsAsFactors = FALSE
     )
     utils::write.csv(version_meta,
-      file = path_resrepo(paste0("data/version_meta/",
-                                 raw_new_version, ".meta")),
+      file = path_resrepo(paste0(
+        "data/version_meta/",
+        raw_new_version, ".meta"
+      )),
       row.names = FALSE
     )
   }
@@ -171,12 +175,15 @@ version_add <- function(path = ".",
   # then create the new ones
   data_dir_link(
     target_dir = path_resrepo(paste("versions/", raw_new_version, "/raw",
-                                    sep = "")),
+      sep = ""
+    )),
     link_dir = "data/raw"
   )
   data_dir_link(
     target_dir = path_resrepo(paste("versions/", intermediate_new_version,
-                                    "/intermediate", sep = "")),
+      "/intermediate",
+      sep = ""
+    )),
     link_dir = "data/intermediate"
   )
   if (!quiet) {

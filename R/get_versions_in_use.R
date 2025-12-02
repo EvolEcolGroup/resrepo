@@ -31,11 +31,11 @@ get_versions_in_use <- function(check_links = TRUE) {
     # check that the data paths are NOT directories (they should be a link
     # or not exist)
     if (dir.exists(path_resrepo("data/raw")) &&
-          !fs::is_link(path_resrepo("data/raw"))) {
+      !fs::is_link(path_resrepo("data/raw"))) { #nolint
       stop("data/raw should not be a directory, but a link to a directory")
     }
     if (dir.exists(path_resrepo("data/intermediate")) &&
-          !fs::is_link(path_resrepo("data/intermediate"))) {
+      !fs::is_link(path_resrepo("data/intermediate"))) {  #nolint
       stop(
         "data/intermediate should not be a directory, but ",
         "a link to a directory"

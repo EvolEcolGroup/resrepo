@@ -1,5 +1,5 @@
 ---
-title: "Sharing a resrepo repository"
+title: "Sharing a versioned resrepo repository"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Sharing a resrepo repository}
@@ -8,6 +8,12 @@ vignette: >
 ---
 
 This vignette explains how to share a `resrepo` repository, either with collaborators (or anyone who will work on it) or with the public, for example as part of a publication.
+
+When working with a git repository, you can find yourself in two situations:
+
+a) If data are stored within the git repository itself, then you only need to clone the repository (see the instructions below). 
+
+b) On the other hand, if data are too large to be stored within the repository (and therefore it is stored in an external location), then you need to set up versioning. See the `data versioning` vignette for more information on how to do this.
 
 When sharing with collaborators, they will simply need to:
 
@@ -27,7 +33,7 @@ etc..)
 The following GIF shows how to clone a `resrepo` repository using GitHub and RStudio.
 
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-  <img src="../vignettes/img/git_clone_repo.gif" alt="Cloning a repository using GitHub and RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
+  <img src="img/git_clone_repo.gif" alt="Cloning a repository using GitHub and RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
 </div>
 
 ```{r setup, echo=FALSE, results='hide'}
@@ -86,8 +92,10 @@ Ideally, the directory structure of the data shared with you for this project sh
 In the following example, we will create the substructure of the `data` folder, which contains `starting/raw` and `initial/intermediate` directories, 
 
 ```{r}
-intermediate_path <- file.path(tempdir(),
-                               "external_data_storage_new/initial/intermediate")
+intermediate_path <- file.path(
+  tempdir(),
+  "external_data_storage_new/initial/intermediate"
+)
 raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
 dir.create(intermediate_path, recursive = TRUE)
 dir.create(raw_path, recursive = TRUE)
@@ -97,15 +105,14 @@ And then we will copy the raw data into `external_data_storage_new/starting/raw`
 ```{r}
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
-                     package = "resrepo"),
+    package = "resrepo"
+  ),
   to = raw_path,
   overwrite = TRUE
 )
 ```
 
 ## 3. Setting up symlinks to data
-
-If you have a repository that is not versioned (it does not contain any version.meta), then you can simply link your external data storage location to the `data` folder in your repository using the `data_dir_link` function:
 
 Because this repository has been versioned, we need to set up versioning in our 
 local repository. Now that our `external_data_storage_new` folder contains the data, we can do this
@@ -150,8 +157,10 @@ You can find an example of an `s0_download_data.Rmd` in the `inst/vignette_examp
 # You can see how to do this in the `sharing_resrepo` vignette.
 
 # create new external folder for data
-external_data_storage_review <- file.path(tempdir(),
-                                          "external_data_storage_review")
+external_data_storage_review <- file.path(
+  tempdir(),
+  "external_data_storage_review"
+)
 dir.create(external_data_storage_review)
 
 # load inborutils to download from zenodo

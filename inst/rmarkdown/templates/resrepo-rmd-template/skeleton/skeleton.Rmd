@@ -104,7 +104,6 @@ filename_renv <- paste0(output_dir, "/renv_",
                         tools::file_path_sans_ext(basename(filename_rmd)),
                         ".json")
 renv::lockfile_write(renv::lockfile_create(), file = filename_renv)
-print(sessionInfo())
 ```
 
 
