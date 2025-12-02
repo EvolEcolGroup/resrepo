@@ -9,7 +9,11 @@ vignette: >
 
 This vignette explains how to share a `resrepo` repository, either with collaborators (or anyone who will work on it) or with the public, for example as part of a publication.
 
-If your data are too large to be stored within the repository (and therefore it is stored in an external location), then you need to set up versioning. See the `data versioning` vignette for more information on how to do this.
+When working with a git repository, you can find yourself in two situations:
+
+a) If data are stored within the git repository itself, then you only need to clone the repository (see the instructions below). 
+
+b) On the other hand, if data are too large to be stored within the repository (and therefore it is stored in an external location), then you need to set up versioning. See the `data versioning` vignette for more information on how to do this.
 
 When sharing with collaborators, they will simply need to:
 
