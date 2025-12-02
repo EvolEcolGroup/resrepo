@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Sharing a resrepo repository • resrepo</title>
+<title>Sharing a versioned resrepo repository • resrepo</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sharing a resrepo repository">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sharing a versioned resrepo repository">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -35,7 +35,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/data_versioning.html">Data versioning</a></li>
-    <li><a class="dropdown-item" href="../articles/sharing_resrepo.html">Sharing a resrepo repository</a></li>
+    <li><a class="dropdown-item" href="../articles/sharing_resrepo.html">Sharing a versioned resrepo repository</a></li>
   </ul>
 </li>
       </ul>
@@ -55,7 +55,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Sharing a resrepo repository</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Sharing a versioned resrepo repository</h1>
             
       
 
@@ -67,6 +67,16 @@
 <p>This vignette explains how to share a <code>resrepo</code>
 repository, either with collaborators (or anyone who will work on it) or
 with the public, for example as part of a publication.</p>
+<p>When working with a git repository, you can find yourself in two
+situations:</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>If data are stored within the git repository itself, then you
+only need to clone the repository (see the instructions below).</p></li>
+<li><p>On the other hand, if data are too large to be stored within the
+repository (and therefore it is stored in an external location), then
+you need to set up versioning. See the <code>data versioning</code>
+vignette for more information on how to do this.</p></li>
+</ol>
 <p>When sharing with collaborators, they will simply need to:</p>
 <ol style="list-style-type: decimal">
 <li>Clone the <code>resrepo</code> repository</li>
@@ -174,10 +184,6 @@ repository with you if you are unsure about this.</p>
 <div class="section level2">
 <h2 id="setting-up-symlinks-to-data">3. Setting up symlinks to data<a class="anchor" aria-label="anchor" href="#setting-up-symlinks-to-data"></a>
 </h2>
-<p>If you have a repository that is not versioned (it does not contain
-any version.meta), then you can simply link your external data storage
-location to the <code>data</code> folder in your repository using the
-<code>data_dir_link</code> function:</p>
 <p>Because this repository has been versioned, we need to set up
 versioning in our local repository. Now that our
 <code>external_data_storage_new</code> folder contains the data, we can
@@ -227,7 +233,7 @@ external_data_storage_new/initial/intermediate data/raw -&gt; versions
 <code>external_data_storage_new</code> folder:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">external_data_storage_new</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpR8ggax/external_data_storage_new</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQSeBGs/external_data_storage_new</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">starting</span></span></span>

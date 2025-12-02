@@ -1,6 +1,6 @@
 # resrepo
 
-# Research repository (resrepo) template
+# Research repository (resrepo)
 
 The aim of `resrepo` is to encourage and facilitate good practices when
 setting up and managing `git` repositories for scientific research

@@ -1,8 +1,19 @@
-# Sharing a resrepo repository
+# Sharing a versioned resrepo repository
 
 This vignette explains how to share a `resrepo` repository, either with
 collaborators (or anyone who will work on it) or with the public, for
 example as part of a publication.
+
+When working with a git repository, you can find yourself in two
+situations:
+
+1.  If data are stored within the git repository itself, then you only
+    need to clone the repository (see the instructions below).
+
+2.  On the other hand, if data are too large to be stored within the
+    repository (and therefore it is stored in an external location),
+    then you need to set up versioning. See the `data versioning`
+    vignette for more information on how to do this.
 
 When sharing with collaborators, they will simply need to:
 
@@ -121,11 +132,6 @@ file.copy(
 
 ## 3. Setting up symlinks to data
 
-If you have a repository that is not versioned (it does not contain any
-version.meta), then you can simply link your external data storage
-location to the `data` folder in your repository using the
-`data_dir_link` function:
-
 Because this repository has been versioned, we need to set up versioning
 in our local repository. Now that our `external_data_storage_new` folder
 contains the data, we can do this using `version_setup`.
@@ -181,7 +187,7 @@ folder:
 
 ``` r
 fs::dir_tree(external_data_storage_new)
-#> /tmp/RtmpR8ggax/external_data_storage_new
+#> /tmp/RtmpQSeBGs/external_data_storage_new
 #> ├── initial
 #> │   └── intermediate
 #> └── starting

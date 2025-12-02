@@ -1,6 +1,6 @@
 # resrepo
 
-# Research repository (resrepo) template
+# Research repository (resrepo)
 
 The aim of `resrepo` is to encourage and facilitate good practices when
 setting up and managing `git` repositories for scientific research
@@ -69,5 +69,5 @@ example, the overview of the workflow can be obtained with:
 - [Data
   versioning](https://evolecolgroup.github.io/resrepo/articles/data_versioning.md):
 - [resrepo](https://evolecolgroup.github.io/resrepo/articles/resrepo.md):
-- [Sharing a resrepo
+- [Sharing a versioned resrepo
   repository](https://evolecolgroup.github.io/resrepo/articles/sharing_resrepo.md):

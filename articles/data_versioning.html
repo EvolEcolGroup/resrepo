@@ -35,7 +35,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/data_versioning.html">Data versioning</a></li>
-    <li><a class="dropdown-item" href="../articles/sharing_resrepo.html">Sharing a resrepo repository</a></li>
+    <li><a class="dropdown-item" href="../articles/sharing_resrepo.html">Sharing a versioned resrepo repository</a></li>
   </ul>
 </li>
       </ul>
@@ -291,10 +291,10 @@ called <code>new_filtering</code>, as indicated by (HEAD) below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">git2r</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/git2r/reference/branches.html" class="external-link">branches</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $main</span></span>
-<span><span class="co">#&gt; [b6b841] (Local) main</span></span>
+<span><span class="co">#&gt; [671254] (Local) main</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $new_filtering</span></span>
-<span><span class="co">#&gt; [c19ffd] (Local) (HEAD) new_filtering</span></span></code></pre></div>
+<span><span class="co">#&gt; [570e5e] (Local) (HEAD) new_filtering</span></span></code></pre></div>
 <p>Now <code>data/raw</code> and <code>data/intermediate</code> are
 symlinks to the <code>new_filtering</code> version of the data, which is
 found under <code>versions/new_filtering</code>. Each version will be
