@@ -4,15 +4,16 @@
   [![R-CMD-check](https://github.com/EvolEcolGroup/resrepo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/EvolEcolGroup/resrepo/actions/workflows/R-CMD-check.yaml)
   <!-- badges: end -->
 
-# Research repository (resrepo) template
+# Research repository (resrepo)
 
 The aim of `resrepo` is to encourage and facilitate good practices when setting up and managing `git` repositories for scientific research projects. Scientific projects contain both code and data. `git` is designed to manage software code, but it is not suited to track large data files. There are extensions of `git`, such as `git-lfs` and `git-annex` that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. `resrepo` encourages good habits to manage your data alongside your code in plain `git`, ensuring reproducible science and a tidy repository that can used for publication of your project.
 
 ## Install the library
-
+ 
 `resrepo` is still under development and is not yet available on CRAN. You can get
 a preview from GitHub; it is reasonably complete, and we already use it for our own projects,
 but please beware that it is under testing. With `pak`, you can simply use:
+
 ```
 pak::pak("EvolEcolGroup/resrepo")
 ```
