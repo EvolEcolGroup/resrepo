@@ -31,7 +31,12 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
     version_setup_first(quiet = quiet, resources_path = resources_path)
   } else {
-    version_setup_cloned(quiet = quiet, resources_path = resources_path)
+    message("This resrepo repository has already been versioned. To update the ",
+      "links to point to the data location on your machine or in an external ",
+      "hard drive, please run ",
+      "version_relink with the appropriate 'resources_path' argument."
+    )
+    #version_setup_cloned(quiet = quiet, resources_path = resources_path)
     # TODO think carefully what we want to do here
     # this is the case when we already have versioning set up in the repository
     # so there is meta information about the versions
