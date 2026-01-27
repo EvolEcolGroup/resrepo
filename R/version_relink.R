@@ -66,12 +66,11 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
     if (!dir.exists(resources_path)) { # wrong path
       stop("The path ", resources_path, " does not exist!")
     }
-    versions_path <- file.path(resources_path)
-    if (dir.exists(paste0(versions_path, "versions"))) {
-      stop(
-        "If 'resources_path' is given, there should be no 'versions'",
-        "directory in the 'resources_path'!"
-      )
+    # check whether resources path ends in /versions
+    if (basename(normalizePath(resources_path)) == "versions") {
+      versions_path <- normalizePath(resources_path)
+    } else {
+      versions_path <- file.path(paste0(resources_path, "/versions"))
     }
     
     # create a link from the repository to the resources path
@@ -90,23 +89,7 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
   intermediate_in_use <- readLines(con = path_resrepo(
     "data/version_meta/intermediate_in_use.meta"
   ))
-  # create substructure
-  fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
-  fs::dir_create(path_resrepo(paste0(
-    "versions/", intermediate_in_use,
-    "/intermediate"
-  )))
-  data_dir_link(
-    target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
-    link_dir = "data/raw"
-  )
-  data_dir_link(
-    target_dir = path_resrepo(paste0(
-      "versions/", intermediate_in_use,
-      "/intermediate"
-    )),
-    link_dir = "data/intermediate"
-  )
+
   # run git hooks
   add_git_hooks()
   return(TRUE)

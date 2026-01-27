@@ -167,36 +167,7 @@ However, note that the data are now NOT being tracked by git, as
 reliable way to back up your data.
 
 
-If once you have versioned your repository, you want to move your data somewhere else, 
-and update the links to the new location, you will need to move the `versions` folder 
-to the new location, and then re-run `version_setup` with `resources_path` set to the new path.
 
-TODO: Change this to point to version_relink function
-
-```{r move_versions_folder, echo=TRUE}
-
-# create new data directory where we want to move our data
-new_data_dir <- file.path(example_dir, "new_data_dir")
-dir.create(new_data_dir, showWarnings = FALSE)
-
-# move versions folder to new_data_dir
-file.rename(
-  from = path_resrepo("versions"),
-  to = file.path(new_data_dir, "versions")
-)
-
-# rerun version_setup
-
-version_setup(quiet = TRUE, resources_path = new_data_dir)
-
-```
-
-Now we have a symlink for `versions` in our repository, which points to the new location of our data.
-
-```{r check_version_setup, echo=TRUE}
-fs::dir_tree(new_data_dir)
-
-```
 
 # Adding a new version
 
@@ -487,4 +458,33 @@ And the data are successfully stored in our external folder:
 
 ```{r check_external_storage_knit, echo=TRUE}
 fs::dir_tree("../../external_data_storage")
+```
+
+# Moving the versions
+
+If once you have versioned your repository, you want to move your data somewhere else, 
+and update the links to the new location, you will need to move the `versions` folder 
+to the new location, and then re-run `version_setup` with `resources_path` set to the new path.
+
+```{r move_versions_folder, echo=TRUE}
+
+# create new data directory where we want to move our data
+new_data_dir <- file.path(example_dir, "new_data_dir")
+dir.create(new_data_dir, showWarnings = FALSE)
+
+# move versions folder to new_data_dir
+file.rename(
+  from = path_resrepo("versions"),
+  to = file.path(new_data_dir, "versions")
+)
+
+# relink the version
+version_relink(quiet = TRUE, resources_path = new_data_dir)
+```
+
+Now we have a symlink for `versions` in our repository, which points to the new location of our data.
+
+```{r check_version_setup, echo=TRUE}
+fs::dir_tree(new_data_dir)
+fs::dir_tree()
 ```
