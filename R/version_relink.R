@@ -1,3 +1,17 @@
+#' Relink versions in a resrepo repository
+#'
+#' If a repository has been cloned, relinks the "versions" directory to the
+#' "data" directory according to the version metadata. If a user wishes to move
+#' the "versions" directory to a different location, this function will also
+#' update the links accordingly.
+#'
+#' @param quiet If TRUE, the user will not be prompted to backup their data.
+#'   Default is FALSE.
+#' @param resources_path The path to the directory where the "versions", the
+#'   directory containing versioned data, will be stored. If NULL (the default),
+#'   "versions" is placed at the root of the repository.
+#' @returns TRUE if the relink was successful
+#' @export
 
 
 version_relink <- function(quiet = FALSE, resources_path = NULL) {
@@ -23,6 +37,16 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
 
   }
 }
+
+
+#' Reset versions
+#'
+#' @param quiet If TRUE, the user will not be prompted to backup their data.
+#'   Default is FALSE.
+#' @param resources_path The path to the directory where the "versions", the
+#'   directory containing versioned data, will be stored. If NULL (the default),
+#'   "versions" is placed at the root of the repository.
+#' @returns TRUE if the relink was successful
 
 version_reset <- function(quiet = FALSE, resources_path = NULL) {
   # if resources_path is NULL check we have a versions directory
@@ -72,14 +96,14 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
     } else {
       versions_path <- file.path(paste0(resources_path, "/versions"))
     }
-    
+
     # create a link from the repository to the resources path
     data_dir_link(
       link_dir = "/versions",
       target_dir = file.path(versions_path)
     )
   }
-  
+
   # need to create links to 'data/raw' and 'data/intermediate' in versions
   # create links
   # check the version in use

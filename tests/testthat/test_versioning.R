@@ -402,7 +402,11 @@ test_that("clone a versioned repo", {
     overwrite = TRUE
   )
 
-  expect_true(version_setup(
+  # TODO this test now fails because we expect the user to put their 'versions'
+  # data in the new location before relinking. We need to either adjust the test
+  # or change the behaviour of version_relink
+
+  expect_true(version_relink(
     quiet = TRUE,
     resources_path = external_data_storage_new
   ))

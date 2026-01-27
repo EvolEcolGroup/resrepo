@@ -460,7 +460,11 @@ And the data are successfully stored in our external folder:
 fs::dir_tree("../../external_data_storage")
 ```
 
+
+
 # Moving the versions
+
+@TODO currently this works when moving versions from internal to an external location, but it needs updating for moving one external location to another external location.
 
 If once you have versioned your repository, you want to move your data somewhere else, 
 and update the links to the new location, you will need to move the `versions` folder 
