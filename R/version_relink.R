@@ -104,6 +104,9 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
       fs::link_delete(path_resrepo("versions"))
     }
 
+    # TODO check the external /versions folder substructure has the right
+    # raw and intermediate .meta versions at this point
+
     # create a link from the repository to the resources path
     data_dir_link(
       link_dir = "/versions",
