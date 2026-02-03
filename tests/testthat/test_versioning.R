@@ -402,9 +402,12 @@ test_that("clone a versioned repo", {
     overwrite = TRUE
   )
 
-  # TODO this test now fails because we expect the user to put their 'versions'
-  # data in the new location before relinking. We need to either adjust the test
-  # or change the behaviour of version_relink
+  fs::dir_tree()
+
+  # TODO this test now fails because the cloned repository doesn't have a 'data'
+  # or 'versions' folder, as these are not tracked by git. The previous
+  # version_setup() function would create these, we need version_relink to do
+  # the same
 
   expect_true(version_relink(
     quiet = TRUE,

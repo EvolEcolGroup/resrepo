@@ -82,7 +82,7 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
         link_dir = "data/intermediate"
       )
       # run git hooks
-      add_git_hooks()
+      #add_git_hooks() # perhaps we don't need this step?
       return(TRUE)
     }
   } else {
@@ -95,6 +95,13 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
       versions_path <- normalizePath(resources_path)
     } else {
       versions_path <- file.path(paste0(resources_path, "/versions"))
+    }
+
+    # check whether there is already a link from /versions to an external path
+    # if there is an existing link, update links and exit
+    if (fs::is_link(path_resrepo("versions"))) {
+      # run update_links
+      fs::link_delete(path_resrepo("versions"))
     }
 
     # create a link from the repository to the resources path
@@ -115,7 +122,7 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
   ))
 
   # run git hooks
-  add_git_hooks()
+  #add_git_hooks() # perhaps we don't need this step?
   return(TRUE)
 }
 
