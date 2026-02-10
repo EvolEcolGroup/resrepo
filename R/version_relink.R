@@ -115,16 +115,6 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
     )
   }
 
-  # need to create links to 'data/raw' and 'data/intermediate' in versions
-  # create links
-  # check the version in use
-  raw_in_use <- readLines(con = path_resrepo(
-    "data/version_meta/raw_in_use.meta"
-  ))
-  intermediate_in_use <- readLines(con = path_resrepo(
-    "data/version_meta/intermediate_in_use.meta"
-  ))
-
   return(TRUE)
 }
 

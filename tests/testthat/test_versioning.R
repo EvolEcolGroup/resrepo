@@ -423,27 +423,3 @@ test_that("clone a versioned repo", {
   # check we are back to the initial version
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
 })
-
-# @TODO find ways to break data versioning (cases when you clone the repository
-# but don't have the stuff in the right path)
-
-# @TODO try to create a new version, delete it, and then create a version with
-# the same name. Version_add should check that we can't add a new version with
-# the same name. We need to tell the user to delete their previous data version
-# from their versions folder before creating a new one with the same name.
-
-# @TODO write a test to check when you create versioned repo with version_setup
-# and then switch branches, the data still points to the right place
-
-# @TODO see whether we can fix versioning with version_relink if the user has
-# manually deleted a link - consider using this in a version_doctor function.
-# There is a text file to the paths (maybe?), the links point to those paths,
-# all the paths exist etc
-
-# @TODO add a local gitignored file to tell us where the data are stored -
-# version_setup or version_relink would create and update this file
-
-# @TODO have a master list of data versions somewhere in the repo, have an
-# update_version_info function that tells you data version blah is no longer
-# used by any branch, local or remote, and that you can remove this.
-# Maybe a version_delete too?
