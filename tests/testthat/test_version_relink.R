@@ -31,7 +31,12 @@ test_that("version_relink works correctly", {
     to = path_resrepo("/code/s01_download_penguins.Rmd"),
     overwrite = TRUE
   )
-  knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+  # silence knitr
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+    )
+  )
   file.copy(
     from = system.file("vignette_example/s02_merge_clean.Rmd",
       package = "resrepo"
@@ -39,13 +44,19 @@ test_that("version_relink works correctly", {
     to = path_resrepo("/code/s02_merge_clean.Rmd"),
     overwrite = TRUE
   )
-  knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+  # silence knitr
+  suppressMessages(
+    capture.output(knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd")))
+  )
   file.copy(
     from = system.file("vignette_example/s03_pca.Rmd", package = "resrepo"),
     to = path_resrepo("/code/s03_pca.Rmd"),
     overwrite = TRUE
   )
-  knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+  # silence knitr
+  suppressMessages(
+    capture.output(knit_to_results(path_resrepo("/code/s03_pca.Rmd")))
+  )
   git2r::add(path = ".")
   git2r::commit(message = "Set up", all = TRUE)
 
@@ -64,11 +75,14 @@ test_that("version_relink works correctly", {
   )
 
   # relink the version
-  version_relink(quiet = TRUE, resources_path = new_data_dir)
+  version_relink(
+    quiet = TRUE, resources_path = new_data_dir
+  )
 
   expect_true(version_add(
     intermediate_new_version = "new_filtering",
-    intermediate_description = "Filtering out some data"
+    intermediate_description = "Filtering out some data",
+    quiet = TRUE
   ))
 
   # TODO: add more tests here to check that the relinking worked correctly
@@ -128,9 +142,20 @@ test_that("move versions from one external data location to another", {
     overwrite = TRUE
   )
 
-  knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
-  knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
-  knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+  # silence knitr
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+    )
+  )
+  # silence knitr
+  suppressMessages(
+    capture.output(knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd")))
+  )
+  # silence knitr
+  suppressMessages(
+    capture.output(knit_to_results(path_resrepo("/code/s03_pca.Rmd")))
+  )
 
 
   # write a text file to ../data/raw/original to check the link works
@@ -140,8 +165,6 @@ test_that("move versions from one external data location to another", {
   # read csv from the versions folder to check link worked
   df_check <- read.csv(path_resrepo("data/raw/original/my_new_file1.csv"))
   expect_equal(as.character(df_check), "blah")
-
-  fs::dir_tree()
 
   # create another external data storage folder
   new_external_data_storage <- file.path(tempdir(), "new_external_data_storage")

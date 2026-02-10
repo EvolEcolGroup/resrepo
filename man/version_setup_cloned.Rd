@@ -20,3 +20,4 @@ TRUE if the relink was successful
 \description{
 Setup versions from a cloned repository
 }
+\keyword{internal}

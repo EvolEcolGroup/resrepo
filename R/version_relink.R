@@ -26,12 +26,12 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
     }
   }
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
-    message(
+    stop(
       "This resrepo repository has not been versioned. ",
       "All the data should be placed in the data folder. If you want ",
       "to version this repository, use version_setup()."
     )
-  } else if (!fs::is_link(path_resrepo("data/raw")) || !fs::is_link(path_resrepo("data/intermediate"))) { #nolint
+  } else if (!fs::is_link(path_resrepo("data/raw")) || !fs::is_link(path_resrepo("data/intermediate"))) { # nolint
     # if data/raw and data/intermediate aren't links, then
     # this is a cloned versioned
     version_setup_cloned(quiet = quiet, resources_path = resources_path)
@@ -49,6 +49,7 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
 #'   directory containing versioned data, will be stored. If NULL (the default),
 #'   "versions" is placed at the root of the repository.
 #' @returns TRUE if the relink was successful
+#' @keywords internal
 
 version_reset <- function(quiet = FALSE, resources_path = NULL) {
   # if resources_path is NULL check we have a versions directory
@@ -94,7 +95,7 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
     if (basename(normalizePath(resources_path)) == "versions") {
       versions_path <- normalizePath(resources_path)
     } else {
-      versions_path <- file.path(paste0(resources_path, "/versions"))
+      versions_path <- file.path(resources_path, "versions")
     }
 
     # check whether there is already a link from /versions to an external path
@@ -136,6 +137,7 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
 #'   directory containing versioned data, will be stored. If NULL (the default),
 #'   "versions" is placed at the root of the repository.
 #' @returns TRUE if the relink was successful
+#' @keywords internal
 
 version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
   # if resources_path is NULL check we have a versions directory
@@ -180,9 +182,9 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
       stop("The path ", resources_path, " does not exist!")
     }
     versions_path <- file.path(resources_path)
-    if (dir.exists(paste0(versions_path, "versions"))) {
+    if (dir.exists(file.path(versions_path, "versions"))) {
       stop(
-        "If 'resources_path' is given, there should be no 'versions'",
+        "If 'resources_path' is given, there should be no 'versions' ",
         "directory in the 'resources_path'!"
       )
     }
