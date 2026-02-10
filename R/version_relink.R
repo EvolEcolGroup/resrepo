@@ -54,38 +54,8 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
 version_reset <- function(quiet = FALSE, resources_path = NULL) {
   # if resources_path is NULL check we have a versions directory
   if (is.null(resources_path)) {
-    versions_path <- path_resrepo("versions")
-    if (!dir.exists(versions_path)) {
-      dir.create(versions_path, recursive = TRUE)
-      # need to create links to 'data/raw' and 'data/intermediate' in versions
-      # create links
-      # check the version in use
-      raw_in_use <- readLines(con = path_resrepo(
-        "data/version_meta/raw_in_use.meta"
-      ))
-      intermediate_in_use <- readLines(con = path_resrepo(
-        "data/version_meta/intermediate_in_use.meta"
-      ))
-      # create substructure
-      fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
-      fs::dir_create(path_resrepo(paste0(
-        "versions/", intermediate_in_use,
-        "/intermediate"
-      )))
-      # link the directories
-      data_dir_link(
-        target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
-        link_dir = "data/raw"
-      )
-      data_dir_link(
-        target_dir = path_resrepo(paste0(
-          "versions/", intermediate_in_use,
-          "/intermediate"
-        )),
-        link_dir = "data/intermediate"
-      )
-      return(TRUE)
-    }
+    stop("'resources_path' should be the path to the directory containing
+         the 'versions' folder.")
   } else {
     # check that resources_path exists and is a directory
     if (!dir.exists(resources_path)) { # wrong path
