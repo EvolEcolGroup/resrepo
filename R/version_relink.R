@@ -91,11 +91,16 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
     if (!dir.exists(resources_path)) { # wrong path
       stop("The path ", resources_path, " does not exist!")
     }
-    # check whether resources path ends in /versions
+    # check whether resources path ends in /versions (if the user has given the
+    # full path to the versions subfolder, or the location of 'versions')
     if (basename(normalizePath(resources_path)) == "versions") {
       versions_path <- normalizePath(resources_path)
     } else {
       versions_path <- file.path(resources_path, "versions")
+      # check that versions_path exists and is a directory
+      if (!dir.exists(versions_path)) {
+        stop("The path ", versions_path, " does not exist!")
+      }
     }
 
     # check whether there is already a link from /versions to an external path
