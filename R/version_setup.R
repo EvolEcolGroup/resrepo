@@ -16,9 +16,6 @@
 
 version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # figure out if this repository already has data versioning
-  # BUG this does not catch the case where we have just cloned a repository
-  # that has version info, but we have yet to set up versioning on this
-  # local copy
 
   if (!is.null(resources_path)) {
     # check that path do not point to root directory
@@ -31,15 +28,12 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
     version_setup_first(quiet = quiet, resources_path = resources_path)
   } else {
-    message("This resrepo repository has already been versioned. To update the ",
-      "links to point to the data location on your machine or in an external ",
-      "hard drive, please run ",
+    message(
+      "This resrepo repository has already been versioned. To update ",
+      "the links to point to the data location on your machine or in an ",
+      "external hard drive, please run ",
       "version_relink with the appropriate 'resources_path' argument."
     )
-    #version_setup_cloned(quiet = quiet, resources_path = resources_path)
-    # TODO think carefully what we want to do here
-    # this is the case when we already have versioning set up in the repository
-    # so there is meta information about the versions
   }
 }
 
@@ -187,3 +181,21 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
 }
 
 
+add_git_hooks <- function() {
+  # create the githooks
+  # copy the githooks from the package
+  fs::dir_copy(system.file("githooks", package = "resrepo"),
+    path_resrepo(".git/hooks"),
+    overwrite = TRUE
+  )
+  # change permissions to make them executable
+  fs::file_chmod(
+    path_resrepo(".git/hooks/post-checkout"),
+    mode = "755"
+  )
+  # change permissions to make them executable
+  fs::file_chmod(
+    path_resrepo(".git/hooks/post-merge"),
+    mode = "755"
+  )
+}

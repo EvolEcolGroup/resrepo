@@ -402,13 +402,6 @@ test_that("clone a versioned repo", {
     overwrite = TRUE
   )
 
-  fs::dir_tree()
-
-  # TODO this test now fails because the cloned repository doesn't have a 'data'
-  # or 'versions' folder, as these are not tracked by git. The previous
-  # version_setup() function would create these, we need version_relink to do
-  # the same
-
   expect_true(version_relink(
     quiet = TRUE,
     resources_path = external_data_storage_new
@@ -417,7 +410,7 @@ test_that("clone a versioned repo", {
   # If we have cloned from a branch and then set up versioning,
   # can we merge back into
   # main
-  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
+  write.csv("blah", path_resrepo("data/intermediate/my_new_file1.csv"))
   expect_true(git_is_clean())
 
   # merge back into main
@@ -434,9 +427,6 @@ test_that("clone a versioned repo", {
 # @TODO find ways to break data versioning (cases when you clone the repository
 # but don't have the stuff in the right path)
 
-# @TODO clean up version_setup to remove the things that it no longer needs to
-# do
-
 # @TODO try to create a new version, delete it, and then create a version with
 # the same name. Version_add should check that we can't add a new version with
 # the same name. We need to tell the user to delete their previous data version
@@ -447,13 +437,13 @@ test_that("clone a versioned repo", {
 
 # @TODO see whether we can fix versioning with version_relink if the user has
 # manually deleted a link - consider using this in a version_doctor function.
-# There is a text file to the paths (maybe?), the links point to those paths, all the
-# paths exist etc
+# There is a text file to the paths (maybe?), the links point to those paths,
+# all the paths exist etc
 
 # @TODO add a local gitignored file to tell us where the data are stored -
 # version_setup or version_relink would create and update this file
 
 # @TODO have a master list of data versions somewhere in the repo, have an
-# update_version_info function that tells you data version blah is no longer used
-# by any branch, local or remote, and that you can remove this.
+# update_version_info function that tells you data version blah is no longer
+# used by any branch, local or remote, and that you can remove this.
 # Maybe a version_delete too?
