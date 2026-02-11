@@ -13,7 +13,7 @@ test_that("version_relink works correctly", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
 
   init_resrepo()
 
@@ -103,7 +103,7 @@ test_that("move versions from one external data location to another", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
 
   init_resrepo()
 
