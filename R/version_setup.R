@@ -16,9 +16,6 @@
 
 version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # figure out if this repository already has data versioning
-  # BUG this does not catch the case where we have just cloned a repository
-  # that has version info, but we have yet to set up versioning on this
-  # local copy
 
   if (!is.null(resources_path)) {
     # check that path do not point to root directory
@@ -31,10 +28,12 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
     version_setup_first(quiet = quiet, resources_path = resources_path)
   } else {
-    version_setup_cloned(quiet = quiet, resources_path = resources_path)
-    # TODO think carefully what we want to do here
-    # this is the case when we already have versioning set up in the repository
-    # so there is meta information about the versions
+    message(
+      "This resrepo repository has already been versioned. To update ",
+      "the links to point to the data location on your machine or in an ",
+      "external hard drive, please run ",
+      "version_relink with the appropriate 'resources_path' argument."
+    )
   }
 }
 
@@ -178,95 +177,6 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   # TODO add gitshooks back as function
   add_git_hooks()
   # TODO check that we successfully made the githooks executable
-  return(TRUE)
-}
-
-
-version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
-  # if resources_path is NULL check we have a versions directory
-  if (is.null(resources_path)) {
-    versions_path <- path_resrepo("versions")
-    if (!dir.exists(versions_path)) {
-      dir.create(versions_path, recursive = TRUE)
-      # need to create links to 'data/raw' and 'data/intermediate' in versions
-      # create links
-      # check the version in use
-      raw_in_use <- readLines(con = path_resrepo(
-        "data/version_meta/raw_in_use.meta"
-      ))
-      intermediate_in_use <- readLines(con = path_resrepo(
-        "data/version_meta/intermediate_in_use.meta"
-      ))
-      # create substructure
-      fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
-      fs::dir_create(path_resrepo(paste0(
-        "versions/", intermediate_in_use,
-        "/intermediate"
-      )))
-      # link the directories
-      data_dir_link(
-        target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
-        link_dir = "data/raw"
-      )
-      data_dir_link(
-        target_dir = path_resrepo(paste0(
-          "versions/", intermediate_in_use,
-          "/intermediate"
-        )),
-        link_dir = "data/intermediate"
-      )
-      # run git hooks
-      add_git_hooks()
-      return(TRUE)
-    }
-  } else {
-    # check that resources_path exists and is a directory
-    if (!dir.exists(resources_path)) { # wrong path
-      stop("The path ", resources_path, " does not exist!")
-    }
-    versions_path <- file.path(resources_path)
-    if (dir.exists(paste0(versions_path, "versions"))) {
-      stop(
-        "If 'resources_path' is given, there should be no 'versions'",
-        "directory in the 'resources_path'!"
-      )
-    }
-
-    # create a link from the repository to the resources path
-    data_dir_link(
-      link_dir = "/versions",
-      target_dir = file.path(versions_path)
-    )
-  }
-
-  # need to create links to 'data/raw' and 'data/intermediate' in versions
-  # create links
-  # check the version in use
-  raw_in_use <- readLines(con = path_resrepo(
-    "data/version_meta/raw_in_use.meta"
-  ))
-  intermediate_in_use <- readLines(con = path_resrepo(
-    "data/version_meta/intermediate_in_use.meta"
-  ))
-  # create substructure
-  fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
-  fs::dir_create(path_resrepo(paste0(
-    "versions/", intermediate_in_use,
-    "/intermediate"
-  )))
-  data_dir_link(
-    target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
-    link_dir = "data/raw"
-  )
-  data_dir_link(
-    target_dir = path_resrepo(paste0(
-      "versions/", intermediate_in_use,
-      "/intermediate"
-    )),
-    link_dir = "data/intermediate"
-  )
-  # run git hooks
-  add_git_hooks()
   return(TRUE)
 }
 

@@ -7,7 +7,7 @@ unlink(file.path(test_dir, "*"), recursive = TRUE)
 unlink(file.path(test_dir, ".*"), recursive = TRUE)
 # create the directory (if it doesn't exist)
 dir.create(test_dir, showWarnings = FALSE)
-setwd(test_dir)
+withr::local_dir(as.character(test_dir))
 # initialise a git repository
 this_git <- git2r::init(test_dir)
 git2r::config(this_git, user.name = "Test", user.email = "test@example.org")

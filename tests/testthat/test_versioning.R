@@ -13,7 +13,7 @@ test_that("versioning", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(example_dir)
+  withr::local_dir(as.character(example_dir))
   ############
   # initialise the repository and add the relevant files
   init_resrepo()
@@ -195,7 +195,7 @@ test_that("versioning", {
 
 # this file tests several functions related to versioning
 test_that("versioning with resources_path argument", {
-  setwd(tempdir())
+  withr::local_dir(as.character(tempdir()))
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
@@ -213,7 +213,7 @@ test_that("versioning with resources_path argument", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -288,7 +288,7 @@ test_that(paste0(
   "check that you cannot add a new data raw version ",
   "without a new data intermediate version"
 ), {
-  setwd(tempdir())
+  withr::local_dir(as.character(tempdir()))
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
@@ -306,7 +306,7 @@ test_that(paste0(
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -327,7 +327,7 @@ test_that(paste0(
 
 
 test_that("resources_path cannot be set to git root", {
-  setwd(tempdir())
+  withr::local_dir(as.character(tempdir()))
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
@@ -345,7 +345,7 @@ test_that("resources_path cannot be set to git root", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -378,7 +378,7 @@ test_that("clone a versioned repo", {
     progress = FALSE
   )
 
-  setwd(directory_penguins)
+  withr::local_dir(as.character(directory_penguins))
   expect_true(read.table("data/version_meta/intermediate_in_use.meta") ==
     "test_intermediate_description4") # nolint
 
@@ -402,7 +402,7 @@ test_that("clone a versioned repo", {
     overwrite = TRUE
   )
 
-  expect_true(version_setup(
+  expect_true(version_relink(
     quiet = TRUE,
     resources_path = external_data_storage_new
   ))
@@ -410,7 +410,7 @@ test_that("clone a versioned repo", {
   # If we have cloned from a branch and then set up versioning,
   # can we merge back into
   # main
-  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
+  write.csv("blah", path_resrepo("data/intermediate/my_new_file1.csv"))
   expect_true(git_is_clean())
 
   # merge back into main
@@ -423,9 +423,3 @@ test_that("clone a versioned repo", {
   # check we are back to the initial version
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
 })
-
-# @TODO find ways to break data versioning (cases when you clone the repository
-# but don't have the stuff in the right path)
-
-# @TODO write a test to check when you create versioned repo with version_setup
-# and then switch branches, the data still points to the right place
