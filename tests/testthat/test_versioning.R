@@ -5,8 +5,9 @@ test_that("versioning", {
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
   unlink(example_dir, recursive = TRUE)
+  print(dir.exists(example_dir))
   # create the directory for this test
-  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
   example_repo <- git2r::init(example_dir, branch = "main")
   git2r::config(example_repo,
     user.name = "Test",
@@ -410,7 +411,7 @@ test_that("clone a versioned repo", {
   # If we have cloned from a branch and then set up versioning,
   # can we merge back into
   # main
-  write.csv("blah", path_resrepo("data/intermediate/my_new_file1.csv"))
+  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
   expect_true(git_is_clean())
 
   # merge back into main
