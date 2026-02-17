@@ -48,37 +48,35 @@ consistent structure of `resrepo` repositories.
 
 -   'Outsourcing the data' demonstrates how to use `version_setup` to
     outsource your data storage to a different location, such as a
-    folder synced to the cloud or a hard drive. You can still add new
-    versions and merge branches when outsourcing your data.
-
-**Please, note** that the decision of where the data are stored (locally
-within the repository or externally) has to be made from the start when
-you set up versioning with the `version_setup` function. After this
-decision (`version_setup`), all the other methods (i.e. adding new
-version) will work in the same way, regardless of where the data are
-stored.
+    folder synced to the cloud or a hard drive.You can still add new 
+    versions and merge  branches when outsourcing your data.
+    
+-   'Moving the versions' demonstrates how to use `version_relink` to move 
+    your data to a different location (either locally or externally) once your 
+    repository is already versioned. 
 
 # Setting up data versioning
 
-If your data is too big for GitHub and/or you want to version your data, we can use the function `version_setup`. 
-**We can only use the function once at the beginning of the project to initialise versioning.** 
+If your data is too big for GitHub and/or you want to version your data, we can 
+use the function `version_setup`. 
 
-**NOTE**: This is the step where you need to decide where data will be 
+This is the step where you need to decide where data will be 
 stored (locally or externally). The command is the same, but depending on your 
-choice, you will need to set the `resources_path` argument. This CANNOT be changed later.
+choice, you will need to set the `resources_path` argument. 
 By default, your data will be stored locally in your repository 
 (but not tracked on GitHub). This is further explained in this section.
 Instead, if you would like to mirror your data to a cloud repository 
 (i.e. Dropbox, OneDrive) you can specify an external location for your 
 data storage using the `resource_path` argument in `version_setup`. 
 You might want to do this so that your data are backed-up, accessible 
-from another machine, or to collaborators. For this scenario, you can refer to
-the section below ('Outsourcing the data'), which contains more detailed 
-instructions on this fundamental first step of `version_setup`. 
+from another machine, or to collaborators. 
 
+You can always change the location of your data later, and you can refer to
+the section below ('Moving the versions') for instructions on how to proceed
 
 You add versioning option to an existing `resrepo` repository using the
 function `version_setup()`. 
+
 We demonstrate this by using our example repository
 from the vignette `workflow` - you might be already familiar with it. If
 you still have that repository, you don't need to run the code below,
@@ -149,8 +147,7 @@ keep **track of the versions of data currently in use**, `initial.meta`
 and `starting.meta` are, by default, the first version of the data.
 
 In this vignette, we will be focusing only on versioning
-`data/intermediate`. Advanced users can also version `data/raw` (see the
-end of this vignette). For now, `raw_in_use.meta` will point to the
+`data/intermediate`. Therefore, `raw_in_use.meta` will point to the 
 starting version of `data/raw` and will not change.
 
 `data/intermediate` and `data/raw` have now become links, which is why
@@ -165,7 +162,6 @@ dir(path_resrepo("/data/raw"))
 However, note that the data are now NOT being tracked by git, as
 `versions` is in .gitignore. So, you want to make sure that you have a
 reliable way to back up your data.
-
 
 
 
@@ -199,6 +195,11 @@ Now `data/raw` and `data/intermediate` are symlinks to the
 `new_filtering` version of the data, which is found under
 `versions/new_filtering`. Each version will be under a new branch of the
 repository.
+
+A symlink is a link to a file or directory. When you access a symlink, it 
+behaves as if you are accessing the target file or directory. 
+This means that when you read from or write to a symlink, you are 
+actually reading from or writing to the target file or directory.
 
 It is also in theory possible to version `data/raw` by adding
 "raw_new_version" to the `version_add` function, but this is NOT
@@ -332,7 +333,7 @@ And now we have successfully versioned and updated our repository.
 
 # Outsourcing the data
 
-In this section, we demonstrate how to use the `version_setup` function to outsource your data.
+In this section, we demonstrate how to use the `version_setup` function to outsource your data. 
 
 ```{r recreate_example_repo_02, include = FALSE}
 unlink("*", recursive = TRUE)
@@ -344,14 +345,19 @@ Often, you may want to outsource your data so that it is backed up, accessible
 from another machine, or easily shared with collaborators.
 In such cases, you might want to store your data in a different location, 
 such as a cloud repository (e.g. Dropbox, OneDrive) that mirrors your data files.
-You can specify an external location for your data storage using the `resource_path` argument in `version_setup`.
+You can specify an external location for your data storage using the 
+`resource_path` argument in `version_setup`.
 
-**NOTE**: Make sure that you have enough space on your hard drive before versioning: 
-if you are using a cloud service, a full copy of your data will also be stored 
-locally on your hard drive, which reduces the available storage space. If there is not enough space, the new version will not be created.
+**NOTE**: Make sure that you have enough space on your hard drive before 
+versioning: if you are using a cloud service, a full copy of your data will also
+be stored  locally on your hard drive, which reduces the available storage space. 
+If there is not enough space, the new version will not be created.
 
-**Be aware that we can use the `version_setup` function ONLY ONCE**. 
-Therefore, for this example, we first create a new (empty) repository that does not yet have any versioning:
+We only use the `version_setup` function once. If you want to outsource data from
+an already versioned repository, please follow the 'Moving the versions' section below.
+
+For this example, we first create a new (empty) repository that does not yet 
+have any versioning:
 
 ```{r init_resrepo, results='hide'}
 init_resrepo()
@@ -459,7 +465,6 @@ And the data are successfully stored in our external folder:
 ```{r check_external_storage_knit, echo=TRUE}
 fs::dir_tree("../../external_data_storage")
 ```
-
 
 
 # Moving the versions
