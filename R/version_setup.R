@@ -113,18 +113,22 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
     path_resrepo("versions/initial")
   )
   # check if content of old and new directories are the same
-  identical(
+  if (!isTRUE(identical(
     list.files(path_resrepo("data/raw"), recursive = TRUE),
     list.files(path_resrepo("versions/starting/raw"),
       recursive = TRUE
-    )
-  )
-  identical(
+    )))){
+    stop("The content of the old and new raw data directories \n",
+    "are not the same!")
+  }
+  if (!isTRUE(identical(
     list.files(path_resrepo("data/intermediate"), recursive = TRUE),
     list.files(path_resrepo("versions/initial/intermediate"),
       recursive = TRUE
-    )
-  )
+    )))){
+    stop("The content of the old and new intermediate data directories \n",
+    "are not the same!")
+  }
   # remove the old directory
   fs::dir_delete(path_resrepo("data/raw"))
   fs::dir_delete(path_resrepo("data/intermediate"))

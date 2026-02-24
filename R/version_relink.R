@@ -54,8 +54,11 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
 version_reset <- function(quiet = FALSE, resources_path = NULL) {
   # if resources_path is NULL check we have a versions directory
   if (is.null(resources_path)) {
-    stop("'resources_path' should be the path to the directory containing
-         the 'versions' folder.")
+    stop(
+      "Links already exist. To relocate versions, supply \n",
+      "'resources_path'. This should be the path to \n",
+      "the directory containing the 'versions' folder."
+    )
   } else {
     # check that resources_path exists and is a directory
     if (!dir.exists(resources_path)) { # wrong path

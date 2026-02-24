@@ -48,8 +48,8 @@ consistent structure of `resrepo` repositories.
 
 -   'Outsourcing the data' demonstrates how to use `version_setup` to
     outsource your data storage to a different location, such as a
-    folder synced to the cloud or a hard drive.You can still add new 
-    versions and merge  branches when outsourcing your data.
+    folder synced to the cloud or a hard drive. You can still add new 
+    versions and merge branches when outsourcing your data.
     
 -   'Moving the versions' demonstrates how to use `version_relink` to move 
     your data to a different location (either locally or externally) once your 
@@ -67,12 +67,12 @@ By default, your data will be stored locally in your repository
 (but not tracked on GitHub). This is further explained in this section.
 Instead, if you would like to mirror your data to a cloud repository 
 (i.e. Dropbox, OneDrive) you can specify an external location for your 
-data storage using the `resource_path` argument in `version_setup`. 
+data storage using the `resources_path` argument in `version_setup`. 
 You might want to do this so that your data are backed-up, accessible 
 from another machine, or to collaborators. 
 
 You can always change the location of your data later, and you can refer to
-the section below ('Moving the versions') for instructions on how to proceed
+the section below ('Moving the versions') for instructions on how to proceed.
 
 You add versioning option to an existing `resrepo` repository using the
 function `version_setup()`. 
@@ -299,7 +299,7 @@ git2r::commit(message = "Filter out 10 penguins", all = TRUE)
 ```
 
 Now we can merge the branch `new_filtering` into the branch `main`, and
-check out `main`. To to this, we can use the GitHub interface, following
+check out `main`. To do this, we can use the GitHub interface, following
 the steps below.
 
 First, we need to push both branches to GitHub:
@@ -346,7 +346,7 @@ from another machine, or easily shared with collaborators.
 In such cases, you might want to store your data in a different location, 
 such as a cloud repository (e.g. Dropbox, OneDrive) that mirrors your data files.
 You can specify an external location for your data storage using the 
-`resource_path` argument in `version_setup`.
+`resources_path` argument in `version_setup`.
 
 **NOTE**: Make sure that you have enough space on your hard drive before 
 versioning: if you are using a cloud service, a full copy of your data will also
@@ -468,7 +468,7 @@ fs::dir_tree("../../external_data_storage")
 
 # Moving the versions
 
-If once you have versioned your repository, you want to move your data somewhere else, 
+Once you have versioned your repository, if you want to move your data somewhere else 
 and update the links to the new location, you will need to move the `versions` folder 
 to the new location, and then re-run `version_relink` with `resources_path` set to the new path.
 
