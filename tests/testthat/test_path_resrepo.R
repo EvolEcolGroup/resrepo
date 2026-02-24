@@ -67,5 +67,7 @@ test_that("version argument", {
 })
 
 # and now clean up
-fs::file_delete(test_dir)
+if (dir.exists(test_dir)) {
+  fs::file_delete(test_dir)
+}
 

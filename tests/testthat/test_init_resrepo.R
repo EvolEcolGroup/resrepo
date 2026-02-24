@@ -21,5 +21,7 @@ test_that("initialise repository", {
 })
 
 # and now clean up
-fs::file_delete(test_dir)
+if (dir.exists(test_dir)) {
+  fs::file_delete(test_dir)
+}
 
