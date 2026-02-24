@@ -3,8 +3,8 @@ skip()
 # set up the test in a temporary directory
 test_dir <- file.path(tempdir(), "resrepo_test")
 # clean up the directory if it already exists
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
+fs::file_delete(file.path(test_dir, "*"))
+fs::file_delete(file.path(test_dir, ".*"))
 # create the directory (if it doesn't exist)
 dir.create(test_dir, showWarnings = FALSE)
 withr::local_dir(as.character(test_dir))
@@ -61,7 +61,7 @@ test_that("data_dir follow and unfollow", {
     "git has tracked"
   )
   # remove it and update git
-  unlink(path_resrepo("/data/raw/test_standard/myfile1.csv"))
+  fs::file_delete(path_resrepo("/data/raw/test_standard/myfile1.csv"))
   git2r::add(path = ".")
   git2r::commit(message = "remove file from data dir", all = TRUE)
   expect_true(data_dir_ignore("/data/raw/test_standard"))
@@ -71,5 +71,5 @@ test_that("data_dir follow and unfollow", {
 })
 
 # and now clean up
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
+fs::file_delete(file.path(test_dir, "*"))
+fs::file_delete(file.path(test_dir, ".*"))

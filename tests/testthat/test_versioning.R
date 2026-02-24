@@ -4,8 +4,9 @@ test_that("versioning", {
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
-  print(dir.exists(example_dir))
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   example_repo <- git2r::init(example_dir, branch = "main")
@@ -201,7 +202,7 @@ test_that("versioning with resources_path argument", {
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  fs::file_delete(example_dir)
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -226,7 +227,9 @@ test_that("versioning with resources_path argument", {
   # set up versioning
   external_data_storage <- file.path(tempdir(), "external_data_storage")
   # erase everything from the data storage folder
-  unlink(external_data_storage, recursive = TRUE)
+  if (dir.exists(external_data_storage)) {
+    fs::dir_delete(external_data_storage)
+  }
   # create the folder for data storage
   dir.create(external_data_storage, showWarnings = FALSE)
   expect_true(version_setup(
@@ -294,7 +297,7 @@ test_that(paste0(
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  fs::file_delete(example_dir)
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -333,7 +336,7 @@ test_that("resources_path cannot be set to git root", {
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  fs::file_delete(example_dir)
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir

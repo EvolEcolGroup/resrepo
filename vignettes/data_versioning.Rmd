@@ -236,7 +236,7 @@ We can now remove the full version of the intermediate dataset in the
 excludes the first 10 penguins.
 
 ```{r remove_old_version}
-unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
+fs::file_delete(path_resrepo("data/intermediate/s02_merge_clean"))
 ```
 
 Note that `penguins_na_omit.csv` is still in the `versions/initial`
@@ -368,7 +368,6 @@ location.
 
 ```{r create_external_folder, echo=TRUE}
 external_data_storage <- file.path(tempdir(), "external_data_storage")
-unlink(external_data_storage, recursive = TRUE)
 dir.create(external_data_storage)
 ```
 

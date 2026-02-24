@@ -2,10 +2,12 @@
 test_dir <- file.path(tempdir(), "resrepo_test")
 mirror_dir <- file.path(tempdir(), "mirror/resrepo_test")
 # clean up the directory if it already exists
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
-unlink(file.path(mirror_dir, "*"), recursive = TRUE)
-unlink(file.path(mirror_dir, ".*"), recursive = TRUE)
+if (dir.exists(test_dir)) {
+  fs::dir_delete(test_dir)
+}
+if (dir.exists(mirror_dir)) {
+  fs::dir_delete(mirror_dir)
+}
 # create the directory (if it doesn't exist)
 dir.create(test_dir, showWarnings = FALSE)
 dir.create(mirror_dir, recursive = TRUE, showWarnings = FALSE)
@@ -33,7 +35,7 @@ test_that("create links for data directories", {
     target_dir = file.path(mirror_dir, "blah2")
   ), "the data_dir ") # where the actual data are stored
   # remove the file to allow the link to be created
-  unlink(path_resrepo("/data/raw/blah/problem_file.csv"))
+  fs::file_delete(path_resrepo("/data/raw/blah/problem_file.csv"))
   expect_true(data_dir_link(
     "/data/raw/blah",
     file.path(mirror_dir, "blah2")
@@ -45,5 +47,5 @@ test_that("create links for data directories", {
 })
 
 # and now clean up
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
+fs::file_delete(test_dir)
+

@@ -1,8 +1,9 @@
 # set up the test in a temporary directory
 test_dir <- file.path(tempdir(), "resrepo_test")
 # clean up the directory if it already exists
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
+if (dir.exists(test_dir)) {
+  fs::dir_delete(test_dir)
+}
 # create the directory (if it doesn't exist)
 dir.create(test_dir, showWarnings = FALSE)
 withr::local_dir(as.character(test_dir))
@@ -66,5 +67,5 @@ test_that("version argument", {
 })
 
 # and now clean up
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
+fs::file_delete(test_dir)
+

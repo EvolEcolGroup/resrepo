@@ -112,7 +112,7 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
     base::file.copy(cur_folder, new_dir,
       recursive = TRUE
     ) # copies files to results
-    base::unlink(cur_folder, recursive = TRUE) # deletes originals
+    fs::file_delete(cur_folder) # deletes originals
   }
 
   # rename the md file to README for GitHub display

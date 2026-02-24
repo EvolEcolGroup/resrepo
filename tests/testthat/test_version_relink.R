@@ -1,6 +1,8 @@
 test_that("version_relink works correctly", {
   example_dir <- file.path(tempdir(), "resrepo_example")
-  unlink(example_dir, recursive = TRUE)
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   dir.create(example_dir, showWarnings = FALSE)
 
   # create a subdirectory of example_dir
@@ -90,7 +92,9 @@ test_that("version_relink works correctly", {
 
 test_that("move versions from one external data location to another", {
   example_dir <- file.path(tempdir(), "resrepo_example")
-  unlink(example_dir, recursive = TRUE)
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   dir.create(example_dir, showWarnings = FALSE)
 
   # create a subdirectory of example_dir
@@ -108,7 +112,9 @@ test_that("move versions from one external data location to another", {
   init_resrepo()
 
   external_data_storage <- file.path(tempdir(), "external_data_storage")
-  unlink(external_data_storage, recursive = TRUE)
+  if (dir.exists(external_data_storage)) {
+    fs::dir_delete(external_data_storage)
+  }
   dir.create(external_data_storage)
 
   version_setup(quiet = TRUE, resources_path = external_data_storage)
