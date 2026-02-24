@@ -45,9 +45,3 @@ test_that("create links for data directories", {
   write.csv("test my test", path_resrepo("/data/raw/blah/test_file.csv"))
   expect_true(file.exists(file.path(mirror_dir, "blah2/test_file.csv")))
 })
-
-# and now clean up
-if (dir.exists(test_dir)) {
-  fs::file_delete(test_dir)
-}
-

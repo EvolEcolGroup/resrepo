@@ -19,9 +19,3 @@ test_that("initialise repository", {
   # check that directories and some files are there
   expect_true(length(dir(test_dir)) > 4)
 })
-
-# and now clean up
-if (dir.exists(test_dir)) {
-  fs::file_delete(test_dir)
-}
-

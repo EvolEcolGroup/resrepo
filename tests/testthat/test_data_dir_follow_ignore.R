@@ -3,8 +3,9 @@ skip()
 # set up the test in a temporary directory
 test_dir <- file.path(tempdir(), "resrepo_test")
 # clean up the directory if it already exists
-fs::file_delete(file.path(test_dir, "*"))
-fs::file_delete(file.path(test_dir, ".*"))
+if (dir.exists(test_dir)) {
+  fs::file_delete(test_dir)
+}
 # create the directory (if it doesn't exist)
 dir.create(test_dir, showWarnings = FALSE)
 withr::local_dir(as.character(test_dir))
@@ -29,8 +30,6 @@ test_that("data_dir follow and unfollow", {
   git2r::commit(message = "remove files from data dir", all = TRUE)
   # and now we can ignore the directory
   expect_true(data_dir_ignore("/data/raw"))
-
-  # we stopped here!
 
 
 
@@ -69,7 +68,3 @@ test_that("data_dir follow and unfollow", {
   write.csv("blah", path_resrepo("/data/raw/test_standard/myfile1.csv"))
   expect_true(length(git2r::status()$untracked) == 0)
 })
-
-# and now clean up
-fs::file_delete(file.path(test_dir, "*"))
-fs::file_delete(file.path(test_dir, ".*"))

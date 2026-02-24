@@ -65,9 +65,3 @@ test_that("version argument", {
     path_resrepo("versions/starting/data/raw")
   )
 })
-
-# and now clean up
-if (dir.exists(test_dir)) {
-  fs::file_delete(test_dir)
-}
-
