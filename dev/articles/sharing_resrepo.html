@@ -194,7 +194,7 @@ do this using <code>version_setup</code>.</p>
 storage folder:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/version_setup.html">version_setup</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span>, resources_path <span class="op">=</span> <span class="va">external_data_storage_new</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; This resrepo repository has already been versioned. To update the links to point to the data location on your machine or in an external hard drive, please run version_relink with the appropriate 'resources_path' argument.</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">.</span></span></span>
@@ -210,8 +210,6 @@ storage folder:</p>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">archive</span></span></span>
 <span><span class="co">#&gt; │   │   └── README.md</span></span>
 <span><span class="co">#&gt; │   ├── data_sources.csv</span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #00BBBB; font-weight: bold;">intermediate</span></span></span>
-<span><span class="co">#&gt; │   ├── <span style="color: #00BBBB; font-weight: bold;">raw</span></span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">version_meta</span></span></span>
 <span><span class="co">#&gt; │       ├── initial.meta</span></span>
 <span><span class="co">#&gt; │       ├── intermediate_in_use.meta</span></span>
@@ -220,7 +218,6 @@ storage folder:</p>
 <span><span class="co">#&gt; ├── resrepo_manual.md</span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">results</span></span></span>
 <span><span class="co">#&gt; │   └── README.md</span></span>
-<span><span class="co">#&gt; ├── <span style="color: #00BBBB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
 <p>We can now see that we have <code>data/intermediate</code> and
@@ -234,7 +231,7 @@ external_data_storage_new/initial/intermediate data/raw -&gt; versions
 <code>external_data_storage_new</code> folder:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">external_data_storage_new</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpND0GUx/external_data_storage_new</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpjAzibr/external_data_storage_new</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">starting</span></span></span>

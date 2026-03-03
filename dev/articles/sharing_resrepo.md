@@ -141,7 +141,7 @@ which is the path to the external data storage folder:
 
 ``` r
 version_setup(quiet = TRUE, resources_path = external_data_storage_new)
-#> [1] TRUE
+#> This resrepo repository has already been versioned. To update the links to point to the data location on your machine or in an external hard drive, please run version_relink with the appropriate 'resources_path' argument.
 ```
 
 ``` r
@@ -159,8 +159,6 @@ fs::dir_tree()
 #> │   ├── archive
 #> │   │   └── README.md
 #> │   ├── data_sources.csv
-#> │   ├── intermediate
-#> │   ├── raw
 #> │   └── version_meta
 #> │       ├── initial.meta
 #> │       ├── intermediate_in_use.meta
@@ -169,7 +167,6 @@ fs::dir_tree()
 #> ├── resrepo_manual.md
 #> ├── results
 #> │   └── README.md
-#> ├── versions
 #> └── writing
 #>     └── README.md
 ```
@@ -187,7 +184,7 @@ folder:
 
 ``` r
 fs::dir_tree(external_data_storage_new)
-#> /tmp/RtmpND0GUx/external_data_storage_new
+#> /tmp/RtmpjAzibr/external_data_storage_new
 #> ├── initial
 #> │   └── intermediate
 #> └── starting

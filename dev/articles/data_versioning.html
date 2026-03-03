@@ -74,9 +74,9 @@ analysis</li>
 <li>You want to store your data externally</li>
 </ul>
 <p>The function <code>version_setup</code> is used in each of these
-cases to create a versioned repository to work with. We begin in this
-way to maintain consistent structure of <code>resrepo</code>
-repositories.</p>
+cases to create a versioned repository that properly stores data. We
+begin in this way to maintain consistent structure of
+<code>resrepo</code> repositories.</p>
 <ul>
 <li><p>‘Setting up data versioning’ illustrates how to use the function
 <code>version_setup</code> to create a versioned repository. This will
@@ -85,18 +85,41 @@ prevent git from tracking data.</p></li>
 approaches to data analysis (e.g. a different version of data
 filtering). This section illustrates how to add new versions of the code
 and data, and merge branches.</p></li>
-<li><p>‘Outsourcing the data’ demonstrates show how to use
+<li><p>‘Outsourcing the data’ demonstrates how to use
 <code>version_setup</code> to outsource your data storage to a different
 location, such as a folder synced to the cloud or a hard drive. You can
 still add new versions and merge branches when outsourcing your
 data.</p></li>
+<li><p>‘Moving the versions’ demonstrates how to use
+<code>version_relink</code> to move your data to a different location
+(either locally or externally) once your repository is already
+versioned.</p></li>
 </ul>
 <div class="section level2">
 <h2 id="setting-up-data-versioning">Setting up data versioning<a class="anchor" aria-label="anchor" href="#setting-up-data-versioning"></a>
 </h2>
-<p>Let us start by recreating the example repository. This is the same
-repository we created in vignette <code>workflow</code>; if you still
-have that repository, you don’t need to run the code below:</p>
+<p>If your data is too big for GitHub and/or you want to version your
+data, we can use the function <code>version_setup</code>.</p>
+<p>This is the step where you need to decide where data will be stored
+(locally or externally). The command is the same, but depending on your
+choice, you will need to set the <code>resources_path</code> argument.
+By default, your data will be stored locally in your repository (but not
+tracked on GitHub). This is further explained in this section. Instead,
+if you would like to mirror your data to a cloud repository
+(i.e. Dropbox, OneDrive) you can specify an external location for your
+data storage using the <code>resources_path</code> argument in
+<code>version_setup</code>. You might want to do this so that your data
+are backed-up, accessible from another machine, or to collaborators.</p>
+<p>You can always change the location of your data later, and you can
+refer to the section below (‘Moving the versions’) for instructions on
+how to proceed.</p>
+<p>You add versioning option to an existing <code>resrepo</code>
+repository using the function <code><a href="../reference/version_setup.html">version_setup()</a></code>.</p>
+<p>We demonstrate this by using our example repository from the vignette
+<code>workflow</code> - you might be already familiar with it. If you
+still have that repository, you don’t need to run the code below,
+otherwise, let us start by recreating the <code>workflow</code> example
+repository:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://evolecolgroup.github.io/resrepo/">resrepo</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/init_resrepo.html">init_resrepo</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -184,15 +207,11 @@ have that repository, you don’t need to run the code below:</p>
 <span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
-<p>When we want to start versioning the data, we can use the function
-<code>version_setup</code>. We only need to use the function once at the
-beginning of the project to initialise versioning. You can specify the
-location of your data using the <code>resources_path</code> argument.
-The function will create a subfolder named <code>versions</code> in this
-location.</p>
-<p>By default, this will be stored in your repository, but it doesn’t
-have to, and it can be located anywhere on your system (see the second
-part of this vignette for an example).</p>
+<p>Here, we show the default option, where the
+<code>resources_path</code> argument is not specified. The function will
+automatically create the right set up of folders in the expected order,
+including a subfolder named <code>versions</code> in your repository
+(locally).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/version_setup.html">version_setup</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span>, resources_path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -251,11 +270,16 @@ part of this vignette for an example).</p>
 <code>data/intermediate</code> have been moved into
 <code>versions</code>, <code>intermediate</code> is under the
 <code>initial</code> version, while <code>raw</code> is under the
-<code>starting</code> directory. In this vignette, we will be focusing
-only on versioning <code>data/intermediate</code>. Advanced users can
-also version <code>data/raw</code> (see the end of this vignette). For
-now, <code>raw_in_use.meta</code> will point to the starting version of
-<code>data/raw</code> and will not change.</p>
+<code>starting</code> directory. The function has also created four
+metadata files: <code>intermediate_in_use.meta</code> and
+<code>raw_in_use.meta</code> keep <strong>track of the versions of data
+currently in use</strong>, <code>initial.meta</code> and
+<code>starting.meta</code> are, by default, the first version of the
+data.</p>
+<p>In this vignette, we will be focusing only on versioning
+<code>data/intermediate</code>. Therefore, <code>raw_in_use.meta</code>
+will point to the starting version of <code>data/raw</code> and will not
+change.</p>
 <p><code>data/intermediate</code> and <code>data/raw</code> have now
 become links, which is why they are highlighted in a different colour
 (light purple) in the tree above. We can use these links as if they were
@@ -292,14 +316,19 @@ called <code>new_filtering</code>, as indicated by (HEAD) below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">git2r</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/git2r/reference/branches.html" class="external-link">branches</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $main</span></span>
-<span><span class="co">#&gt; [c6b1a7] (Local) main</span></span>
+<span><span class="co">#&gt; [7beea5] (Local) main</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $new_filtering</span></span>
-<span><span class="co">#&gt; [889d88] (Local) (HEAD) new_filtering</span></span></code></pre></div>
+<span><span class="co">#&gt; [b2eb56] (Local) (HEAD) new_filtering</span></span></code></pre></div>
 <p>Now <code>data/raw</code> and <code>data/intermediate</code> are
 symlinks to the <code>new_filtering</code> version of the data, which is
 found under <code>versions/new_filtering</code>. Each version will be
 under a new branch of the repository.</p>
+<p>A symlink is a link to a file or directory. When you access a
+symlink, it behaves as if you are accessing the target file or
+directory. This means that when you read from or write to a symlink, you
+are actually reading from or writing to the target file or
+directory.</p>
 <p>It is also in theory possible to version <code>data/raw</code> by
 adding “raw_new_version” to the <code>version_add</code> function, but
 this is NOT RECOMMENDED, as raw data should ideally not be changed (it
@@ -384,7 +413,7 @@ the <code>code</code> directory and commit the changes.</p>
 <code>new_filtering</code> folder so that we can replace it with a new
 version that excludes the first 10 penguins.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"data/intermediate/s02_merge_clean"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/delete.html" class="external-link">file_delete</a></span><span class="op">(</span><span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"data/intermediate/s02_merge_clean"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Note that <code>penguins_na_omit.csv</code> is still in the
 <code>versions/initial</code> folder, as we have not removed it from
 <code>versions/initial</code> but only from the
@@ -545,7 +574,7 @@ to commit the changes to the branch <code>new_filtering</code>.</p>
 <p><img src="img/git_commit.gif" alt="Committing in RStudio" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);"></p>
 </div>
 <p>Now we can merge the branch <code>new_filtering</code> into the
-branch <code>main</code>, and check out <code>main</code>. To to this,
+branch <code>main</code>, and check out <code>main</code>. To do this,
 we can use the GitHub interface, following the steps below.</p>
 <p>First, we need to push both branches to GitHub:</p>
 <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
@@ -566,31 +595,44 @@ repository.</p>
 <div class="section level2">
 <h2 id="outsourcing-the-data">Outsourcing the data<a class="anchor" aria-label="anchor" href="#outsourcing-the-data"></a>
 </h2>
-<p>Often, data are too big to be stored within your git repository.
-Therefore, we may want to store them into a different location: locally
-within your machine, in a hard drive, or to a folder synced to the
-cloud. In this section, we will show how to use the
+<p>In this section, we demonstrate how to use the
 <code>version_setup</code> function to outsource your data.</p>
-<p>Be aware that we can use the <code>version_setup</code> function only
-once when initializing a repository. Therefore, we need to create an
-empty repository for this example:</p>
+<p>Often, you may want to outsource your data so that it is backed up,
+accessible from another machine, or easily shared with collaborators. In
+such cases, you might want to store your data in a different location,
+such as a cloud repository (e.g. Dropbox, OneDrive) that mirrors your
+data files. You can specify an external location for your data storage
+using the <code>resources_path</code> argument in
+<code>version_setup</code>.</p>
+<p><strong>NOTE</strong>: Make sure that you have enough space on your
+hard drive before versioning: if you are using a cloud service, a full
+copy of your data will also be stored locally on your hard drive, which
+reduces the available storage space. If there is not enough space, the
+new version will not be created.</p>
+<p>We only use the <code>version_setup</code> function once. If you want
+to outsource data from an already versioned repository, please follow
+the ‘Moving the versions’ section below.</p>
+<p>For this example, we first create a new (empty) repository that does
+not yet have any versioning:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/init_resrepo.html">init_resrepo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>We now need to create a folder for data storage in our desired
 external location.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">external_data_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"external_data_storage"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">external_data_storage</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">external_data_storage</span><span class="op">)</span></span></code></pre></div>
 <p>For the purpose of this vignette, the above folder is created in a
-temporary location. For your project this could be a directory in your
-local machine, on a hard drive, or a folder synced to the cloud.</p>
+temporary location. For your project this could be a directory on a hard
+drive, or a folder synced to the cloud.</p>
 <p>Now we have an empty folder where we want to store our data, and an
 empty repository for our project.</p>
 <p>This time to set up versioning with external data storage, we will
-again use the function <code>version_setup</code>, however, we will set
-the argument <code>resources_path</code> to the external path where we
-would like to store the new versions of our data.</p>
+use the function <code>version_setup</code>, however, we will set the
+argument <code>resources_path</code> to the external path where we would
+like to store the new versions of our data.</p>
+<p>We use the same <code>version_setup</code> function to set up
+versioning and we now specify the external path using the
+<code>resources_path</code> argument.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/version_setup.html">version_setup</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span>, resources_path <span class="op">=</span> <span class="va">external_data_storage</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -743,6 +785,132 @@ files:</p>
 <span><span class="co">#&gt;         └── <span style="color: #0000BB; font-weight: bold;">raw</span></span></span>
 <span><span class="co">#&gt;             ├── README.md</span></span>
 <span><span class="co">#&gt;             ├── <span style="color: #0000BB; font-weight: bold;">original</span></span></span>
+<span><span class="co">#&gt;             │   └── tux_measurements.csv</span></span>
+<span><span class="co">#&gt;             └── <span style="color: #0000BB; font-weight: bold;">s01_download_penguins</span></span></span>
+<span><span class="co">#&gt;                 ├── palmer_penguins.csv</span></span>
+<span><span class="co">#&gt;                 └── renv_s01_download_penguins.json</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="moving-the-versions">Moving the versions<a class="anchor" aria-label="anchor" href="#moving-the-versions"></a>
+</h2>
+<p>Once you have versioned your repository, if you want to move your
+data somewhere else and update the links to the new location, you will
+need to move the <code>versions</code> folder to the new location, and
+then re-run <code>version_relink</code> with <code>resources_path</code>
+set to the new path.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create another external data storage folder</span></span>
+<span><span class="va">new_external_data_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"new_external_data_storage"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create new data directory where we want to move our data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">new_external_data_storage</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># move versions folder to new_data_dir</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.rename</a></span><span class="op">(</span></span>
+<span>  from <span class="op">=</span> <span class="st">"../../external_data_storage/versions"</span>,</span>
+<span>  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">new_external_data_storage</span>, <span class="st">"versions"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpZz3vE3/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
+<span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
+<span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
+<span><span class="co">#&gt;     │       ├── README.md</span></span>
+<span><span class="co">#&gt;     │       └── <span style="color: #0000BB; font-weight: bold;">s02_merge_clean</span></span></span>
+<span><span class="co">#&gt;     │           ├── penguins_na_omit.csv</span></span>
+<span><span class="co">#&gt;     │           ├── renv_s02_merge_clean.json</span></span>
+<span><span class="co">#&gt;     │           └── renv_s03_pca.json</span></span>
+<span><span class="co">#&gt;     └── <span style="color: #0000BB; font-weight: bold;">starting</span></span></span>
+<span><span class="co">#&gt;         └── <span style="color: #0000BB; font-weight: bold;">raw</span></span></span>
+<span><span class="co">#&gt;             ├── README.md</span></span>
+<span><span class="co">#&gt;             ├── <span style="color: #0000BB; font-weight: bold;">original</span></span></span>
+<span><span class="co">#&gt;             │   └── tux_measurements.csv</span></span>
+<span><span class="co">#&gt;             └── <span style="color: #0000BB; font-weight: bold;">s01_download_penguins</span></span></span>
+<span><span class="co">#&gt;                 ├── palmer_penguins.csv</span></span>
+<span><span class="co">#&gt;                 └── renv_s01_download_penguins.json</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># relink the version</span></span>
+<span><span class="fu"><a href="../reference/version_relink.html">version_relink</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span>, resources_path <span class="op">=</span> <span class="va">new_external_data_storage</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>Now we have a symlink for <code>versions</code> in our repository,
+which points to the new location of our data.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpZz3vE3/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
+<span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
+<span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
+<span><span class="co">#&gt;     │       ├── README.md</span></span>
+<span><span class="co">#&gt;     │       └── <span style="color: #0000BB; font-weight: bold;">s02_merge_clean</span></span></span>
+<span><span class="co">#&gt;     │           ├── penguins_na_omit.csv</span></span>
+<span><span class="co">#&gt;     │           ├── renv_s02_merge_clean.json</span></span>
+<span><span class="co">#&gt;     │           └── renv_s03_pca.json</span></span>
+<span><span class="co">#&gt;     └── <span style="color: #0000BB; font-weight: bold;">starting</span></span></span>
+<span><span class="co">#&gt;         └── <span style="color: #0000BB; font-weight: bold;">raw</span></span></span>
+<span><span class="co">#&gt;             ├── README.md</span></span>
+<span><span class="co">#&gt;             ├── <span style="color: #0000BB; font-weight: bold;">original</span></span></span>
+<span><span class="co">#&gt;             │   └── tux_measurements.csv</span></span>
+<span><span class="co">#&gt;             └── <span style="color: #0000BB; font-weight: bold;">s01_download_penguins</span></span></span>
+<span><span class="co">#&gt;                 ├── palmer_penguins.csv</span></span>
+<span><span class="co">#&gt;                 └── renv_s01_download_penguins.json</span></span>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">.</span></span></span>
+<span><span class="co">#&gt; ├── README.md</span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">code</span></span></span>
+<span><span class="co">#&gt; │   ├── README.md</span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #00BB00;">s01_download_penguins.Rmd</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #00BB00;">s02_merge_clean.Rmd</span></span></span>
+<span><span class="co">#&gt; │   └── <span style="color: #00BB00;">s03_pca.Rmd</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">data</span></span></span>
+<span><span class="co">#&gt; │   ├── README.md</span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #00BBBB; font-weight: bold;">intermediate</span></span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #00BBBB; font-weight: bold;">raw</span></span></span>
+<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">version_meta</span></span></span>
+<span><span class="co">#&gt; │       ├── initial.meta</span></span>
+<span><span class="co">#&gt; │       ├── intermediate_in_use.meta</span></span>
+<span><span class="co">#&gt; │       ├── raw_in_use.meta</span></span>
+<span><span class="co">#&gt; │       └── starting.meta</span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">results</span></span></span>
+<span><span class="co">#&gt; │   ├── README.md</span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">s01_download_penguins</span></span></span>
+<span><span class="co">#&gt; │   │   ├── README.md</span></span>
+<span><span class="co">#&gt; │   │   └── s01_download_penguins.pdf</span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">s02_merge_clean</span></span></span>
+<span><span class="co">#&gt; │   │   ├── README.md</span></span>
+<span><span class="co">#&gt; │   │   └── s02_merge_clean.pdf</span></span>
+<span><span class="co">#&gt; │   └── <span style="color: #0000BB; font-weight: bold;">s03_pca</span></span></span>
+<span><span class="co">#&gt; │       ├── README.md</span></span>
+<span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
+<span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; ├── <span style="color: #00BBBB; font-weight: bold;">versions</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
+<span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># write a text file to ../data/raw/original to check the link works</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="st">"blah"</span>, <span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/data/raw/original/my_new_file1.csv"</span><span class="op">)</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpZz3vE3/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
+<span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
+<span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
+<span><span class="co">#&gt;     │       ├── README.md</span></span>
+<span><span class="co">#&gt;     │       └── <span style="color: #0000BB; font-weight: bold;">s02_merge_clean</span></span></span>
+<span><span class="co">#&gt;     │           ├── penguins_na_omit.csv</span></span>
+<span><span class="co">#&gt;     │           ├── renv_s02_merge_clean.json</span></span>
+<span><span class="co">#&gt;     │           └── renv_s03_pca.json</span></span>
+<span><span class="co">#&gt;     └── <span style="color: #0000BB; font-weight: bold;">starting</span></span></span>
+<span><span class="co">#&gt;         └── <span style="color: #0000BB; font-weight: bold;">raw</span></span></span>
+<span><span class="co">#&gt;             ├── README.md</span></span>
+<span><span class="co">#&gt;             ├── <span style="color: #0000BB; font-weight: bold;">original</span></span></span>
+<span><span class="co">#&gt;             │   ├── my_new_file1.csv</span></span>
 <span><span class="co">#&gt;             │   └── tux_measurements.csv</span></span>
 <span><span class="co">#&gt;             └── <span style="color: #0000BB; font-weight: bold;">s01_download_penguins</span></span></span>
 <span><span class="co">#&gt;                 ├── palmer_penguins.csv</span></span>

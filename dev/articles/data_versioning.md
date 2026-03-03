@@ -8,8 +8,8 @@ This vignette will cover the data versioning functionality of the
 - You want to store your data externally
 
 The function `version_setup` is used in each of these cases to create a
-versioned repository to work with. We begin in this way to maintain
-consistent structure of `resrepo` repositories.
+versioned repository that properly stores data. We begin in this way to
+maintain consistent structure of `resrepo` repositories.
 
 - ‘Setting up data versioning’ illustrates how to use the function
   `version_setup` to create a versioned repository. This will prevent
@@ -20,16 +20,43 @@ consistent structure of `resrepo` repositories.
   filtering). This section illustrates how to add new versions of the
   code and data, and merge branches.
 
-- ‘Outsourcing the data’ demonstrates show how to use `version_setup` to
+- ‘Outsourcing the data’ demonstrates how to use `version_setup` to
   outsource your data storage to a different location, such as a folder
   synced to the cloud or a hard drive. You can still add new versions
   and merge branches when outsourcing your data.
 
+- ‘Moving the versions’ demonstrates how to use `version_relink` to move
+  your data to a different location (either locally or externally) once
+  your repository is already versioned.
+
 ## Setting up data versioning
 
-Let us start by recreating the example repository. This is the same
-repository we created in vignette `workflow`; if you still have that
-repository, you don’t need to run the code below:
+If your data is too big for GitHub and/or you want to version your data,
+we can use the function `version_setup`.
+
+This is the step where you need to decide where data will be stored
+(locally or externally). The command is the same, but depending on your
+choice, you will need to set the `resources_path` argument. By default,
+your data will be stored locally in your repository (but not tracked on
+GitHub). This is further explained in this section. Instead, if you
+would like to mirror your data to a cloud repository (i.e. Dropbox,
+OneDrive) you can specify an external location for your data storage
+using the `resources_path` argument in `version_setup`. You might want
+to do this so that your data are backed-up, accessible from another
+machine, or to collaborators.
+
+You can always change the location of your data later, and you can refer
+to the section below (‘Moving the versions’) for instructions on how to
+proceed.
+
+You add versioning option to an existing `resrepo` repository using the
+function
+[`version_setup()`](https://evolecolgroup.github.io/resrepo/dev/reference/version_setup.md).
+
+We demonstrate this by using our example repository from the vignette
+`workflow` - you might be already familiar with it. If you still have
+that repository, you don’t need to run the code below, otherwise, let us
+start by recreating the `workflow` example repository:
 
 ``` r
 library(resrepo)
@@ -123,15 +150,10 @@ fs::dir_tree()
 #>     └── README.md
 ```
 
-When we want to start versioning the data, we can use the function
-`version_setup`. We only need to use the function once at the beginning
-of the project to initialise versioning. You can specify the location of
-your data using the `resources_path` argument. The function will create
-a subfolder named `versions` in this location.
-
-By default, this will be stored in your repository, but it doesn’t have
-to, and it can be located anywhere on your system (see the second part
-of this vignette for an example).
+Here, we show the default option, where the `resources_path` argument is
+not specified. The function will automatically create the right set up
+of folders in the expected order, including a subfolder named `versions`
+in your repository (locally).
 
 ``` r
 version_setup(quiet = TRUE, resources_path = NULL)
@@ -194,11 +216,14 @@ fs::dir_tree()
 
 We can see that both `data/raw` and `data/intermediate` have been moved
 into `versions`, `intermediate` is under the `initial` version, while
-`raw` is under the `starting` directory. In this vignette, we will be
-focusing only on versioning `data/intermediate`. Advanced users can also
-version `data/raw` (see the end of this vignette). For now,
-`raw_in_use.meta` will point to the starting version of `data/raw` and
-will not change.
+`raw` is under the `starting` directory. The function has also created
+four metadata files: `intermediate_in_use.meta` and `raw_in_use.meta`
+keep **track of the versions of data currently in use**, `initial.meta`
+and `starting.meta` are, by default, the first version of the data.
+
+In this vignette, we will be focusing only on versioning
+`data/intermediate`. Therefore, `raw_in_use.meta` will point to the
+starting version of `data/raw` and will not change.
 
 `data/intermediate` and `data/raw` have now become links, which is why
 they are highlighted in a different colour (light purple) in the tree
@@ -243,16 +268,21 @@ we have switched to a new branch in the git repository called
 ``` r
 git2r::branches()
 #> $main
-#> [c6b1a7] (Local) main
+#> [7beea5] (Local) main
 #> 
 #> $new_filtering
-#> [889d88] (Local) (HEAD) new_filtering
+#> [b2eb56] (Local) (HEAD) new_filtering
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the
 `new_filtering` version of the data, which is found under
 `versions/new_filtering`. Each version will be under a new branch of the
 repository.
+
+A symlink is a link to a file or directory. When you access a symlink,
+it behaves as if you are accessing the target file or directory. This
+means that when you read from or write to a symlink, you are actually
+reading from or writing to the target file or directory.
 
 It is also in theory possible to version `data/raw` by adding
 “raw_new_version” to the `version_add` function, but this is NOT
@@ -346,7 +376,7 @@ We can now remove the full version of the intermediate dataset in the
 excludes the first 10 penguins.
 
 ``` r
-unlink(path_resrepo("data/intermediate/s02_merge_clean"), recursive = TRUE)
+fs::file_delete(path_resrepo("data/intermediate/s02_merge_clean"))
 ```
 
 Note that `penguins_na_omit.csv` is still in the `versions/initial`
@@ -517,7 +547,7 @@ How to commit in RStudio:
 ![Committing in RStudio](img/git_commit.gif)
 
 Now we can merge the branch `new_filtering` into the branch `main`, and
-check out `main`. To to this, we can use the GitHub interface, following
+check out `main`. To do this, we can use the GitHub interface, following
 the steps below.
 
 First, we need to push both branches to GitHub:
@@ -536,15 +566,28 @@ And now we have successfully versioned and updated our repository.
 
 ## Outsourcing the data
 
-Often, data are too big to be stored within your git repository.
-Therefore, we may want to store them into a different location: locally
-within your machine, in a hard drive, or to a folder synced to the
-cloud. In this section, we will show how to use the `version_setup`
-function to outsource your data.
+In this section, we demonstrate how to use the `version_setup` function
+to outsource your data.
 
-Be aware that we can use the `version_setup` function only once when
-initializing a repository. Therefore, we need to create an empty
-repository for this example:
+Often, you may want to outsource your data so that it is backed up,
+accessible from another machine, or easily shared with collaborators. In
+such cases, you might want to store your data in a different location,
+such as a cloud repository (e.g. Dropbox, OneDrive) that mirrors your
+data files. You can specify an external location for your data storage
+using the `resources_path` argument in `version_setup`.
+
+**NOTE**: Make sure that you have enough space on your hard drive before
+versioning: if you are using a cloud service, a full copy of your data
+will also be stored locally on your hard drive, which reduces the
+available storage space. If there is not enough space, the new version
+will not be created.
+
+We only use the `version_setup` function once. If you want to outsource
+data from an already versioned repository, please follow the ‘Moving the
+versions’ section below.
+
+For this example, we first create a new (empty) repository that does not
+yet have any versioning:
 
 ``` r
 init_resrepo()
@@ -555,21 +598,23 @@ location.
 
 ``` r
 external_data_storage <- file.path(tempdir(), "external_data_storage")
-unlink(external_data_storage, recursive = TRUE)
 dir.create(external_data_storage)
 ```
 
 For the purpose of this vignette, the above folder is created in a
-temporary location. For your project this could be a directory in your
-local machine, on a hard drive, or a folder synced to the cloud.
+temporary location. For your project this could be a directory on a hard
+drive, or a folder synced to the cloud.
 
 Now we have an empty folder where we want to store our data, and an
 empty repository for our project.
 
-This time to set up versioning with external data storage, we will again
-use the function `version_setup`, however, we will set the argument
+This time to set up versioning with external data storage, we will use
+the function `version_setup`, however, we will set the argument
 `resources_path` to the external path where we would like to store the
 new versions of our data.
+
+We use the same `version_setup` function to set up versioning and we now
+specify the external path using the `resources_path` argument.
 
 ``` r
 version_setup(quiet = TRUE, resources_path = external_data_storage)
@@ -744,6 +789,137 @@ fs::dir_tree("../../external_data_storage")
 #>         └── raw
 #>             ├── README.md
 #>             ├── original
+#>             │   └── tux_measurements.csv
+#>             └── s01_download_penguins
+#>                 ├── palmer_penguins.csv
+#>                 └── renv_s01_download_penguins.json
+```
+
+## Moving the versions
+
+Once you have versioned your repository, if you want to move your data
+somewhere else and update the links to the new location, you will need
+to move the `versions` folder to the new location, and then re-run
+`version_relink` with `resources_path` set to the new path.
+
+``` r
+# create another external data storage folder
+new_external_data_storage <- file.path(tempdir(), "new_external_data_storage")
+
+# create new data directory where we want to move our data
+dir.create(new_external_data_storage, showWarnings = FALSE)
+
+# move versions folder to new_data_dir
+file.rename(
+  from = "../../external_data_storage/versions",
+  to = file.path(new_external_data_storage, "versions")
+)
+#> [1] TRUE
+
+fs::dir_tree(new_external_data_storage)
+#> /tmp/RtmpZz3vE3/new_external_data_storage
+#> └── versions
+#>     ├── initial
+#>     │   └── intermediate
+#>     │       ├── README.md
+#>     │       └── s02_merge_clean
+#>     │           ├── penguins_na_omit.csv
+#>     │           ├── renv_s02_merge_clean.json
+#>     │           └── renv_s03_pca.json
+#>     └── starting
+#>         └── raw
+#>             ├── README.md
+#>             ├── original
+#>             │   └── tux_measurements.csv
+#>             └── s01_download_penguins
+#>                 ├── palmer_penguins.csv
+#>                 └── renv_s01_download_penguins.json
+
+
+# relink the version
+version_relink(quiet = TRUE, resources_path = new_external_data_storage)
+#> [1] TRUE
+```
+
+Now we have a symlink for `versions` in our repository, which points to
+the new location of our data.
+
+``` r
+fs::dir_tree(new_external_data_storage)
+#> /tmp/RtmpZz3vE3/new_external_data_storage
+#> └── versions
+#>     ├── initial
+#>     │   └── intermediate
+#>     │       ├── README.md
+#>     │       └── s02_merge_clean
+#>     │           ├── penguins_na_omit.csv
+#>     │           ├── renv_s02_merge_clean.json
+#>     │           └── renv_s03_pca.json
+#>     └── starting
+#>         └── raw
+#>             ├── README.md
+#>             ├── original
+#>             │   └── tux_measurements.csv
+#>             └── s01_download_penguins
+#>                 ├── palmer_penguins.csv
+#>                 └── renv_s01_download_penguins.json
+fs::dir_tree()
+#> .
+#> ├── README.md
+#> ├── code
+#> │   ├── README.md
+#> │   ├── s01_download_penguins.Rmd
+#> │   ├── s02_merge_clean.Rmd
+#> │   └── s03_pca.Rmd
+#> ├── data
+#> │   ├── README.md
+#> │   ├── intermediate
+#> │   ├── raw
+#> │   └── version_meta
+#> │       ├── initial.meta
+#> │       ├── intermediate_in_use.meta
+#> │       ├── raw_in_use.meta
+#> │       └── starting.meta
+#> ├── results
+#> │   ├── README.md
+#> │   ├── s01_download_penguins
+#> │   │   ├── README.md
+#> │   │   └── s01_download_penguins.pdf
+#> │   ├── s02_merge_clean
+#> │   │   ├── README.md
+#> │   │   └── s02_merge_clean.pdf
+#> │   └── s03_pca
+#> │       ├── README.md
+#> │       ├── s03_pca.pdf
+#> │       └── s03_pca_files
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
+#> ├── versions
+#> └── writing
+#>     └── README.md
+```
+
+``` r
+# write a text file to ../data/raw/original to check the link works
+write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"),
+  row.names = FALSE
+)
+
+fs::dir_tree(new_external_data_storage)
+#> /tmp/RtmpZz3vE3/new_external_data_storage
+#> └── versions
+#>     ├── initial
+#>     │   └── intermediate
+#>     │       ├── README.md
+#>     │       └── s02_merge_clean
+#>     │           ├── penguins_na_omit.csv
+#>     │           ├── renv_s02_merge_clean.json
+#>     │           └── renv_s03_pca.json
+#>     └── starting
+#>         └── raw
+#>             ├── README.md
+#>             ├── original
+#>             │   ├── my_new_file1.csv
 #>             │   └── tux_measurements.csv
 #>             └── s01_download_penguins
 #>                 ├── palmer_penguins.csv
