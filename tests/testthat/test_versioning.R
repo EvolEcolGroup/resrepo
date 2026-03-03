@@ -427,3 +427,139 @@ test_that("clone a versioned repo", {
   # check we are back to the initial version
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
 })
+
+test_that("version_relink for a cloned repo", {
+  # Steps
+  ########
+  # 1. Create a repository in a temp dir
+  ########
+  # start setting up a temp dir for the git repository
+  example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
+  # create the directory for this test
+  dir.create(example_dir, showWarnings = FALSE)
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+    user.name = "Test",
+    user.email = "test@example.org"
+  )
+  # set our working directory in the git repository
+  withr::local_dir(as.character(example_dir))
+  ############
+  # initialise the repository and add the relevant files
+  init_resrepo()
+  expect_true(file.copy(
+    from = system.file("vignette_example/tux_measurements.csv",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/data/raw/original/tux_measurements.csv"),
+    overwrite = TRUE
+  ))
+  expect_true(file.copy(
+    from = system.file("vignette_example/s01_download_penguins.Rmd",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/code/s01_download_penguins.Rmd"),
+    overwrite = TRUE
+  ))
+  # silence knitr
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+    )
+  )
+  expect_true(file.copy(
+    from = system.file("vignette_example/s02_merge_clean.Rmd",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/code/s02_merge_clean.Rmd"),
+    overwrite = TRUE
+  ))
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+    )
+  )
+  expect_true(file.copy(
+    from = system.file("vignette_example/s03_pca.Rmd",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/code/s03_pca.Rmd"),
+    overwrite = TRUE
+  ))
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+    )
+  )
+  git2r::add(path = ".")
+  suppressMessages(
+    capture.output(
+      git2r::commit(message = "Save plot", all = TRUE)
+    )
+  )
+  # check that we are on main and there is nothing to commit
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check that all elements of git status are empty (i.e. we have a
+  # cleaned working directory)
+  expect_true(git_is_clean())
+  ########
+
+  ########
+  # 2. Version this repo
+  expect_true(version_setup(quiet = TRUE))
+  ########
+
+  ########
+  # 3. Copy the 'versions' folder containing the data to a new location
+  # start setting up a temp dir for the git repository
+  versions_loc <- file.path(tempdir(), "versions_location")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(versions_loc)) {
+    fs::dir_delete(versions_loc)
+  }
+  # create the directory for this test
+  dir.create(versions_loc, showWarnings = FALSE)
+  # copy the resrepo versions folder to the new location
+  file.copy(
+    from = path_resrepo("versions"),
+    to = versions_loc,
+    recursive = TRUE
+  )
+
+  ########
+  # 4. Clone the repository to a new directory
+  # create new directory for the clone
+  clone_loc <- file.path(tempdir(), "clone_location")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(clone_loc)) {
+    fs::dir_delete(clone_loc)
+  }
+  # create the directory for this test
+  dir.create(clone_loc, showWarnings = FALSE)
+  # clone the repository
+  git2r::clone(
+    url = example_dir,
+    local_path = clone_loc,
+    branch = "main",
+    progress = FALSE
+  )
+  ########
+
+  ########
+  # 5. Run version_relink with the new location of the 'versions' folder
+  # move to new repo location
+  withr::local_dir(as.character(clone_loc))
+  expect_true(version_relink(
+    quiet = TRUE,
+    resources_path = versions_loc
+  ))
+
+  # check the links work
+  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
+  blah <- read.csv(path_resrepo("data/intermediate/my_new_file1.csv"))
+  expect_equal(as.character(blah[2]), "blah")
+})

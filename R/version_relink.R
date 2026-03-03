@@ -150,12 +150,6 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
       stop("The path ", resources_path, " does not exist!")
     }
     versions_path <- file.path(resources_path)
-    if (dir.exists(file.path(versions_path, "versions"))) {
-      stop(
-        "If 'resources_path' is given, there should be no 'versions' ",
-        "directory in the 'resources_path'!"
-      )
-    }
 
     # create a link from the repository to the resources path
     data_dir_link(
