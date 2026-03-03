@@ -30,3 +30,7 @@ code/*.rdx
 /data/archive/*
 !/data/archive/*.md
 .Rproj.user
+
+## All directories
+**/.DS_Store
+**/.Rhistory
