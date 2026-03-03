@@ -26,7 +26,7 @@ data_dir_link <- function(link_dir, target_dir) {
         "Before creating a link, move all files to the target_dir first."
       )
     } else {
-      unlink(abs_data_path, recursive = TRUE)
+      fs::file_delete(abs_data_path)
     }
   }
   fs::link_create(target_dir, abs_data_path, symbolic = TRUE)
