@@ -34,3 +34,4 @@ code/*.rdx
 ## All directories
 **/.DS_Store
 **/.Rhistory
+.positai

@@ -4,3 +4,5 @@
 ^\.github$
 ^data-raw$
 .lintr
+^\.positai$
+^\.claude$
