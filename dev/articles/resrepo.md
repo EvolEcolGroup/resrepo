@@ -152,13 +152,15 @@ We will now use `resrepo` to initialise the repository. First, make sure
 that your working directory is set within the `git` repository:
 
 ``` r
+
 getwd()
-#> [1] "/tmp/RtmphsRdSq/resrepo_example"
+#> [1] "/tmp/Rtmp3wyIME/resrepo_example"
 ```
 
 We can now initialise the repository:
 
 ``` r
+
 library(resrepo)
 init_resrepo()
 #> [1] TRUE
@@ -167,6 +169,7 @@ init_resrepo()
 Let us look at the content of our new repository:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -219,6 +222,7 @@ package, as a CSV file named “tux_measurements.csv” in the
 `data/raw/original` directory:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
     package = "resrepo"
@@ -232,6 +236,7 @@ file.copy(
 Let’s have a look at the repository:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -264,6 +269,7 @@ use the `create_rmd` function and specify the file name and which folder
 it should be in (you do not need to include the `.Rmd` file extension).
 
 ``` r
+
 create_rmd("code/s01_download_penguins")
 ```
 
@@ -271,6 +277,7 @@ We can replace the explanatory text and examples in this Rmd with only a
 simple chunk of code:
 
 ``` r
+
 library(resrepo)
 # define the output directory (named after the script) and create it
 output_dir <- path_resrepo("/data/raw/s01_download_penguins")
@@ -301,6 +308,7 @@ Add the chunk above to our s01_download_penguins.Rmd and save it.
 We can see the script in the `code` directory:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -331,6 +339,7 @@ You can now open the Rmd and knit it to download the data.
 We can see that the data was saved in the right place:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -381,6 +390,7 @@ over an Rmd from the package, which was originally created with
 [`resrepo::create_rmd`](https://evolecolgroup.github.io/resrepo/dev/reference/create_rmd.md):
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/s02_merge_clean.Rmd",
     package = "resrepo"
@@ -394,6 +404,7 @@ file.copy(
 We can check that the script is in the right place:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -437,6 +448,7 @@ We can see that the data was saved in the correct `/data/intermediate`
 subdirectory:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -479,6 +491,7 @@ penguin species. We use a script from the package, which we copy over to
 our repository:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/s03_pca.Rmd", package = "resrepo"),
   to = path_resrepo("/code/s03_pca.Rmd"),
@@ -494,6 +507,7 @@ script. You should now run (knit) your script.
 Let’s check the repository once again:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -529,8 +543,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```

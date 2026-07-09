@@ -59,6 +59,7 @@ that repository, you don’t need to run the code below, otherwise, let us
 start by recreating the `workflow` example repository:
 
 ``` r
+
 library(resrepo)
 init_resrepo()
 file.copy(
@@ -109,6 +110,7 @@ git2r::commit(message = "Set up", all = TRUE)
 Let us check that we do have indeed a full repository:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -144,8 +146,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```
@@ -156,6 +161,7 @@ of folders in the expected order, including a subfolder named `versions`
 in your repository (locally).
 
 ``` r
+
 version_setup(quiet = TRUE, resources_path = NULL)
 #> [1] TRUE
 ```
@@ -163,6 +169,7 @@ version_setup(quiet = TRUE, resources_path = NULL)
 Let us check what happened:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -192,8 +199,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -231,6 +241,7 @@ above. We can use these links as if they were directories, and check
 that they point correctly to the directories in `versions`.
 
 ``` r
+
 dir(path_resrepo("/data/raw"))
 #> [1] "original"              "README.md"             "s01_download_penguins"
 ```
@@ -253,6 +264,7 @@ a new branch in the git repository (with the same name as the data
 version):
 
 ``` r
+
 version_add(
   intermediate_new_version = "new_filtering",
   intermediate_description = "Filtering out some data"
@@ -266,12 +278,13 @@ we have switched to a new branch in the git repository called
 `new_filtering`, as indicated by (HEAD) below:
 
 ``` r
+
 git2r::branches()
 #> $main
-#> [fbbc06] (Local) main
+#> [cc1d7d] (Local) main
 #> 
 #> $new_filtering
-#> [94ed68] (Local) (HEAD) new_filtering
+#> [3754dd] (Local) (HEAD) new_filtering
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the
@@ -290,6 +303,7 @@ RECOMMENDED, as raw data should ideally not be changed (it is supposed
 to represent the data in their original format).
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -320,8 +334,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -357,6 +374,7 @@ dataset. We use a pre-prepared script for this, which we copy to the
 `code` directory:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/new_filtering/s02_merge_clean.Rmd",
     package = "resrepo"
@@ -376,6 +394,7 @@ We can now remove the full version of the intermediate dataset in the
 excludes the first 10 penguins.
 
 ``` r
+
 fs::file_delete(path_resrepo("data/intermediate/s02_merge_clean"))
 ```
 
@@ -384,6 +403,7 @@ folder, as we have not removed it from `versions/initial` but only from
 the `versions/new_filtering` directory.
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -414,8 +434,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -444,16 +467,18 @@ penguins, the data are written to the
 `versions/new_filtering/intermediate` directory.
 
 ``` r
+
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 #> processing file: s02_merge_clean.Rmd
 #> output file: s02_merge_clean.knit.md
-#> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s02_merge_clean_files --variable 'geometry:margin=1in'
 #> 
 #> Output created: s02_merge_clean.pdf
 #> [1] TRUE
 ```
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -484,8 +509,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -517,6 +545,7 @@ our current version of the data, which is found in `new_filtering`, has
 10 fewer penguins than the `initial` version.
 
 ``` r
+
 penguins_new_filtering <- read.csv(path_resrepo(
   "data/intermediate/s02_merge_clean/penguins_na_omit.csv"
 ))
@@ -590,6 +619,7 @@ For this example, we first create a new (empty) repository that does not
 yet have any versioning:
 
 ``` r
+
 init_resrepo()
 ```
 
@@ -597,6 +627,7 @@ We now need to create a folder for data storage in our desired external
 location.
 
 ``` r
+
 external_data_storage <- file.path(tempdir(), "external_data_storage")
 dir.create(external_data_storage)
 ```
@@ -617,6 +648,7 @@ We use the same `version_setup` function to set up versioning and we now
 specify the external path using the `resources_path` argument.
 
 ``` r
+
 version_setup(quiet = TRUE, resources_path = external_data_storage)
 #> [1] TRUE
 ```
@@ -626,6 +658,7 @@ see that `external_data_storage` is not found in the tree of our
 repository:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -655,6 +688,7 @@ We can see the structure of our external data storage folder looks like
 this:
 
 ``` r
+
 fs::dir_tree("../../external_data_storage")
 #> ../../external_data_storage
 #> └── versions
@@ -670,6 +704,7 @@ fs::dir_tree("../../external_data_storage")
 We can now populate our repository with the necessary scripts.
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/s01_download_penguins.Rmd",
     package = "resrepo"
@@ -697,6 +732,7 @@ file.copy(
 And add our data:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
     package = "resrepo"
@@ -710,24 +746,25 @@ file.copy(
 We can now run our scripts:
 
 ``` r
+
 knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
 #> processing file: s01_download_penguins.Rmd
 #> output file: s01_download_penguins.knit.md
-#> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s01_download_penguins.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s01_download_penguins.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s01_download_penguins.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s01_download_penguins.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s01_download_penguins_files --variable 'geometry:margin=1in'
 #> 
 #> Output created: s01_download_penguins.pdf
 #> [1] TRUE
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 #> processing file: s02_merge_clean.Rmd
 #> output file: s02_merge_clean.knit.md
-#> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s02_merge_clean_files --variable 'geometry:margin=1in'
 #> 
 #> Output created: s02_merge_clean.pdf
 #> [1] TRUE
 knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 #> processing file: s03_pca.Rmd
 #> output file: s03_pca.knit.md
-#> /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s03_pca.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s03_pca.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s03_pca.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s03_pca.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s03_pca_files --variable 'geometry:margin=1in'
 #> 
 #> Output created: s03_pca.pdf
 #> [1] TRUE
@@ -736,6 +773,7 @@ knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 When we view the git repository we can now see all our results files:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -765,8 +803,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> ├── versions
 #> └── writing
 #>     └── README.md
@@ -775,6 +816,7 @@ fs::dir_tree()
 And the data are successfully stored in our external folder:
 
 ``` r
+
 fs::dir_tree("../../external_data_storage")
 #> ../../external_data_storage
 #> └── versions
@@ -803,6 +845,7 @@ to move the `versions` folder to the new location, and then re-run
 `version_relink` with `resources_path` set to the new path.
 
 ``` r
+
 # create another external data storage folder
 new_external_data_storage <- file.path(tempdir(), "new_external_data_storage")
 
@@ -817,7 +860,7 @@ file.rename(
 #> [1] TRUE
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/RtmpQqPmHg/new_external_data_storage
+#> /tmp/RtmpQuDxPu/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
@@ -845,8 +888,9 @@ Now we have a symlink for `versions` in our repository, which points to
 the new location of our data.
 
 ``` r
+
 fs::dir_tree(new_external_data_storage)
-#> /tmp/RtmpQqPmHg/new_external_data_storage
+#> /tmp/RtmpQuDxPu/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
@@ -892,21 +936,25 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> ├── versions
 #> └── writing
 #>     └── README.md
 ```
 
 ``` r
+
 # write a text file to ../data/raw/original to check the link works
 write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"),
   row.names = FALSE
 )
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/RtmpQqPmHg/new_external_data_storage
+#> /tmp/RtmpQuDxPu/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate

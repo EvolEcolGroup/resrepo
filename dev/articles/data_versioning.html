@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Data versioning • resrepo</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Data versioning">
 <meta name="robots" content="noindex">
@@ -203,8 +203,11 @@ repository:</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
 <p>Here, we show the default option, where the
@@ -246,8 +249,11 @@ including a subfolder named <code>versions</code> in your repository
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -316,10 +322,10 @@ called <code>new_filtering</code>, as indicated by (HEAD) below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">git2r</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/git2r/reference/branches.html" class="external-link">branches</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $main</span></span>
-<span><span class="co">#&gt; [fbbc06] (Local) main</span></span>
+<span><span class="co">#&gt; [cc1d7d] (Local) main</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $new_filtering</span></span>
-<span><span class="co">#&gt; [94ed68] (Local) (HEAD) new_filtering</span></span></code></pre></div>
+<span><span class="co">#&gt; [3754dd] (Local) (HEAD) new_filtering</span></span></code></pre></div>
 <p>Now <code>data/raw</code> and <code>data/intermediate</code> are
 symlinks to the <code>new_filtering</code> version of the data, which is
 found under <code>versions/new_filtering</code>. Each version will be
@@ -364,8 +370,11 @@ is supposed to represent the data in their original format).</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -449,8 +458,11 @@ version that excludes the first 10 penguins.</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -479,7 +491,7 @@ version that excludes the first 10 penguins.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/knit_to_results.html">knit_to_results</a></span><span class="op">(</span><span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/code/s02_merge_clean.Rmd"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; processing file: s02_merge_clean.Rmd</span></span>
 <span><span class="co">#&gt; output file: s02_merge_clean.knit.md</span></span>
-<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'</span></span>
+<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s02_merge_clean_files --variable 'geometry:margin=1in'</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Output created: s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -514,8 +526,11 @@ version that excludes the first 10 penguins.</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt; │   │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -714,21 +729,21 @@ like this:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/knit_to_results.html">knit_to_results</a></span><span class="op">(</span><span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/code/s01_download_penguins.Rmd"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; processing file: s01_download_penguins.Rmd</span></span>
 <span><span class="co">#&gt; output file: s01_download_penguins.knit.md</span></span>
-<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s01_download_penguins.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s01_download_penguins.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'</span></span>
+<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s01_download_penguins.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s01_download_penguins.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s01_download_penguins_files --variable 'geometry:margin=1in'</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Output created: s01_download_penguins.pdf</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="../reference/knit_to_results.html">knit_to_results</a></span><span class="op">(</span><span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/code/s02_merge_clean.Rmd"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; processing file: s02_merge_clean.Rmd</span></span>
 <span><span class="co">#&gt; output file: s02_merge_clean.knit.md</span></span>
-<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'</span></span>
+<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s02_merge_clean_files --variable 'geometry:margin=1in'</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Output created: s02_merge_clean.pdf</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="../reference/knit_to_results.html">knit_to_results</a></span><span class="op">(</span><span class="fu"><a href="../reference/path_resrepo.html">path_resrepo</a></span><span class="op">(</span><span class="st">"/code/s03_pca.Rmd"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; processing file: s03_pca.Rmd</span></span>
 <span><span class="co">#&gt; output file: s03_pca.knit.md</span></span>
-<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.1.11/x64/pandoc +RTS -K512m -RTS s03_pca.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s03_pca.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in'</span></span>
+<span><span class="co">#&gt; /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s03_pca.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s03_pca.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s03_pca_files --variable 'geometry:margin=1in'</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Output created: s03_pca.pdf</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -764,8 +779,11 @@ files:</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #00BBBB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
@@ -813,7 +831,7 @@ set to the new path.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQqPmHg/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQuDxPu/new_external_data_storage</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -839,7 +857,7 @@ set to the new path.</p>
 which points to the new location of our data.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQqPmHg/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQuDxPu/new_external_data_storage</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -885,8 +903,11 @@ which points to the new location of our data.</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #00BBBB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
@@ -897,7 +918,7 @@ which points to the new location of our data.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQqPmHg/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpQuDxPu/new_external_data_storage</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -927,7 +948,7 @@ which points to the new location of our data.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
