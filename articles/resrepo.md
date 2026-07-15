@@ -154,7 +154,7 @@ that your working directory is set within the `git` repository:
 ``` r
 
 getwd()
-#> [1] "/tmp/RtmpkfYG9y/resrepo_example"
+#> [1] "/tmp/RtmpXlt0Pa/resrepo_example"
 ```
 
 We can now initialise the repository:

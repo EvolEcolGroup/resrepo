@@ -322,10 +322,10 @@ called <code>new_filtering</code>, as indicated by (HEAD) below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">git2r</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/git2r/reference/branches.html" class="external-link">branches</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $main</span></span>
-<span><span class="co">#&gt; [e2ead0] (Local) main</span></span>
+<span><span class="co">#&gt; [27bfbd] (Local) main</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $new_filtering</span></span>
-<span><span class="co">#&gt; [99d1fd] (Local) (HEAD) new_filtering</span></span></code></pre></div>
+<span><span class="co">#&gt; [9c75dd] (Local) (HEAD) new_filtering</span></span></code></pre></div>
 <p>Now <code>data/raw</code> and <code>data/intermediate</code> are
 symlinks to the <code>new_filtering</code> version of the data, which is
 found under <code>versions/new_filtering</code>. Each version will be
@@ -831,7 +831,7 @@ set to the new path.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpOaAb99/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/Rtmp7DtoIk/new_external_data_storage</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -857,7 +857,7 @@ set to the new path.</p>
 which points to the new location of our data.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpOaAb99/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/Rtmp7DtoIk/new_external_data_storage</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>
@@ -918,7 +918,7 @@ which points to the new location of our data.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">new_external_data_storage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/RtmpOaAb99/new_external_data_storage</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/tmp/Rtmp7DtoIk/new_external_data_storage</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">versions</span></span></span>
 <span><span class="co">#&gt;     ├── <span style="color: #0000BB; font-weight: bold;">initial</span></span></span>
 <span><span class="co">#&gt;     │   └── <span style="color: #0000BB; font-weight: bold;">intermediate</span></span></span>

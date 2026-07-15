@@ -281,10 +281,10 @@ we have switched to a new branch in the git repository called
 
 git2r::branches()
 #> $main
-#> [e2ead0] (Local) main
+#> [27bfbd] (Local) main
 #> 
 #> $new_filtering
-#> [99d1fd] (Local) (HEAD) new_filtering
+#> [9c75dd] (Local) (HEAD) new_filtering
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the
@@ -860,7 +860,7 @@ file.rename(
 #> [1] TRUE
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/RtmpOaAb99/new_external_data_storage
+#> /tmp/Rtmp7DtoIk/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
@@ -890,7 +890,7 @@ the new location of our data.
 ``` r
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/RtmpOaAb99/new_external_data_storage
+#> /tmp/Rtmp7DtoIk/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
@@ -954,7 +954,7 @@ write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"),
 )
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/RtmpOaAb99/new_external_data_storage
+#> /tmp/Rtmp7DtoIk/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate

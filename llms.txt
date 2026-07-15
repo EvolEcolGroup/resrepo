@@ -1,6 +1,6 @@
 # resrepo
 
-# Research repository (resrepo)
+## Research repository (resrepo)
 
 The aim of `resrepo` is to encourage and facilitate good practices when
 setting up and managing `git` repositories for scientific research
@@ -24,16 +24,14 @@ testing. With `pak`, you can simply use:
 
 ## Overview of functionality
 
-You can build the vignettes when installing `resrepo` (note that you
-will need to have the necessary tools to build vignettes already
-installed; requirements depend on your OS):
-
-    devtools::install_github("EvolEcolGroup/resrepo", build_vignette = TRUE)
-
-If you built the vignettes, you can read them directly in R. For
-example, the overview of the workflow can be obtained with:
-
-    vignette("resrepo", package = "resrepo")
+There is a vignette that describes the functionality of `resrepo` in
+more detail. You can access it
+[here](https://evolecolgroup.github.io/resrepo/articles/resrepo.html)
+There is also a vignette on [data
+versioning](https://evolecolgroup.github.io/resrepo/articles/data_versioning.html)
+and on how [to share your
+repository](https://evolecolgroup.github.io/resrepo/articles/sharing_resrepo.html)
+with collaborators.
 
 # Package index
 

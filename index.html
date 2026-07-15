@@ -61,11 +61,11 @@
 </div>
 <!-- badges: start -->
 
-</div>
-<div class="section level1">
-<h1 id="research-repository-resrepo">Research repository (resrepo)<a class="anchor" aria-label="anchor" href="#research-repository-resrepo"></a>
-</h1>
+<div class="section level2">
+<h2 id="research-repository-resrepo">Research repository (resrepo)<a class="anchor" aria-label="anchor" href="#research-repository-resrepo"></a>
+</h2>
 <p>The aim of <code>resrepo</code> is to encourage and facilitate good practices when setting up and managing <code>git</code> repositories for scientific research projects. Scientific projects contain both code and data. <code>git</code> is designed to manage software code, but it is not suited to track large data files. There are extensions of <code>git</code>, such as <code>git-lfs</code> and <code>git-annex</code> that can handle data, but they can be complex to set up and difficult to use, especially when sharing your repository among collaborators. <code>resrepo</code> encourages good habits to manage your data alongside your code in plain <code>git</code>, ensuring reproducible science and a tidy repository that can used for publication of your project.</p>
+</div>
 <div class="section level2">
 <h2 id="install-the-library">Install the library<a class="anchor" aria-label="anchor" href="#install-the-library"></a>
 </h2>
@@ -75,13 +75,9 @@
 <div class="section level2">
 <h2 id="overview-of-functionality">Overview of functionality<a class="anchor" aria-label="anchor" href="#overview-of-functionality"></a>
 </h2>
-<p>You can build the vignettes when installing <code>resrepo</code> (note that you will need to have the necessary tools to build vignettes already installed; requirements depend on your OS):</p>
-<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"EvolEcolGroup/resrepo"</span>, build_vignette <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
-<p>If you built the vignettes, you can read them directly in R. For example, the overview of the workflow can be obtained with:</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"resrepo"</span>, package <span class="op">=</span> <span class="st">"resrepo"</span><span class="op">)</span></span></code></pre>
+<p>There is a vignette that describes the functionality of <code>resrepo</code> in more detail. You can access it <a href="https://evolecolgroup.github.io/resrepo/articles/resrepo.html">here</a> There is also a vignette on <a href="https://evolecolgroup.github.io/resrepo/articles/data_versioning.html">data versioning</a> and on how <a href="https://evolecolgroup.github.io/resrepo/articles/sharing_resrepo.html">to share your repository</a> with collaborators.</p>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
