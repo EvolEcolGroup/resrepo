@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>resrepo • resrepo</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="resrepo">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">resrepo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,7 @@
     <li><a class="dropdown-item" href="../articles/sharing_resrepo.html">Sharing a versioned resrepo repository</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -88,8 +89,8 @@ cloud.</li>
 <p>In <code>resrespo</code>, we keep data, code, results, and the
 write-up separate. This allows for a tidy structure that can flexibly
 accommodate very complex projects. Note that there are a number of
-README.md files, which provide instructions and advice related to the
-files that go into that particular directory.</p>
+README.md files, which provide guidance on the recommended contents of
+each directory and are easily displayed on GitHub.</p>
 <p>If you created the repository with <code>init_resrepo</code>, the
 function will automatically commit these changes for you, so that you
 have a clean repository template as your first commit, and you can best
@@ -142,10 +143,11 @@ downloads remote sensing data from a public server could be named
 <code>s01_download_remote_sense.Rmd</code>. A script to run a clustering
 analysis from the data could be named <code>s02_clustering.Rmd</code>.
 Avoid naming your files starting with a number (e.g. instead of
-“01_process_data.R” use “s01_process_data.R”) Do not use generic names
-such as “Figure_01”, “Figure_02”, etc. for your files and folders. Use
-more descriptive names as numbers change. It will make your life easier
-when you will need to work again on the project.</p>
+“01_process_data.R” use “s01_process_data.R”), as some
+software/languages do not support that. Do not use generic names such as
+“Figure_01” or “Figure_02” for files and folders. Use descriptive names
+instead, as numbering may change and clearer names will make the project
+easier to revisit later.</p>
 </div>
 <div class="section level3">
 <h3 id="set-up-data-directories">Set up data directories<a class="anchor" aria-label="anchor" href="#set-up-data-directories"></a>
@@ -232,7 +234,7 @@ First, make sure that your working directory is set within the
 <code>git</code> repository:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpM3RrgE/resrepo_example"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmpkfYG9y/resrepo_example"</span></span></code></pre></div>
 <p>We can now initialise the repository:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://evolecolgroup.github.io/resrepo/">resrepo</a></span><span class="op">)</span></span>
@@ -560,8 +562,11 @@ the script. You should now run (knit) your script.</p>
 <span><span class="co">#&gt; │       ├── README.md</span></span>
 <span><span class="co">#&gt; │       ├── s03_pca.pdf</span></span>
 <span><span class="co">#&gt; │       └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
-<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
-<span><span class="co">#&gt; │               └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           ├── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │           │   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
+<span><span class="co">#&gt; │           └── <span style="color: #0000BB; font-weight: bold;">s03_pca_files</span></span></span>
+<span><span class="co">#&gt; │               └── <span style="color: #0000BB; font-weight: bold;">figure-latex</span></span></span>
+<span><span class="co">#&gt; │                   └── <span style="color: #BB00BB; font-weight: bold;">pca_plot-1.png</span></span></span>
 <span><span class="co">#&gt; └── <span style="color: #0000BB; font-weight: bold;">writing</span></span></span>
 <span><span class="co">#&gt;     └── README.md</span></span></code></pre></div>
 <p>Now you just need to commit your changes as you did above, and we
@@ -602,7 +607,7 @@ Generate ssh key</strong> Source: <a href="https://docs.github.com/en/authentica
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

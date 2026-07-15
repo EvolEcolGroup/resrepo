@@ -7,6 +7,7 @@
 <url><loc>https://evolecolgroup.github.io/resrepo/articles/sharing_resrepo.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/authors.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/index.html</loc></url>
+<url><loc>https://evolecolgroup.github.io/resrepo/news/index.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/create_rmd.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/data_dir_follow.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/data_dir_ignore.html</loc></url>
@@ -26,7 +27,10 @@
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/update_links.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/version_add.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/version_exists.html</loc></url>
+<url><loc>https://evolecolgroup.github.io/resrepo/reference/version_relink.html</loc></url>
+<url><loc>https://evolecolgroup.github.io/resrepo/reference/version_reset.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/version_setup.html</loc></url>
+<url><loc>https://evolecolgroup.github.io/resrepo/reference/version_setup_cloned.html</loc></url>
 <url><loc>https://evolecolgroup.github.io/resrepo/reference/version_setup_first.html</loc></url>
 </urlset>
 

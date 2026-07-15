@@ -21,8 +21,8 @@ projects. There are three main elements to this:
 In `resrespo`, we keep data, code, results, and the write-up separate.
 This allows for a tidy structure that can flexibly accommodate very
 complex projects. Note that there are a number of README.md files, which
-provide instructions and advice related to the files that go into that
-particular directory.
+provide guidance on the recommended contents of each directory and are
+easily displayed on GitHub.
 
 If you created the repository with `init_resrepo`, the function will
 automatically commit these changes for you, so that you have a clean
@@ -68,10 +68,10 @@ data from a public server could be named
 `s01_download_remote_sense.Rmd`. A script to run a clustering analysis
 from the data could be named `s02_clustering.Rmd`. Avoid naming your
 files starting with a number (e.g. instead of “01_process_data.R” use
-“s01_process_data.R”) Do not use generic names such as “Figure_01”,
-“Figure_02”, etc. for your files and folders. Use more descriptive names
-as numbers change. It will make your life easier when you will need to
-work again on the project.
+“s01_process_data.R”), as some software/languages do not support that.
+Do not use generic names such as “Figure_01” or “Figure_02” for files
+and folders. Use descriptive names instead, as numbering may change and
+clearer names will make the project easier to revisit later.
 
 ### Set up data directories
 
@@ -152,13 +152,15 @@ We will now use `resrepo` to initialise the repository. First, make sure
 that your working directory is set within the `git` repository:
 
 ``` r
+
 getwd()
-#> [1] "/tmp/RtmpM3RrgE/resrepo_example"
+#> [1] "/tmp/RtmpkfYG9y/resrepo_example"
 ```
 
 We can now initialise the repository:
 
 ``` r
+
 library(resrepo)
 init_resrepo()
 #> [1] TRUE
@@ -167,6 +169,7 @@ init_resrepo()
 Let us look at the content of our new repository:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -219,6 +222,7 @@ package, as a CSV file named “tux_measurements.csv” in the
 `data/raw/original` directory:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
     package = "resrepo"
@@ -232,6 +236,7 @@ file.copy(
 Let’s have a look at the repository:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -264,6 +269,7 @@ use the `create_rmd` function and specify the file name and which folder
 it should be in (you do not need to include the `.Rmd` file extension).
 
 ``` r
+
 create_rmd("code/s01_download_penguins")
 ```
 
@@ -271,6 +277,7 @@ We can replace the explanatory text and examples in this Rmd with only a
 simple chunk of code:
 
 ``` r
+
 library(resrepo)
 # define the output directory (named after the script) and create it
 output_dir <- path_resrepo("/data/raw/s01_download_penguins")
@@ -301,6 +308,7 @@ Add the chunk above to our s01_download_penguins.Rmd and save it.
 We can see the script in the `code` directory:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -331,6 +339,7 @@ You can now open the Rmd and knit it to download the data.
 We can see that the data was saved in the right place:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -381,6 +390,7 @@ over an Rmd from the package, which was originally created with
 [`resrepo::create_rmd`](https://evolecolgroup.github.io/resrepo/reference/create_rmd.md):
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/s02_merge_clean.Rmd",
     package = "resrepo"
@@ -394,6 +404,7 @@ file.copy(
 We can check that the script is in the right place:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -437,6 +448,7 @@ We can see that the data was saved in the correct `/data/intermediate`
 subdirectory:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -479,6 +491,7 @@ penguin species. We use a script from the package, which we copy over to
 our repository:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/s03_pca.Rmd", package = "resrepo"),
   to = path_resrepo("/code/s03_pca.Rmd"),
@@ -494,6 +507,7 @@ script. You should now run (knit) your script.
 Let’s check the repository once again:
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -529,8 +543,11 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           └── figure-latex
-#> │               └── pca_plot-1.png
+#> │           ├── figure-latex
+#> │           │   └── pca_plot-1.png
+#> │           └── s03_pca_files
+#> │               └── figure-latex
+#> │                   └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```

@@ -39,6 +39,7 @@ You’ve cloned a `resrepo` repository with code, but the data required
 for the analyses are located elsewhere, outside the cloned repository.
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -87,6 +88,7 @@ temporary directory, but you should choose a location anywhere on your
 local machine. We will call this folder `external_data_storage_new`.
 
 ``` r
+
 # create new external folder for data
 external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
 dir.create(external_data_storage_new)
@@ -107,6 +109,7 @@ folder, which contains `starting/raw` and `initial/intermediate`
 directories,
 
 ``` r
+
 intermediate_path <- file.path(
   tempdir(),
   "external_data_storage_new/initial/intermediate"
@@ -120,6 +123,7 @@ And then we will copy the raw data into
 `external_data_storage_new/starting/raw`:
 
 ``` r
+
 file.copy(
   from = system.file("vignette_example/tux_measurements.csv",
     package = "resrepo"
@@ -140,11 +144,13 @@ We need to supply the argument `resources_path` to `version_setup`,
 which is the path to the external data storage folder:
 
 ``` r
+
 version_setup(quiet = TRUE, resources_path = external_data_storage_new)
-#> [1] TRUE
+#> This resrepo repository has already been versioned. To update the links to point to the data location on your machine or in an external hard drive, please run version_relink with the appropriate 'resources_path' argument.
 ```
 
 ``` r
+
 fs::dir_tree()
 #> .
 #> ├── README.md
@@ -159,8 +165,6 @@ fs::dir_tree()
 #> │   ├── archive
 #> │   │   └── README.md
 #> │   ├── data_sources.csv
-#> │   ├── intermediate
-#> │   ├── raw
 #> │   └── version_meta
 #> │       ├── initial.meta
 #> │       ├── intermediate_in_use.meta
@@ -169,7 +173,6 @@ fs::dir_tree()
 #> ├── resrepo_manual.md
 #> ├── results
 #> │   └── README.md
-#> ├── versions
 #> └── writing
 #>     └── README.md
 ```
@@ -186,8 +189,9 @@ We can also check the structure of the `external_data_storage_new`
 folder:
 
 ``` r
+
 fs::dir_tree(external_data_storage_new)
-#> /tmp/Rtmp6TSu48/external_data_storage_new
+#> /tmp/RtmpACFEbz/external_data_storage_new
 #> ├── initial
 #> │   └── intermediate
 #> └── starting
@@ -215,6 +219,7 @@ You can find an example of an `s0_download_data.Rmd` in the
 below:
 
 ``` r
+
 # First, we will create an external data folder to store
 # the data and will link to it from the `data/raw` folder.
 # You can see how to do this in the `sharing_resrepo` vignette.

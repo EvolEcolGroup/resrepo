@@ -34,14 +34,14 @@
 
 ## Citation
 
-Manica A (2025). *resrepo: Easy git repo management for reproducible
-science*. R package version 0.3.0,
+Manica A (2026). *resrepo: Easy git repo management for reproducible
+science*. R package version 0.3.1,
 <https://evolecolgroup.github.io/resrepo/>.
 
     @Manual{,
       title = {resrepo: Easy git repo management for reproducible science},
       author = {Andrea Manica},
-      year = {2025},
-      note = {R package version 0.3.0},
+      year = {2026},
+      note = {R package version 0.3.1},
       url = {https://evolecolgroup.github.io/resrepo/},
     }

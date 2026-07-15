@@ -22,5 +22,7 @@
   : Update links to the data directories
 - [`version_add()`](https://evolecolgroup.github.io/resrepo/reference/version_add.md)
   : Add a version of the data directories
+- [`version_relink()`](https://evolecolgroup.github.io/resrepo/reference/version_relink.md)
+  : Relink versions in a resrepo repository
 - [`version_setup()`](https://evolecolgroup.github.io/resrepo/reference/version_setup.md)
   : Set up versioning for data in a resrepo
