@@ -4,16 +4,18 @@ test_that("versioning", {
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   # create the directory for this test
-  expect_true(dir.create(example_dir, showWarnings = FALSE))
+  dir.create(example_dir, showWarnings = FALSE)
   example_repo <- git2r::init(example_dir, branch = "main")
   git2r::config(example_repo,
     user.name = "Test",
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(example_dir)
+  withr::local_dir(as.character(example_dir))
   ############
   # initialise the repository and add the relevant files
   init_resrepo()
@@ -195,12 +197,12 @@ test_that("versioning", {
 
 # this file tests several functions related to versioning
 test_that("versioning with resources_path argument", {
-  setwd(tempdir())
+  withr::local_dir(as.character(tempdir()))
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  fs::file_delete(example_dir)
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -213,7 +215,7 @@ test_that("versioning with resources_path argument", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -225,7 +227,9 @@ test_that("versioning with resources_path argument", {
   # set up versioning
   external_data_storage <- file.path(tempdir(), "external_data_storage")
   # erase everything from the data storage folder
-  unlink(external_data_storage, recursive = TRUE)
+  if (dir.exists(external_data_storage)) {
+    fs::dir_delete(external_data_storage)
+  }
   # create the folder for data storage
   dir.create(external_data_storage, showWarnings = FALSE)
   expect_true(version_setup(
@@ -288,12 +292,12 @@ test_that(paste0(
   "check that you cannot add a new data raw version ",
   "without a new data intermediate version"
 ), {
-  setwd(tempdir())
+  withr::local_dir(as.character(tempdir()))
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  fs::file_delete(example_dir)
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -306,7 +310,7 @@ test_that(paste0(
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -327,12 +331,12 @@ test_that(paste0(
 
 
 test_that("resources_path cannot be set to git root", {
-  setwd(tempdir())
+  withr::local_dir(as.character(tempdir()))
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  unlink(example_dir, recursive = TRUE)
+  fs::file_delete(example_dir)
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -345,7 +349,7 @@ test_that("resources_path cannot be set to git root", {
     user.email = "test@example.org"
   )
   # set our working directory in the git repository
-  setwd(sub_dir)
+  withr::local_dir(as.character(sub_dir))
   init_resrepo()
   # check that we are on main and there is nothing to commit
   expect_true(git2r::is_head(git2r::branches()$main))
@@ -378,7 +382,7 @@ test_that("clone a versioned repo", {
     progress = FALSE
   )
 
-  setwd(directory_penguins)
+  withr::local_dir(as.character(directory_penguins))
   expect_true(read.table("data/version_meta/intermediate_in_use.meta") ==
     "test_intermediate_description4") # nolint
 
@@ -402,7 +406,7 @@ test_that("clone a versioned repo", {
     overwrite = TRUE
   )
 
-  expect_true(version_setup(
+  expect_true(version_relink(
     quiet = TRUE,
     resources_path = external_data_storage_new
   ))
@@ -424,8 +428,138 @@ test_that("clone a versioned repo", {
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
 })
 
-# @TODO find ways to break data versioning (cases when you clone the repository
-# but don't have the stuff in the right path)
+test_that("version_relink for a cloned repo", {
+  # Steps
+  ########
+  # 1. Create a repository in a temp dir
+  ########
+  # start setting up a temp dir for the git repository
+  example_dir <- file.path(tempdir(), "resrepo_example")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
+  # create the directory for this test
+  dir.create(example_dir, showWarnings = FALSE)
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+    user.name = "Test",
+    user.email = "test@example.org"
+  )
+  # set our working directory in the git repository
+  withr::local_dir(as.character(example_dir))
+  ############
+  # initialise the repository and add the relevant files
+  init_resrepo()
+  expect_true(file.copy(
+    from = system.file("vignette_example/tux_measurements.csv",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/data/raw/original/tux_measurements.csv"),
+    overwrite = TRUE
+  ))
+  expect_true(file.copy(
+    from = system.file("vignette_example/s01_download_penguins.Rmd",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/code/s01_download_penguins.Rmd"),
+    overwrite = TRUE
+  ))
+  # silence knitr
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
+    )
+  )
+  expect_true(file.copy(
+    from = system.file("vignette_example/s02_merge_clean.Rmd",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/code/s02_merge_clean.Rmd"),
+    overwrite = TRUE
+  ))
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
+    )
+  )
+  expect_true(file.copy(
+    from = system.file("vignette_example/s03_pca.Rmd",
+      package = "resrepo"
+    ),
+    to = path_resrepo("/code/s03_pca.Rmd"),
+    overwrite = TRUE
+  ))
+  suppressMessages(
+    capture.output(
+      knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
+    )
+  )
+  git2r::add(path = ".")
+  suppressMessages(
+    capture.output(
+      git2r::commit(message = "Save plot", all = TRUE)
+    )
+  )
+  # check that we are on main and there is nothing to commit
+  expect_true(git2r::is_head(git2r::branches()$main))
+  # check that all elements of git status are empty (i.e. we have a
+  # cleaned working directory)
+  expect_true(git_is_clean())
+  ########
 
-# @TODO write a test to check when you create versioned repo with version_setup
-# and then switch branches, the data still points to the right place
+  ########
+  # 2. Version this repo
+  expect_true(version_setup(quiet = TRUE))
+  ########
+
+  ########
+  # 3. Copy the 'versions' folder containing the data to a new location
+  # start setting up a temp dir for the git repository
+  versions_loc <- file.path(tempdir(), "versions_location")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(versions_loc)) {
+    fs::dir_delete(versions_loc)
+  }
+  # create the directory for this test
+  dir.create(versions_loc, showWarnings = FALSE)
+  # copy the resrepo versions folder to the new location
+  file.copy(
+    from = path_resrepo("versions"),
+    to = versions_loc,
+    recursive = TRUE
+  )
+
+  ########
+  # 4. Clone the repository to a new directory
+  # create new directory for the clone
+  clone_loc <- file.path(tempdir(), "clone_location")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(clone_loc)) {
+    fs::dir_delete(clone_loc)
+  }
+  # create the directory for this test
+  dir.create(clone_loc, showWarnings = FALSE)
+  # clone the repository
+  git2r::clone(
+    url = example_dir,
+    local_path = clone_loc,
+    branch = "main",
+    progress = FALSE
+  )
+  ########
+
+  ########
+  # 5. Run version_relink with the new location of the 'versions' folder
+  # move to new repo location
+  withr::local_dir(as.character(clone_loc))
+  expect_true(version_relink(
+    quiet = TRUE,
+    resources_path = versions_loc
+  ))
+
+  # check the links work
+  write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
+  blah <- read.csv(path_resrepo("data/intermediate/my_new_file1.csv"))
+  expect_equal(as.character(blah[2]), "blah")
+})

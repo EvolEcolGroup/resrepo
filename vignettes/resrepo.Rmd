@@ -32,8 +32,7 @@ The aim of `resrepo` is to encourage and facilitate good practices when setting 
 
 In `resrespo`, we keep data, code, results, and the write-up separate. This 
 allows for a tidy structure that can flexibly accommodate very complex projects.
-Note that there are a number of README.md files, which provide instructions and advice
-related to the files that go into that particular directory.
+Note that there are a number of README.md files, which provide guidance on the recommended contents of each directory and are easily displayed on GitHub.
 
 If you created the repository with `init_resrepo`, the function will automatically commit these changes for you, so that you have a clean repository template as your first commit, and you
 can best document the changes that you make as you progress.
@@ -59,8 +58,8 @@ be replaced with underscores) and capital letters (not all file systems/language
 sensitive). For example, a script
 that downloads remote sensing data from a public server could be named `s01_download_remote_sense.Rmd`.
 A script to run a clustering analysis from the data could be named `s02_clustering.Rmd`.
-Avoid naming your files starting with a number (e.g. instead of “01_process_data.R” use “s01_process_data.R”)
-Do not use generic names such as “Figure_01”, “Figure_02”, etc. for your files and folders. Use more descriptive names as numbers change. It will make your life easier when you will need to work again on the project.
+Avoid naming your files starting with a number (e.g. instead of “01_process_data.R” use “s01_process_data.R”), as some software/languages do not support that.
+Do not use generic names such as “Figure_01” or “Figure_02” for files and folders. Use descriptive names instead, as numbering may change and clearer names will make the project easier to revisit later.
 
 
 ## Set up data directories
