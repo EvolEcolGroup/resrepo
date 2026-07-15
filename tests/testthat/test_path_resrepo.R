@@ -1,11 +1,12 @@
 # set up the test in a temporary directory
 test_dir <- file.path(tempdir(), "resrepo_test")
 # clean up the directory if it already exists
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
+if (dir.exists(test_dir)) {
+  fs::dir_delete(test_dir)
+}
 # create the directory (if it doesn't exist)
 dir.create(test_dir, showWarnings = FALSE)
-setwd(test_dir)
+withr::local_dir(as.character(test_dir))
 # initialise a git repository
 example_repo <- git2r::init(test_dir, branch = "main")
 git2r::config(example_repo,
@@ -64,7 +65,3 @@ test_that("version argument", {
     path_resrepo("versions/starting/data/raw")
   )
 })
-
-# and now clean up
-unlink(file.path(test_dir, "*"), recursive = TRUE)
-unlink(file.path(test_dir, ".*"), recursive = TRUE)
