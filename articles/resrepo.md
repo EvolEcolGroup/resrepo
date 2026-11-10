@@ -154,7 +154,7 @@ that your working directory is set within the `git` repository:
 ``` r
 
 getwd()
-#> [1] "/tmp/RtmpXlt0Pa/resrepo_example"
+#> [1] "/tmp/RtmpRgF1Fo/resrepo_example"
 ```
 
 We can now initialise the repository:
@@ -543,11 +543,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```

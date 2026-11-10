@@ -146,11 +146,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> └── writing
 #>     └── README.md
 ```
@@ -199,11 +196,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -281,10 +275,10 @@ we have switched to a new branch in the git repository called
 
 git2r::branches()
 #> $main
-#> [27bfbd] (Local) main
+#> [e85539] (Local) main
 #> 
 #> $new_filtering
-#> [9c75dd] (Local) (HEAD) new_filtering
+#> [8bde1e] (Local) (HEAD) new_filtering
 ```
 
 Now `data/raw` and `data/intermediate` are symlinks to the
@@ -334,11 +328,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -434,11 +425,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -471,7 +459,7 @@ penguins, the data are written to the
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 #> processing file: s02_merge_clean.Rmd
 #> output file: s02_merge_clean.knit.md
-#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s02_merge_clean_files --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/extract-data-uri.lua --variable 'geometry:margin=1in'
 #> 
 #> Output created: s02_merge_clean.pdf
 #> [1] TRUE
@@ -509,11 +497,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> │   ├── initial
 #> │   │   └── intermediate
@@ -750,21 +735,21 @@ We can now run our scripts:
 knit_to_results(path_resrepo("/code/s01_download_penguins.Rmd"))
 #> processing file: s01_download_penguins.Rmd
 #> output file: s01_download_penguins.knit.md
-#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s01_download_penguins.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s01_download_penguins.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s01_download_penguins_files --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s01_download_penguins.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s01_download_penguins.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/extract-data-uri.lua --variable 'geometry:margin=1in'
 #> 
 #> Output created: s01_download_penguins.pdf
 #> [1] TRUE
 knit_to_results(path_resrepo("/code/s02_merge_clean.Rmd"))
 #> processing file: s02_merge_clean.Rmd
 #> output file: s02_merge_clean.knit.md
-#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s02_merge_clean_files --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s02_merge_clean.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s02_merge_clean.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/extract-data-uri.lua --variable 'geometry:margin=1in'
 #> 
 #> Output created: s02_merge_clean.pdf
 #> [1] TRUE
 knit_to_results(path_resrepo("/code/s03_pca.Rmd"))
 #> processing file: s03_pca.Rmd
 #> output file: s03_pca.knit.md
-#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s03_pca.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s03_pca.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --extract-media s03_pca_files --variable 'geometry:margin=1in'
+#> /opt/hostedtoolcache/pandoc/3.8.3/x64/pandoc +RTS -K512m -RTS s03_pca.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output s03_pca.tex --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/latex-div.lua --embed-resources --standalone --syntax-highlighting tango --pdf-engine pdflatex --variable graphics --lua-filter /home/runner/work/_temp/Library/rmarkdown/rmarkdown/lua/extract-data-uri.lua --variable 'geometry:margin=1in'
 #> 
 #> Output created: s03_pca.pdf
 #> [1] TRUE
@@ -803,11 +788,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> └── writing
 #>     └── README.md
@@ -860,7 +842,7 @@ file.rename(
 #> [1] TRUE
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/Rtmp7DtoIk/new_external_data_storage
+#> /tmp/RtmpAE3epZ/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
@@ -890,7 +872,7 @@ the new location of our data.
 ``` r
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/Rtmp7DtoIk/new_external_data_storage
+#> /tmp/RtmpAE3epZ/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
@@ -936,11 +918,8 @@ fs::dir_tree()
 #> │       ├── README.md
 #> │       ├── s03_pca.pdf
 #> │       └── s03_pca_files
-#> │           ├── figure-latex
-#> │           │   └── pca_plot-1.png
-#> │           └── s03_pca_files
-#> │               └── figure-latex
-#> │                   └── pca_plot-1.png
+#> │           └── figure-latex
+#> │               └── pca_plot-1.png
 #> ├── versions
 #> └── writing
 #>     └── README.md
@@ -954,7 +933,7 @@ write.csv("blah", path_resrepo("/data/raw/original/my_new_file1.csv"),
 )
 
 fs::dir_tree(new_external_data_storage)
-#> /tmp/Rtmp7DtoIk/new_external_data_storage
+#> /tmp/RtmpAE3epZ/new_external_data_storage
 #> └── versions
 #>     ├── initial
 #>     │   └── intermediate
