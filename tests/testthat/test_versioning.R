@@ -205,7 +205,9 @@ test_that("versioning with resources_path argument", {
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  fs::file_delete(example_dir)
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -300,7 +302,9 @@ test_that(paste0(
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  fs::file_delete(example_dir)
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
@@ -339,7 +343,9 @@ test_that("resources_path cannot be set to git root", {
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
   # wipe the directory in case it has been left behind from previous tests
-  fs::file_delete(example_dir)
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
   # create the directory for this test
   dir.create(example_dir, showWarnings = FALSE)
   # create a subdirectory of example_dir
