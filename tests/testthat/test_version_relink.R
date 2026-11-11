@@ -1,4 +1,7 @@
 test_that("version_relink works correctly", {
+  # knits inst/vignette_example/s01_download_penguins.Rmd, whose data come
+  # from palmerpenguins (only suggested)
+  skip_if_not_installed("palmerpenguins")
   example_dir <- file.path(tempdir(), "resrepo_example")
   if (dir.exists(example_dir)) {
     fs::dir_delete(example_dir)
@@ -91,6 +94,9 @@ test_that("version_relink works correctly", {
 })
 
 test_that("move versions from one external data location to another", {
+  # knits inst/vignette_example/s01_download_penguins.Rmd, whose data come
+  # from palmerpenguins (only suggested)
+  skip_if_not_installed("palmerpenguins")
   example_dir <- file.path(tempdir(), "resrepo_example")
   if (dir.exists(example_dir)) {
     fs::dir_delete(example_dir)

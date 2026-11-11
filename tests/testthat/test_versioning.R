@@ -1,5 +1,8 @@
 # this file tests several functions related to versioning
 test_that("versioning", {
+  # knits inst/vignette_example/s01_download_penguins.Rmd, whose data come
+  # from palmerpenguins (only suggested)
+  skip_if_not_installed("palmerpenguins")
   ############
   # start setting up a temp dir for the git repository
   example_dir <- file.path(tempdir(), "resrepo_example")
@@ -429,6 +432,9 @@ test_that("clone a versioned repo", {
 })
 
 test_that("version_relink for a cloned repo", {
+  # knits inst/vignette_example/s01_download_penguins.Rmd, whose data come
+  # from palmerpenguins (only suggested)
+  skip_if_not_installed("palmerpenguins")
   # Steps
   ########
   # 1. Create a repository in a temp dir
