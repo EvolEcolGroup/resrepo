@@ -31,11 +31,11 @@ Imports:
     gitcreds,
     stringr,
     renv,
+    rmarkdown,
     rstudioapi
 Suggests:
     knitr,
     palmerpenguins,
-    rmarkdown,
     tinytex,
     testthat (>= 3.0.0),
     spelling,
