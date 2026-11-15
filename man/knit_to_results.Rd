@@ -7,7 +7,8 @@
 knit_to_results(input_file, encoding, envir = parent.frame(), rename_md = TRUE)
 }
 \arguments{
-\item{input_file}{The name of the R Markdown file to be rendered.}
+\item{input_file}{The path to the R Markdown file to be rendered (relative
+to the working directory, or absolute).}
 
 \item{encoding}{Ignored. The encoding is always assumed to be UTF-8.}
 
@@ -30,4 +31,13 @@ NB. This function does NOT cause any objects that are written to file in your
 \code{.Rmd} code to be written to the new results directory by default. To
 ensure all objects are written to the correct directories, specify an
 \code{output_dir} directly in the code.
+
+The output goes to \code{results/<name>/}, where \code{<name>} is the name of
+the \code{.Rmd} file without its extension. If the \code{.Rmd} file is in a
+subdirectory of \code{code/}, that subdirectory is kept: the output of
+\code{code/analysis/test.Rmd} goes to \code{results/analysis/test/}.
+Files directly in \code{code/}, or outside it, go to \code{results/<name>/}.
+The repository is the one that holds the \code{.Rmd} file, so the result
+does not depend on the working directory, nor on whether the path is
+relative or absolute.
 }
