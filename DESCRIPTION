@@ -3,7 +3,7 @@ Title: Easy git repo management for reproducible science
 Version: 0.3.1
 Authors@R: 
     c(
-        person("Andrea", "Manica", email = "am351@cam.ac.uk", role = c("aut", "cre")),
+        person("Andrea", "Manica", email = "am315@cam.ac.uk", role = c("aut", "cre")),
         person("Evie", "Carter", role = "ctb"),
         person("Andrea Vittorio", "Pozzi", role = "ctb"),
         person("Margherita", "Colucci", role = "ctb"),

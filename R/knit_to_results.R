@@ -10,7 +10,17 @@
 #' ensure all objects are written to the correct directories, specify an
 #' \code{output_dir} directly in the code.
 #'
-#' @param input_file The name of the R Markdown file to be rendered.
+#' The output goes to \code{results/<name>/}, where \code{<name>} is the name of
+#' the \code{.Rmd} file without its extension. If the \code{.Rmd} file is in a
+#' subdirectory of \code{code/}, that subdirectory is kept: the output of
+#' \code{code/analysis/test.Rmd} goes to \code{results/analysis/test/}.
+#' Files directly in \code{code/}, or outside it, go to \code{results/<name>/}.
+#' The repository is the one that holds the \code{.Rmd} file, so the result
+#' does not depend on the working directory, nor on whether the path is
+#' relative or absolute.
+#'
+#' @param input_file The path to the R Markdown file to be rendered (relative
+#'   to the working directory, or absolute).
 #' @param encoding Ignored. The encoding is always assumed to be UTF-8.
 #' @param envir The environment in which the code chunks are to be evaluated
 #'   during knitting. If new.env() is used to guarantee an empty new
@@ -35,6 +45,16 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
     )
   }
 
+  ## use the absolute path of the input file, so that where its output goes
+  ## does not depend on how the path was written (e.g. "code/analysis/x.Rmd"
+  ## or "./code/analysis/x.Rmd") or on the working directory
+  input_file <- normalizePath(input_file, winslash = "/", mustWork = TRUE)
+  ## find the root of the repository that holds the input file (which may
+  ## not be the repository of the working directory)
+  repo_root <- normalizePath(find_git_root(dirname(input_file)),
+    winslash = "/", mustWork = TRUE
+  )
+
   ## get the filename from inputFile
   input_file_no_ext <- sub(
     "([^.]+)\\.[[:alnum:]]+$", "\\1",
@@ -52,20 +72,22 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
 
   ## Now we need to move the output files to the /results/fname folder
 
-  ## define the current and new directories as RELATIVE paths
-  # from CURRENT working dir
-  cur_dir <- file.path(dirname(input_file))
-  ## check if we are in a subdirectory of code
-  if (length(strsplit(cur_dir, "/code/")[[1]]) > 1) {
-    code_sub_dir <- strsplit(cur_dir, "/code/")[[1]][2]
-  } else {
-    code_sub_dir <- ""
-  }
-
-  new_dir <- file.path(
-    path_relative(path_resrepo("results")),
-    code_sub_dir, input_file_no_ext
+  ## define the current and new directories as absolute paths
+  cur_dir <- dirname(input_file)
+  ## get the subdirectory of code/ that holds the input file, relative to the
+  ## code/ directory of its repository (matching "/code/" in the path instead
+  ## missed relative paths starting with "code/", and picked the wrong folder
+  ## when "code" also appeared higher up in the path)
+  code_sub_dir <- as.character(
+    fs::path_rel(cur_dir, file.path(repo_root, "code"))
   )
+  ## files directly in code/, or outside code/, go to results/<name>/;
+  ## files in a subdirectory of code/ go to results/<subdirectory>/<name>/
+  if (code_sub_dir %in% c(".", "..") || startsWith(code_sub_dir, "../")) {
+    new_dir <- file.path(repo_root, "results", input_file_no_ext)
+  } else {
+    new_dir <- file.path(repo_root, "results", code_sub_dir, input_file_no_ext)
+  }
   # put into a new folder under results
   ## create the new results folder if it doesn't already exist
   if (!dir.exists(new_dir)) {
