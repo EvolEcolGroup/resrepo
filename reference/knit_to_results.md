@@ -15,7 +15,8 @@ knit_to_results(input_file, encoding, envir = parent.frame(), rename_md = TRUE)
 
 - input_file:
 
-  The name of the R Markdown file to be rendered.
+  The path to the R Markdown file to be rendered (relative to the
+  working directory, or absolute).
 
 - encoding:
 
@@ -39,3 +40,12 @@ NB. This function does NOT cause any objects that are written to file in
 your `.Rmd` code to be written to the new results directory by default.
 To ensure all objects are written to the correct directories, specify an
 `output_dir` directly in the code.
+
+The output goes to `results/<name>/`, where `<name>` is the name of the
+`.Rmd` file without its extension. If the `.Rmd` file is in a
+subdirectory of `code/`, that subdirectory is kept: the output of
+`code/analysis/test.Rmd` goes to `results/analysis/test/`. Files
+directly in `code/`, or outside it, go to `results/<name>/`. The
+repository is the one that holds the `.Rmd` file, so the result does not
+depend on the working directory, nor on whether the path is relative or
+absolute.

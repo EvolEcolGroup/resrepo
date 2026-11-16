@@ -60,7 +60,8 @@ can be <code>.pdf</code>, <code>.html</code>, <code>.md</code> etc.</p>
 
 
 <dl><dt id="arg-input-file">input_file<a class="anchor" aria-label="anchor" href="#arg-input-file"></a></dt>
-<dd><p>The name of the R Markdown file to be rendered.</p></dd>
+<dd><p>The path to the R Markdown file to be rendered (relative
+to the working directory, or absolute).</p></dd>
 
 
 <dt id="arg-encoding">encoding<a class="anchor" aria-label="anchor" href="#arg-encoding"></a></dt>
@@ -85,6 +86,14 @@ README.md to be display on GitHub.</p></dd>
 <code>.Rmd</code> code to be written to the new results directory by default. To
 ensure all objects are written to the correct directories, specify an
 <code>output_dir</code> directly in the code.</p>
+<p>The output goes to <code>results/&lt;name&gt;/</code>, where <code>&lt;name&gt;</code> is the name of
+the <code>.Rmd</code> file without its extension. If the <code>.Rmd</code> file is in a
+subdirectory of <code>code/</code>, that subdirectory is kept: the output of
+<code>code/analysis/test.Rmd</code> goes to <code>results/analysis/test/</code>.
+Files directly in <code>code/</code>, or outside it, go to <code>results/&lt;name&gt;/</code>.
+The repository is the one that holds the <code>.Rmd</code> file, so the result
+does not depend on the working directory, nor on whether the path is
+relative or absolute.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

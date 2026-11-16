@@ -18,7 +18,7 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Andrea Manica <am351@cam.ac.uk>
+**Maintainer**: Andrea Manica <am315@cam.ac.uk>
 
 Other contributors:
 
