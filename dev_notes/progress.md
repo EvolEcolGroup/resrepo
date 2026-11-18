@@ -11,6 +11,9 @@
   `version_setup()` failing in a worktree, links broken by moving the
   repository).
 - **Decisions:** push without a PR (Andrea).
+- **Correction:** the review has 22 fix commits, `b564e56`..`5dff711`, not 21
+  as in the entry below (`5dff711` corrects a regression of `5d1c1a3`, found
+  by a second verifying agent).
 - **Notes changed:** `code_review_2026-11.md`, `summary.md`, `handover.md`.
 
 ## 2026-11-18 (laptopX1): whole-package code review
