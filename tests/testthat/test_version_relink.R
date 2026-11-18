@@ -252,4 +252,3 @@ test_that("resources_path is named as given, without resolving links", {
   )
   fs::dir_delete(links_dir)
 })
-
