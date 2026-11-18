@@ -54,6 +54,8 @@
   and commits only the files it creates (it used to commit everything)
 * `init_resrepo(path)` initialises the repository at `path` (it used the working
   directory); `path` in `version_add()` is deprecated (it was ignored)
+* `knit_to_results()` moves the output of any format (e.g. `.pptx`, `.rtf`),
+  and the `.tex` of `keep_tex`
 
 # resrepo 0.3.1
 

@@ -37,6 +37,10 @@ the \code{.Rmd} file without its extension. If the \code{.Rmd} file is in a
 subdirectory of \code{code/}, that subdirectory is kept: the output of
 \code{code/analysis/test.Rmd} goes to \code{results/analysis/test/}.
 Files directly in \code{code/}, or outside it, go to \code{results/<name>/}.
+The output of any format is moved (the file that
+\code{rmarkdown::render()} returns), together with the \code{.md} and
+\code{.tex} files kept by \code{keep_md} and \code{keep_tex}, and the
+folder of figures (\code{<name>_files}).
 The repository is the one that holds the \code{.Rmd} file, so the result
 does not depend on the working directory, nor on whether the path is
 relative or absolute.

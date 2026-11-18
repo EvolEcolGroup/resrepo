@@ -101,6 +101,33 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   fs::dir_delete(file.path(tempdir(), "code"))
 })
 
+test_that("knit_to_results moves the output of any format", {
+  skip_if_not(rmarkdown::pandoc_available())
+  example_dir <- file.path(tempdir(), "resrepo_formats")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
+  dir.create(file.path(example_dir, "code"), recursive = TRUE)
+  git2r::init(example_dir, branch = "main")
+  # an rtf document (only .html, .pdf, .md and .docx used to be moved, so
+  # the .rtf stayed in code/)
+  writeLines(
+    c("---", "title: Test", "output: rtf_document", "---", "Hi."),
+    file.path(example_dir, "code", "letter.Rmd")
+  )
+  withr::with_dir(example_dir, {
+    suppressMessages(capture.output(
+      knit_to_results("code/letter.Rmd", encoding = "UTF-8")
+    ))
+  })
+  expect_true(
+    file.exists(file.path(example_dir, "results", "letter", "letter.rtf"))
+  )
+  expect_identical(list.files(file.path(example_dir, "code")), "letter.Rmd")
+  fs::dir_delete(example_dir)
+})
+
 test_that("the create_rmd() template knits outside RStudio", {
   skip_if_not(rmarkdown::pandoc_available())
   example_dir <- file.path(tempdir(), "resrepo_template")

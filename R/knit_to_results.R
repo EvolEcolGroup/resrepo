@@ -15,6 +15,10 @@
 #' subdirectory of \code{code/}, that subdirectory is kept: the output of
 #' \code{code/analysis/test.Rmd} goes to \code{results/analysis/test/}.
 #' Files directly in \code{code/}, or outside it, go to \code{results/<name>/}.
+#' The output of any format is moved (the file that
+#' \code{rmarkdown::render()} returns), together with the \code{.md} and
+#' \code{.tex} files kept by \code{keep_md} and \code{keep_tex}, and the
+#' folder of figures (\code{<name>_files}).
 #' The repository is the one that holds the \code{.Rmd} file, so the result
 #' does not depend on the working directory, nor on whether the path is
 #' relative or absolute.
@@ -111,28 +115,22 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
     perl = TRUE
   )
 
-  ## FILES TO MOVE: fname.md or fname.pdf or fname.html etc
-  # inputFile
+  ## FILES TO MOVE: the output that render() returned, whatever its format
+  ## (.html, .pdf, .docx, but also .pptx, .odt, .rtf, .epub...), and the
+  ## files that some formats keep next to it: fname.md (keep_md, or the
+  ## main output of github_document, whose .html is a preview), fname.tex
+  ## (keep_tex), fname.html, fname.pdf and fname.docx
   cur_file_regex <- paste0(
     "^", name_regex,
-    "(\\.html|\\.pdf|\\.md|\\.docx)$"
+    "(\\.html|\\.pdf|\\.md|\\.docx|\\.tex)$"
   )
-  ## create a regexp to find the output file
-  # cur_file_regex
-
-  cur_files <- file.path(
-    out_dir,
-    list.files(out_dir,
-      pattern = cur_file_regex
-    )
-  ) # current filepaths
-  new_files <- file.path(
-    new_dir,
-    list.files(out_dir,
-      # where they should go to
-      pattern = cur_file_regex
-    )
+  output_files <- union(
+    basename(output_path),
+    list.files(out_dir, pattern = cur_file_regex)
   )
+  output_files <- output_files[file.exists(file.path(out_dir, output_files))]
+  cur_files <- file.path(out_dir, output_files) # current filepaths
+  new_files <- file.path(new_dir, output_files) # where they should go to
   base::file.rename(cur_files, new_files) # MOVES files
 
   ## FOLDER TO MOVE: fname_files
