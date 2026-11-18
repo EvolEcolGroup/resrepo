@@ -53,9 +53,8 @@ Updated 2026-11-18 (laptopX1). For the next session: read this and
 ### 5. **P3** [cleanup] After the merge
 
 - Delete the branches `codereview` and `fix_knit_subdir`, and the folder
-  `/media/andrea/annex/tmp/claude/resrepo/` (test logs, the verifying
-  agents' probe scripts, the worktrees `base_dev` and `tip`, and the
-  library `lib_review`).
+  `/media/andrea/annex/tmp/claude/resrepo/` (test logs and the verifying
+  agents' probe scripts; the worktrees and libraries are already removed).
 
 ## Desktop queue
 
