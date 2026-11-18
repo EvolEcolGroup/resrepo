@@ -42,6 +42,8 @@
   without credentials; remotes on a local path or `http://` are now pushed to
 * `version_add()` copies the data before changing anything in git, pushes
   last, and undoes its changes if it fails before the push
+* the links from `data/` to `versions/` are relative (except on Windows), so
+  that a repository keeps working when moved
 
 # resrepo 0.3.1
 

@@ -17,4 +17,11 @@ it must be empty, as it will be deleted and removed.}
 \description{
 Create a symlink to a data directory in a resrepo (more details needed)
 }
+\details{
+Links to directories inside the repository (e.g. \code{data/raw} to
+\code{versions/starting/raw}) are relative, like those made by the git hooks,
+so that they keep working when the repository is moved; links to
+directories outside it (external storage) are absolute. On Windows, links
+are junctions, which are always absolute.
+}
 \keyword{internal}

@@ -564,6 +564,53 @@ test_that("resources_path cannot be set to git root", {
   })
 })
 
+test_that("links inside the repository survive moving it", {
+  # Windows junctions are always absolute
+  skip_on_os("windows")
+  example_dir <- file.path(tempdir(), "resrepo_to_move")
+  moved_dir <- file.path(tempdir(), "resrepo_moved")
+  # wipe the directories in case they have been left behind
+  for (old_dir in c(example_dir, moved_dir)) {
+    if (dir.exists(old_dir)) {
+      fs::dir_delete(old_dir)
+    }
+  }
+  dir.create(example_dir)
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+    user.name = "Test",
+    user.email = "test@example.org"
+  )
+  withr::with_dir(example_dir, {
+    init_resrepo()
+    version_setup(quiet = TRUE)
+    # the links are relative, like those of the git hooks (they used to be
+    # absolute, and pointed to the old location once the repository moved)
+    expect_identical(
+      as.character(fs::link_path("data/raw")), "../versions/starting/raw"
+    )
+  })
+  # move the repository
+  file.rename(example_dir, moved_dir)
+  withr::with_dir(moved_dir, {
+    expect_true(dir.exists("data/raw"))
+    expect_identical(
+      get_versions_in_use(),
+      list(raw = "starting", intermediate = "initial")
+    )
+    # new versions get relative links too
+    expect_true(version_add(
+      intermediate_new_version = "after_move",
+      intermediate_description = "After moving", push = FALSE, quiet = TRUE
+    ))
+    expect_identical(
+      as.character(fs::link_path("data/intermediate")),
+      "../versions/after_move/intermediate"
+    )
+  })
+  fs::dir_delete(moved_dir)
+})
+
 test_that("get_resrepo_git_creds reads the origin remote", {
   creds_dir <- file.path(tempdir(), "resrepo_creds")
   # wipe the directory in case it has been left behind from previous tests

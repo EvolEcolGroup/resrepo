@@ -58,13 +58,18 @@ update_links <- function(quiet = FALSE) {
   }
   # if the link does not exist, create it
   if (!fs::is_link(raw_path)) {
-    fs::link_create(version_raw_path, raw_path, symbolic = TRUE)
+    fs::link_create(
+      link_target(version_raw_path, raw_path), raw_path,
+      symbolic = TRUE
+    )
     if (!quiet) {
       message("Links updated")
     }
   }
   if (!fs::is_link(intermediate_path)) {
-    fs::link_create(version_intermediate_path, intermediate_path,
+    fs::link_create(
+      link_target(version_intermediate_path, intermediate_path),
+      intermediate_path,
       symbolic = TRUE
     )
   }

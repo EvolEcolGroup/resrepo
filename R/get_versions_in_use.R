@@ -52,10 +52,16 @@ get_versions_in_use <- function(check_links = TRUE) {
     intermediate_path <- path_resrepo("data/intermediate")
     # check that the links point to the correct directory
     if (!link_points_to(raw_path, version_raw_path)) {
-      stop("The link to the raw data is incorrect")
+      stop(
+        "The link to the raw data is incorrect; run update_links() to ",
+        "repair it (e.g. after moving the repository)"
+      )
     }
     if (!link_points_to(intermediate_path, version_intermediate_path)) {
-      stop("The link to the intermediate data is incorrect")
+      stop(
+        "The link to the intermediate data is incorrect; run update_links() ",
+        "to repair it (e.g. after moving the repository)"
+      )
     }
   }
   return(list(raw = raw_in_use, intermediate = intermediate_in_use))
