@@ -46,16 +46,14 @@ update_links <- function(quiet = FALSE) {
   raw_path <- path_resrepo("data/raw")
   intermediate_path <- path_resrepo("data/intermediate")
   # if the link exists but points to the wrong directory, delete
-  # the link
+  # the link (compare the directories they resolve to, as the links made
+  # by the git hooks are relative)
   if (fs::is_link(raw_path) &&
-    !identical(fs::link_path(raw_path), version_raw_path)) { # nolint
+    !link_points_to(raw_path, version_raw_path)) { # nolint
     fs::link_delete(raw_path)
   }
   if (fs::is_link(intermediate_path) &&
-    !identical(
-      fs::link_path(intermediate_path),
-      version_intermediate_path
-    )) {
+    !link_points_to(intermediate_path, version_intermediate_path)) { # nolint
     fs::link_delete(intermediate_path)
   }
   # if the link does not exist, create it

@@ -172,6 +172,14 @@ test_that("versioning", {
   cat(fs::link_path("./data/intermediate"))
 
   expect_true(grep("initial", fs::link_path("./data/intermediate")) == 1)
+  # the links made by the git hook are relative, and must still be accepted
+  # as correct (they used to give "The link to the raw data is incorrect")
+  expect_identical(
+    get_versions_in_use(),
+    list(raw = "starting", intermediate = "initial")
+  )
+  # and update_links() leaves correct links alone
+  expect_silent(update_links())
 
   # Check that data/intermediate now points to the unfiltered penguin data
   penguins_initial <- read.csv(path_resrepo(
@@ -192,6 +200,7 @@ test_that("versioning", {
   expect_true(git2r::is_head(git2r::branches()$main))
   # but the data version is new_filtering as a consequence of the merge
   expect_true(grep("new_filtering", fs::link_path("./data/intermediate")) == 1)
+  expect_identical(get_versions_in_use()$intermediate, "new_filtering")
   penguins <- read.csv(path_resrepo(
     "data/intermediate/s02_merge_clean/penguins_na_omit.csv"
   ))

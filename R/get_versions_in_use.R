@@ -51,15 +51,38 @@ get_versions_in_use <- function(check_links = TRUE) {
     raw_path <- path_resrepo("data/raw")
     intermediate_path <- path_resrepo("data/intermediate")
     # check that the links point to the correct directory
-    if (!identical(as.character(fs::link_path(raw_path)), version_raw_path)) {
+    if (!link_points_to(raw_path, version_raw_path)) {
       stop("The link to the raw data is incorrect")
     }
-    if (!identical(
-      as.character(fs::link_path(intermediate_path)),
-      version_intermediate_path
-    )) {
+    if (!link_points_to(intermediate_path, version_intermediate_path)) {
       stop("The link to the intermediate data is incorrect")
     }
   }
   return(list(raw = raw_in_use, intermediate = intermediate_in_use))
+}
+
+#' Check whether a link points to a given directory
+#'
+#' Compares the directories that `link` and `target` resolve to, rather than
+#' the text of the link: the links made in R are absolute, whereas those made
+#' by the git hooks after a checkout or a merge are relative (e.g.
+#' `../versions/starting/raw`), and `versions` may itself be a link to an
+#' external directory.
+#'
+#' @param link the path of the link
+#' @param target the path of the directory the link should point to
+#' @returns TRUE if both paths exist and resolve to the same directory
+#' @keywords internal
+#' @noRd
+
+link_points_to <- function(link, target) {
+  # a missing link, a broken link or a missing target never match
+  if (!dir.exists(link) || !dir.exists(target)) {
+    return(FALSE)
+  }
+  # resolve all links in both paths, and compare the real directories
+  identical(
+    as.character(fs::path_real(link)),
+    as.character(fs::path_real(target))
+  )
 }
