@@ -16,6 +16,7 @@
   `versions/<version>/data/` instead of `versions/<version>/`
 * `version_add()`: fix repositories with more than one git remote (only
   `origin` is used)
+* `version_add()`: fix `ssh://` remote urls, which were not supported
 
 # resrepo 0.3.1
 

@@ -25,8 +25,8 @@ get_resrepo_git_creds <- function() {
     )
     return(creds)
   }
-  if (grepl("^git@", git_url)) {
-    # SSH URL
+  if (grepl("^git@", git_url) || grepl("^ssh://", git_url)) {
+    # SSH URL, either scp-like (git@host:path) or with the ssh:// scheme
     creds <- list(
       type = "ssh",
       url = git_url,

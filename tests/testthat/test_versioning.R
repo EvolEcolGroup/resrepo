@@ -472,6 +472,9 @@ test_that("get_resrepo_git_creds reads the origin remote", {
   creds <- get_resrepo_git_creds()
   expect_identical(creds$type, "ssh")
   expect_identical(creds$url, "git@github.com:user/repo.git")
+  # ssh urls can also use the ssh:// scheme (they used to be unsupported)
+  git2r::remote_set_url(name = "origin", url = "ssh://git@github.com/u/r.git")
+  expect_identical(get_resrepo_git_creds()$type, "ssh")
 })
 
 test_that("clone a versioned repo", {
