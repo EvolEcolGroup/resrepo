@@ -62,14 +62,18 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   )
   # code from file_path_sans_ext in the {tools} package.
 
-  ## run the rmarkdown render function; the output keeps the name of the
-  ## input file and goes to its folder (output_file is not given, as
+  ## run the rmarkdown render function (output_file is not given, as
   ## rmarkdown would read the last part of a name with a dot, e.g. ".v2" in
   ## "s01.v2", as its extension, and write a file "s01.v2" with no extension)
-  rmarkdown::render(
+  output_path <- rmarkdown::render(
     input = input_file,
     envir = envir
   )
+  ## find the outputs where render() put them, under the name it gave them:
+  ## it replaces spaces and other shell characters with "-" ("my file.Rmd"
+  ## gives "my-file.html"), and may write to the working directory
+  out_dir <- dirname(output_path)
+  out_name <- tools::file_path_sans_ext(basename(output_path))
 
   ## Now we need to move the output files to the /results/fname folder
 
@@ -103,7 +107,7 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   ## that only the outputs of this file are matched (not e.g. "notes_test.md"
   ## when knitting "test.Rmd")
   name_regex <- gsub(
-    "([.|()\\^{}+$*?\\[\\]\\\\])", "\\\\\\1", input_file_no_ext,
+    "([.|()\\^{}+$*?\\[\\]\\\\])", "\\\\\\1", out_name,
     perl = TRUE
   )
 
@@ -117,14 +121,14 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   # cur_file_regex
 
   cur_files <- file.path(
-    cur_dir,
-    list.files(cur_dir,
+    out_dir,
+    list.files(out_dir,
       pattern = cur_file_regex
     )
   ) # current filepaths
   new_files <- file.path(
     new_dir,
-    list.files(cur_dir,
+    list.files(out_dir,
       # where they should go to
       pattern = cur_file_regex
     )
@@ -134,7 +138,7 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   ## FOLDER TO MOVE: fname_files
   cur_folder_regex <- paste0("^", name_regex, "_files$")
   # cur_folder_regex
-  cur_folder <- file.path(cur_dir, list.files(cur_dir,
+  cur_folder <- file.path(out_dir, list.files(out_dir,
     # folder to move
     pattern = cur_folder_regex
   ))

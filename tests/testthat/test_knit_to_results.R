@@ -27,6 +27,8 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   # a name with a dot (it used to be knitted to "top.v2", with no extension,
   # which stayed in code/)
   writeLines(rmd_lines, file.path(example_dir, "code", "top.v2.Rmd"))
+  # a name with a space, which rmarkdown knits as "top-v3"
+  writeLines(rmd_lines, file.path(example_dir, "code", "top v3.Rmd"))
   ############
   # a relative path starting with "code/" (it used to lose analysis/)
   withr::with_dir(example_dir, {
@@ -66,19 +68,28 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   expect_true(file.exists(
     file.path(example_dir, "results", "top.v2", "top.v2.html")
   ))
+  # from the folder of the Rmd, as the Knit button of RStudio does
+  withr::with_dir(file.path(example_dir, "code"), {
+    suppressMessages(capture.output(
+      knit_to_results("top v3.Rmd", encoding = "UTF-8")
+    ))
+  })
+  expect_true(file.exists(
+    file.path(example_dir, "results", "top v3", "top-v3.html")
+  ))
   # nothing went anywhere else in results/, and nothing is left in code/
   expect_setequal(
     list.files(file.path(example_dir, "results"), recursive = TRUE),
     c(
       "analysis/mid/mid.html", "top/top.html", "analysis/sub/deep/deep.html",
-      "top.v2/top.v2.html"
+      "top.v2/top.v2.html", "top v3/top-v3.html"
     )
   )
   expect_setequal(
     list.files(file.path(example_dir, "code"), recursive = TRUE),
     c(
-      "top.Rmd", "top.v2.Rmd", "notes_top.md", "analysis/mid.Rmd",
-      "analysis/sub/deep.Rmd"
+      "top.Rmd", "top.v2.Rmd", "top v3.Rmd", "notes_top.md",
+      "analysis/mid.Rmd", "analysis/sub/deep.Rmd"
     )
   )
   expect_false(any(grepl(
