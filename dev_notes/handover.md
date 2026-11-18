@@ -8,7 +8,7 @@ Updated 2026-11-18 (laptopX1). For the next session: read this and
 
 | branch | purpose | base | pushed | merged |
 |---|---|---|---|---|
-| `codereview` | 22 fix commits of the Nov 2026 code review, then the report and these notes | `dev` (`df64f6d`) | no | no |
+| `codereview` | 22 fix commits of the Nov 2026 code review, then the report and these notes | `dev` (`df64f6d`) | yes (no PR, at Andrea's request) | no |
 | `fix_knit_subdir` | fix for #62, merged into `dev` as PR #63 | `dev` | yes | yes (#63); can be deleted |
 
 ## Next tasks
@@ -24,24 +24,26 @@ Updated 2026-11-18 (laptopX1). For the next session: read this and
   (needs network: one test clones from GitHub).
 - **Done when:** every box is ticked or reverted.
 
-### 2. **P1** [decide] Push `codereview` and open a PR into `dev`
-
-- **Do:** with Andrea's go-ahead, `git push -u origin codereview`, then a PR
-  into `dev`. Check the windows-latest job of R-CMD-check: `b564e56` relies
-  on `fs::path_real()` resolving the Windows junctions made by the git hooks
-  (untested locally).
-- **Done when:** CI passes on all OSes and the PR is merged.
-
-### 3. **P2** [decide] Answer the 12 decisions in the report
+### 2. **P1–P3** [decide] Answer the 12 decisions in the report
 
 - **Read first:** `code_review_2026-11.md`, "Findings not fixed / Decision
-  needed". The most consequential: relative links in R as in the hooks;
-  `init_resrepo()` overwriting files and committing everything in an
-  existing repository; the ignored `path` arguments; raw and intermediate
-  versions sharing a name (and a meta file).
+  needed": each has what happens now (several reproduced), the options and
+  a recommendation. Decision 1 (`init_resrepo()` on an existing project
+  commits secrets) is P1; 2–6 are P2; 7–12 are P3.
 - **Do:** each decision becomes a commit (or a branch) with its test, as in
-  the review.
+  the review, on a branch named by Andrea.
 - **Done when:** each item is fixed, or marked as won't fix in the report.
+
+### 3. **P2** [decide] Run CI on `codereview` before merging
+
+- **Why:** the workflows run only on pushes to `main`/`dev` and on PRs into
+  them, so pushing `codereview` (done, 18 Nov) ran nothing. The windows-latest
+  job checks `b564e56`, which relies on `fs::path_real()` resolving the
+  junctions made by the git hooks (untested locally).
+- **Options:** a PR into `dev` (Andrea asked for no PR for now), or add
+  `workflow_dispatch:` to `R-CMD-check.yaml` and run it with
+  `gh workflow run R-CMD-check.yaml --ref codereview`.
+- **Done when:** R-CMD-check passes on all OSes for the branch.
 
 ### 4. **P3** [cleanup] After the merge
 
