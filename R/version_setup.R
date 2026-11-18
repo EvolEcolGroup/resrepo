@@ -239,7 +239,9 @@ check_resources_path <- function(resources_path) {
 #' The versions directory of a resources_path
 #'
 #' `resources_path` is the directory that holds `versions`; a directory
-#' called `versions` is taken to be the versions directory itself.
+#' called `versions` is taken to be the versions directory itself. The name
+#' is taken from the path as given, without resolving links (a link called
+#' `versions` is the versions directory, whatever it points to).
 #'
 #' @param resources_path the path given by the user
 #' @returns the path of the versions directory
@@ -247,7 +249,7 @@ check_resources_path <- function(resources_path) {
 #' @noRd
 
 resources_versions_path <- function(resources_path) {
-  if (basename(normalizePath(resources_path, winslash = "/")) == "versions") {
+  if (basename(fs::path_norm(fs::path_abs(resources_path))) == "versions") {
     resources_path
   } else {
     file.path(resources_path, "versions")

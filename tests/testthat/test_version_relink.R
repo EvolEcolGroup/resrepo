@@ -223,3 +223,33 @@ test_that("move versions from one external data location to another", {
 # TODO handle case where user may try to move one subfolder of versions - give
 # an informative error and note in the vignette that all versions must be in the
 # same place!
+
+test_that("resources_path is named as given, without resolving links", {
+  links_dir <- file.path(tempdir(), "resrepo_resources_links")
+  if (dir.exists(links_dir)) {
+    fs::dir_delete(links_dir)
+  }
+  dir.create(file.path(links_dir, "store_b"), recursive = TRUE)
+  dir.create(file.path(links_dir, "parent", "versions"), recursive = TRUE)
+  # a link called versions is the versions directory itself (its target's
+  # name used to be taken, giving <link>/versions)
+  fs::link_create(
+    file.path(links_dir, "store_b"), file.path(links_dir, "versions")
+  )
+  expect_identical(
+    resources_versions_path(file.path(links_dir, "versions")),
+    file.path(links_dir, "versions")
+  )
+  # a link with another name holds versions/, even if it points to a
+  # directory called versions
+  fs::link_create(
+    file.path(links_dir, "parent", "versions"),
+    file.path(links_dir, "my_store")
+  )
+  expect_identical(
+    resources_versions_path(file.path(links_dir, "my_store")),
+    file.path(links_dir, "my_store", "versions")
+  )
+  fs::dir_delete(links_dir)
+})
+
