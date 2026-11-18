@@ -346,7 +346,13 @@ test_that("versioning with resources_path argument", {
   expect_false(any(
     c("initial_again", "new_intermediate") %in% names(git2r::branches())
   ))
-  expect_false(dir.exists(path_resrepo("versions/initial/initial")))
+  # the existing version is left untouched (the copy used to be nested in
+  # it, here as versions/initial/new_filtering, and its meta file overwritten)
+  expect_identical(dir(path_resrepo("versions/initial")), "intermediate")
+  expect_identical(
+    utils::read.csv(path_resrepo("data/version_meta/initial.meta"))$description,
+    "the initial version intermediate data"
+  )
 
   # a version can hold both raw and intermediate data; a new intermediate
   # version made from it gets only the intermediate data (the raw data used
