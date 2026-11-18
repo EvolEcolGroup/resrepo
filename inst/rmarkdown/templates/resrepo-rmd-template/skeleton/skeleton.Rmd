@@ -104,6 +104,10 @@ We will automatically save our R environment into a file called
 ```{r save-r-environment}
 # the name of the Rmd being knitted (this also works outside RStudio)
 filename_rmd <- knitr::current_input()
+# when the chunk is run in RStudio rather than knitted, use the open file
+if (is.null(filename_rmd)) {
+  filename_rmd <- rstudioapi::getSourceEditorContext()$path
+}
 filename_renv <- paste0(output_dir, "/renv_",
                         tools::file_path_sans_ext(basename(filename_rmd)),
                         ".json")
