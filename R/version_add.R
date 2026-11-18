@@ -90,13 +90,13 @@ version_add <- function(path = ".",
     stop("versions does not exist; you need to use setup_version() first")
   }
   # if source versions not given, use the current one,
-  # else check that they exist (before creating the git branch, so that
-  # a wrong source leaves the repository untouched)
+  # else check that they exist and hold the data to copy (before creating the
+  # git branch, so that a wrong source leaves the repository untouched)
   # for raw
   if (is.null(raw_source)) {
     raw_source <- in_use$raw
   } else {
-    if (!dir.exists(path_resrepo(paste0("versions/", raw_source)))) {
+    if (!dir.exists(path_resrepo(paste0("versions/", raw_source, "/raw")))) {
       stop("source version ", raw_source, " does not exist")
     }
   }
@@ -104,7 +104,9 @@ version_add <- function(path = ".",
   if (is.null(intermediate_source)) {
     intermediate_source <- in_use$intermediate
   } else {
-    if (!dir.exists(path_resrepo(paste0("versions/", intermediate_source)))) {
+    if (!dir.exists(path_resrepo(paste0(
+      "versions/", intermediate_source, "/intermediate"
+    )))) {
       stop("source version ", intermediate_source, " does not exist")
     }
   }
@@ -136,10 +138,12 @@ version_add <- function(path = ".",
     }
   }
 
-  # create a new intermediate version
+  # create a new intermediate version, copying only the intermediate data of
+  # the source version (a version can also hold raw data, which would
+  # otherwise be duplicated in the new version)
   fs::dir_copy(
-    path_resrepo(paste("versions/", intermediate_source, sep = "")),
-    path_resrepo(paste("versions/", intermediate_new_version, sep = ""))
+    path_resrepo(paste0("versions/", intermediate_source, "/intermediate")),
+    path_resrepo(paste0("versions/", intermediate_new_version, "/intermediate"))
   )
   # add meta information on the version
   version_meta <- data.frame(

@@ -10,6 +10,8 @@
   needs `raw_description` with `raw_new_version`
 * `version_add()`: fix adding a version that already exists, which nested it
   inside the existing version
+* `version_add()`: fix new intermediate versions also getting a copy of the
+  raw data of their source version
 
 # resrepo 0.3.1
 

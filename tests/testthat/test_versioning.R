@@ -347,6 +347,22 @@ test_that("versioning with resources_path argument", {
     c("initial_again", "new_intermediate") %in% names(git2r::branches())
   ))
   expect_false(dir.exists(path_resrepo("versions/initial/initial")))
+
+  # a version can hold both raw and intermediate data; a new intermediate
+  # version made from it gets only the intermediate data (the raw data used
+  # to be copied too)
+  expect_true(version_add(
+    intermediate_new_version = "both", raw_new_version = "both",
+    intermediate_description = "New intermediate",
+    raw_description = "New raw", quiet = TRUE
+  ))
+  expect_true(dir.exists(path_resrepo("versions/both/raw")))
+  expect_true(version_add(
+    intermediate_new_version = "from_both",
+    intermediate_description = "From both", quiet = TRUE
+  ))
+  expect_true(dir.exists(path_resrepo("versions/from_both/intermediate")))
+  expect_false(dir.exists(path_resrepo("versions/from_both/raw")))
 })
 
 test_that(paste0(
