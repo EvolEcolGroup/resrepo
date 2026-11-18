@@ -724,6 +724,38 @@ test_that("git hooks keep existing hooks, and work in worktrees", {
     file.path(hooks_example, ".git", "hooks", "post-merge")
   ))
   fs::dir_delete(c(worktree_dir, hooks_example))
+
+  # hooks shared through core.hooksPath: a warning when installing them, and
+  # they do nothing in another repository (git checkout used to fail there)
+  shared_hooks <- file.path(tempdir(), "resrepo_shared_hooks")
+  other_repo_dir <- file.path(tempdir(), "resrepo_not_versioned")
+  for (old_dir in c(shared_hooks, other_repo_dir, hooks_example)) {
+    if (dir.exists(old_dir)) {
+      fs::dir_delete(old_dir)
+    }
+  }
+  dir.create(shared_hooks)
+  dir.create(hooks_example)
+  dir.create(other_repo_dir)
+  for (repo_dir in c(hooks_example, other_repo_dir)) {
+    repo <- git2r::init(repo_dir, branch = "main")
+    git2r::config(repo, user.name = "Test", user.email = "test@example.org")
+    system2("git", c("-C", repo_dir, "config", "core.hooksPath", shared_hooks))
+  }
+  withr::with_dir(hooks_example, {
+    init_resrepo()
+    expect_warning(version_setup(quiet = TRUE), "core.hooksPath")
+  })
+  expect_true(file.exists(file.path(shared_hooks, "post-checkout")))
+  writeLines("x", file.path(other_repo_dir, "file.txt"))
+  git2r::add(git2r::repository(other_repo_dir), "file.txt")
+  git2r::commit(git2r::repository(other_repo_dir), message = "A file")
+  checkout_status <- system2(
+    "git", c("-C", other_repo_dir, "checkout", "-q", "-b", "feature"),
+    stdout = FALSE, stderr = FALSE
+  )
+  expect_identical(checkout_status, 0L)
+  fs::dir_delete(c(shared_hooks, other_repo_dir, hooks_example))
 })
 
 test_that("get_resrepo_git_creds reads the origin remote", {

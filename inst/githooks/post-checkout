@@ -11,6 +11,12 @@ if [[ -x "$0.local" ]]; then
   "$0.local" "$@" || local_status=$?
 fi
 
+# do nothing in a repository (or a commit) that is not versioned by resrepo,
+# e.g. when the hooks are shared through core.hooksPath
+if [[ ! -f ./data/version_meta/raw_in_use.meta ]]; then
+  exit $local_status
+fi
+
 # test whether we are on windows
 windows() { [[ -n "$WINDIR" ]]; }
 

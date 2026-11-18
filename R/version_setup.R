@@ -268,6 +268,19 @@ resources_versions_path <- function(resources_path) {
 
 add_git_hooks <- function() {
   hooks_dir <- git_hooks_dir()
+  # hooks outside the git directory (core.hooksPath) may be shared with other
+  # repositories (where resrepo's hooks do nothing), or tracked by git
+  git_dir <- git_rev_parse_path("--git-common-dir")
+  if (!is.null(git_dir) &&
+    !fs::path_has_parent(fs::path_norm(hooks_dir), fs::path_norm(git_dir))) { # nolint
+    warning(
+      "resrepo's git hooks were installed in ", hooks_dir, " (set by ",
+      "core.hooksPath), outside this repository's git directory: they also ",
+      "run in other repositories that use that directory (where they do ",
+      "nothing), and must be committed if that directory is tracked",
+      call. = FALSE
+    )
+  }
   dir.create(hooks_dir, recursive = TRUE, showWarnings = FALSE)
   for (hook in c("post-checkout", "post-merge")) {
     hook_path <- file.path(hooks_dir, hook)
@@ -318,20 +331,41 @@ add_git_hooks <- function() {
 #' @noRd
 
 git_hooks_dir <- function() {
+  hooks_dir <- git_rev_parse_path("--git-path", "hooks")
+  if (is.null(hooks_dir)) {
+    hooks_dir <- file.path(
+      normalizePath(find_git_root(), winslash = "/"), ".git", "hooks"
+    )
+  }
+  hooks_dir
+}
+
+#' A path given by git rev-parse
+#'
+#' Runs `git rev-parse <args>` at the root of the repository, and returns
+#' the path it gives, made absolute (relative paths are relative to the
+#' root), or NULL if git is not available or fails.
+#'
+#' @param ... the arguments of `git rev-parse`
+#' @returns an absolute path, or NULL
+#' @keywords internal
+#' @noRd
+
+git_rev_parse_path <- function(...) {
   repo_root <- normalizePath(find_git_root(), winslash = "/")
-  hooks_dir <- tryCatch(
+  rev_parse <- tryCatch(
     suppressWarnings(system2(
-      "git", c("-C", shQuote(repo_root), "rev-parse", "--git-path", "hooks"),
+      "git", c("-C", shQuote(repo_root), "rev-parse", ...),
       stdout = TRUE, stderr = FALSE
     )),
     error = function(e) character(0)
   )
-  if (length(hooks_dir) == 1 && is.null(attr(hooks_dir, "status")) &&
-    nzchar(hooks_dir)) { # nolint
+  if (length(rev_parse) == 1 && is.null(attr(rev_parse, "status")) &&
+    nzchar(rev_parse)) { # nolint
     # a relative path is relative to the root of the repository
-    return(as.character(fs::path_abs(hooks_dir, start = repo_root)))
+    return(as.character(fs::path_abs(rev_parse, start = repo_root)))
   }
-  file.path(repo_root, ".git", "hooks")
+  NULL
 }
 
 #' Is this hook resrepo's?

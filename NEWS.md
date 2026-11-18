@@ -54,6 +54,8 @@
   `versions/` itself), and cannot be inside the repository
 * the git hooks are installed where git looks for them (worktrees, submodules,
   `core.hooksPath`), and existing hooks are kept and run (e.g. git-lfs)
+* the git hooks do nothing in repositories not versioned by resrepo (e.g.
+  shared through `core.hooksPath`, with a warning)
 * `init_resrepo()` on an existing project keeps its files and `.gitignore`,
   and commits only the files it creates (it used to commit everything)
 * `init_resrepo(path)` initialises the repository at `path` (it used the working
