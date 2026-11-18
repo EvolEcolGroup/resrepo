@@ -117,10 +117,12 @@ test_that("knit_to_results moves the output of any format", {
     file.path(example_dir, "code", "letter.Rmd")
   )
   # a .tex written by the user, with the same name, is not an output (it
-  # used to be moved too)
+  # used to be moved too); it is left even if its time is later than the
+  # knitting (e.g. a server whose clock runs ahead), which a comparison of
+  # times with the start of the knitting got wrong
   user_tex <- file.path(example_dir, "code", "letter.tex")
   writeLines("\\documentclass{article}", user_tex)
-  Sys.setFileTime(user_tex, Sys.time() - 3600)
+  Sys.setFileTime(user_tex, Sys.time() + 3600)
   withr::with_dir(example_dir, {
     suppressMessages(capture.output(
       knit_to_results("code/letter.Rmd", encoding = "UTF-8")

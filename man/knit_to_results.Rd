@@ -41,7 +41,7 @@ The output of any format is moved (the file that
 \code{rmarkdown::render()} returns), together with the \code{.md} and
 \code{.tex} files kept by \code{keep_md} and \code{keep_tex}, and the
 folder of figures (\code{<name>_files}). Files with these names that the
-knitting did not write (older than its start) are left where they are.
+knitting did not write or change are left where they are.
 The repository is the one that holds the \code{.Rmd} file, so the result
 does not depend on the working directory, nor on whether the path is
 relative or absolute.
