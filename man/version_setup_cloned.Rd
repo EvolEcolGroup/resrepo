@@ -4,16 +4,18 @@
 \alias{version_setup_cloned}
 \title{Setup versions from a cloned repository}
 \usage{
-version_setup_cloned(quiet = FALSE, resources_path = NULL)
+version_setup_cloned(quiet = FALSE, resources_path = NULL, create = FALSE)
 }
 \arguments{
 \item{quiet}{If TRUE, the user will not be prompted to backup their data.
 Default is FALSE.}
 
 \item{resources_path}{The path to the directory that holds "versions", the
-directory containing versioned data, or to the directory that holds the
-versions directly. If NULL (the default), "versions" is placed at the
-root of the repository.}
+directory containing versioned data (or to "versions" itself). If NULL
+(the default), "versions" is at the root of the repository.}
+
+\item{create}{If TRUE, create the versions directory and the versions in
+use if they are missing (empty); if FALSE, stop instead.}
 }
 \value{
 TRUE if the relink was successful

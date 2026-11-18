@@ -562,6 +562,12 @@ test_that("resources_path cannot be set to git root", {
       "resources_path cannot be the root directory of the repository"
     )
   })
+  # nor a directory inside the repository (it used to be accepted, and its
+  # data were not ignored by git)
+  expect_error(
+    version_setup(resources_path = path_resrepo("code"), quiet = TRUE),
+    "or a directory inside it"
+  )
 })
 
 test_that("links inside the repository survive moving it", {
@@ -664,18 +670,49 @@ test_that("clone a versioned repo", {
   expect_true(read.table("data/version_meta/intermediate_in_use.meta") ==
     "test_intermediate_description4") # nolint
 
-  # create new external folder for data
-  external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
-  dir.create(external_data_storage_new)
-
-  intermediate_path <- file.path(
-    tempdir(),
-    "external_data_storage_new/initial/intermediate"
+  # relinking to a folder without the versions in use (e.g. a typo) stops,
+  # and links nothing (it used to create the versions there, empty)
+  empty_storage <- file.path(tempdir(), "empty_storage")
+  if (dir.exists(empty_storage)) {
+    fs::dir_delete(empty_storage)
+  }
+  dir.create(empty_storage)
+  expect_error(
+    version_relink(quiet = TRUE, resources_path = empty_storage),
+    "no versions in"
   )
-  raw_path <- file.path(tempdir(), "external_data_storage_new/starting/raw")
-  dir.create(intermediate_path, recursive = TRUE)
-  dir.create(raw_path, recursive = TRUE)
+  expect_false(fs::is_link(path_resrepo("data/raw")))
+  expect_false(dir.exists(path_resrepo("versions")))
+  # resources_path cannot be inside the repository
+  expect_error(
+    version_relink(quiet = TRUE, resources_path = path_resrepo("code")),
+    "or a directory inside it"
+  )
+  # with create = TRUE, the versions in use are created, empty
+  expect_true(version_relink(
+    quiet = TRUE, resources_path = empty_storage, create = TRUE
+  ))
+  expect_true(
+    dir.exists(file.path(empty_storage, "versions", "starting", "raw"))
+  )
 
+  # create new external folder for data, which holds versions/ with the
+  # versions in use (and initial, used on main)
+  external_data_storage_new <- file.path(tempdir(), "external_data_storage_new")
+  if (dir.exists(external_data_storage_new)) {
+    fs::dir_delete(external_data_storage_new)
+  }
+  raw_path <- file.path(external_data_storage_new, "versions/starting/raw")
+  dir.create(raw_path, recursive = TRUE)
+  for (intermediate_version in c("test_intermediate_description4", "initial")) {
+    dir.create(
+      file.path(
+        external_data_storage_new, "versions", intermediate_version,
+        "intermediate"
+      ),
+      recursive = TRUE
+    )
+  }
   file.copy(
     from = system.file("vignette_example/tux_measurements.csv",
       package = "resrepo"
@@ -684,9 +721,14 @@ test_that("clone a versioned repo", {
     overwrite = TRUE
   )
 
+  # relink to the external storage (the repository is linked already, to the
+  # empty versions above, so this relocates them)
   expect_true(version_relink(
     quiet = TRUE,
     resources_path = external_data_storage_new
+  ))
+  expect_true(file.exists(
+    path_resrepo("/data/raw/tux_measurements.csv")
   ))
 
   # If we have cloned from a branch and then set up versioning,

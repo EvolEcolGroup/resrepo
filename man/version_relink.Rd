@@ -4,17 +4,23 @@
 \alias{version_relink}
 \title{Relink versions in a resrepo repository}
 \usage{
-version_relink(quiet = FALSE, resources_path = NULL)
+version_relink(quiet = FALSE, resources_path = NULL, create = FALSE)
 }
 \arguments{
 \item{quiet}{If TRUE, the user will not be prompted to backup their data.
-Default is FALSE.}
+Default is FALSE.
+The versions in use (in \code{data/version_meta/raw_in_use.meta} and
+\code{intermediate_in_use.meta}) must be in the versions directory: if any is
+missing (e.g. a mistyped \code{resources_path}, or data not yet copied there),
+\code{version_relink()} stops, unless \code{create = TRUE}, which creates them empty.}
 
-\item{resources_path}{The path to the directory that holds "versions", the
-directory containing versioned data, or to "versions" itself. For a
-cloned repository, it can also be the directory that holds the versions
-(e.g. \code{starting} and \code{initial}) directly. If NULL (the default),
-"versions" is placed at the root of the repository.}
+\item{resources_path}{The path to a directory outside the repository that
+holds "versions", the directory containing versioned data (or to
+"versions" itself). If NULL (the default), "versions" is at the root of
+the repository.}
+
+\item{create}{If TRUE, create the versions in use if they are missing
+(empty). Default is FALSE, which stops instead.}
 }
 \value{
 TRUE if the relink was successful

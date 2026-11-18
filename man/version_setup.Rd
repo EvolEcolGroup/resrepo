@@ -10,9 +10,11 @@ version_setup(quiet = FALSE, resources_path = NULL)
 \item{quiet}{If TRUE, the user will not be prompted to backup their data.
 Default is FALSE.}
 
-\item{resources_path}{The path to the directory where the "versions", the
-directory containing versioned data, will be stored. If NULL (the default),
-"versions" is placed at the root of the repository.}
+\item{resources_path}{The path to a directory outside the repository, where
+"versions", the directory containing versioned data, will be created
+(as \verb{<resources_path>/versions}, or \code{resources_path} itself if it is
+called \code{versions}), and linked to from the repository. If NULL (the
+default), "versions" is placed at the root of the repository.}
 }
 \value{
 TRUE if the setup was successful

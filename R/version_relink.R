@@ -13,28 +13,28 @@
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#' @param resources_path The path to the directory that holds "versions", the
-#'   directory containing versioned data, or to "versions" itself. For a
-#'   cloned repository, it can also be the directory that holds the versions
-#'   (e.g. `starting` and `initial`) directly. If NULL (the default),
-#'   "versions" is placed at the root of the repository.
+#' The versions in use (in `data/version_meta/raw_in_use.meta` and
+#' `intermediate_in_use.meta`) must be in the versions directory: if any is
+#' missing (e.g. a mistyped `resources_path`, or data not yet copied there),
+#' `version_relink()` stops, unless `create = TRUE`, which creates them empty.
+#'
+#' @param resources_path The path to a directory outside the repository that
+#'   holds "versions", the directory containing versioned data (or to
+#'   "versions" itself). If NULL (the default), "versions" is at the root of
+#'   the repository.
+#' @param create If TRUE, create the versions in use if they are missing
+#'   (empty). Default is FALSE, which stops instead.
 #' @returns TRUE if the relink was successful
 #' @export
 
 
-version_relink <- function(quiet = FALSE, resources_path = NULL) {
+version_relink <- function(quiet = FALSE, resources_path = NULL,
+                           create = FALSE) {
   # figure out if this repository already has data versioning
 
   if (!is.null(resources_path)) {
-    # check that path do not point to root directory (of the repository,
-    # which is not the working directory when this is run from a subdirectory)
-    if (resources_path == ".") {
-      stop("resources_path cannot be the root directory of the repository")
-    } else if (
-      normalizePath(resources_path) == normalizePath(find_git_root())
-    ) {
-      stop("resources_path cannot be the root directory of the repository")
-    }
+    # check that resources_path exists, and is outside the repository
+    check_resources_path(resources_path)
   }
   if (!fs::file_exists(path_resrepo("data/version_meta/"))) {
     stop(
@@ -46,10 +46,12 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
     # if data/raw and data/intermediate aren't links, then
     # this is a cloned versioned
     relinked <- version_setup_cloned(
-      quiet = quiet, resources_path = resources_path
+      quiet = quiet, resources_path = resources_path, create = create
     )
   } else {
-    relinked <- version_reset(quiet = quiet, resources_path = resources_path)
+    relinked <- version_reset(
+      quiet = quiet, resources_path = resources_path, create = create
+    )
   }
   # older set-ups ignored any file or directory called versions: ignore only
   # the one at the root
@@ -112,13 +114,14 @@ fix_versions_ignore <- function(quiet = FALSE) {
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#' @param resources_path The path to the directory where the "versions", the
-#'   directory containing versioned data, will be stored. If NULL (the default),
-#'   "versions" is placed at the root of the repository.
+#' @param resources_path The path to the directory that holds "versions", the
+#'   directory containing versioned data (or to "versions" itself).
+#' @param create If TRUE, create the versions in use if they are missing.
 #' @returns TRUE if the relink was successful
 #' @keywords internal
 
-version_reset <- function(quiet = FALSE, resources_path = NULL) {
+version_reset <- function(quiet = FALSE, resources_path = NULL,
+                          create = FALSE) {
   # if resources_path is NULL check we have a versions directory
   if (is.null(resources_path)) {
     stop(
@@ -127,21 +130,14 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
       "the directory containing the 'versions' folder."
     )
   } else {
-    # check that resources_path exists and is a directory
-    if (!dir.exists(resources_path)) { # wrong path
-      stop("The path ", resources_path, " does not exist!")
+    # the versions directory: <resources_path>/versions, or resources_path
+    # itself if it is called versions
+    versions_path <- resources_versions_path(resources_path)
+    if (!dir.exists(versions_path)) {
+      stop("The path ", versions_path, " does not exist!")
     }
-    # check whether resources path ends in /versions (if the user has given the
-    # full path to the versions subfolder, or the location of 'versions')
-    if (basename(normalizePath(resources_path)) == "versions") {
-      versions_path <- normalizePath(resources_path)
-    } else {
-      versions_path <- file.path(resources_path, "versions")
-      # check that versions_path exists and is a directory
-      if (!dir.exists(versions_path)) {
-        stop("The path ", versions_path, " does not exist!")
-      }
-    }
+    # the versions in use must be there (or be created if create = TRUE)
+    check_versions_in_use(versions_path, create = create)
 
     # check whether there is already a link from /versions to an external path
     # if there is an existing link, update links and exit
@@ -149,9 +145,6 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
       # run update_links
       fs::link_delete(path_resrepo("versions"))
     }
-
-    # TODO check the external /versions folder substructure has the right
-    # raw and intermediate .meta versions at this point
 
     # create a link from the repository to the resources path
     data_dir_link(
@@ -169,72 +162,45 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
 #' @param resources_path The path to the directory that holds "versions", the
-#'   directory containing versioned data, or to the directory that holds the
-#'   versions directly. If NULL (the default), "versions" is placed at the
-#'   root of the repository.
+#'   directory containing versioned data (or to "versions" itself). If NULL
+#'   (the default), "versions" is at the root of the repository.
+#' @param create If TRUE, create the versions directory and the versions in
+#'   use if they are missing (empty); if FALSE, stop instead.
 #' @returns TRUE if the relink was successful
 #' @keywords internal
 
-version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
-  # if resources_path is NULL check we have a versions directory
+version_setup_cloned <- function(quiet = FALSE, resources_path = NULL,
+                                 create = FALSE) {
+  # find the versions directory: versions/ at the root of the repository, or
+  # <resources_path>/versions (resources_path itself if called versions)
   if (is.null(resources_path)) {
     versions_path <- path_resrepo("versions")
-    if (!dir.exists(versions_path)) {
-      dir.create(versions_path, recursive = TRUE)
-      # need to create links to 'data/raw' and 'data/intermediate' in versions
-      # create links
-      # check the version in use
-      raw_in_use <- readLines(con = path_resrepo(
-        "data/version_meta/raw_in_use.meta"
-      ))
-      intermediate_in_use <- readLines(con = path_resrepo(
-        "data/version_meta/intermediate_in_use.meta"
-      ))
-      # create substructure
-      fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
-      fs::dir_create(path_resrepo(paste0(
-        "versions/", intermediate_in_use,
-        "/intermediate"
-      )))
-      # link the directories
-      data_dir_link(
-        target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
-        link_dir = "data/raw"
-      )
-      data_dir_link(
-        target_dir = path_resrepo(paste0(
-          "versions/", intermediate_in_use,
-          "/intermediate"
-        )),
-        link_dir = "data/intermediate"
-      )
-      # run git hooks
-      add_git_hooks()
-      return(TRUE)
-    }
   } else {
-    # check that resources_path exists and is a directory
-    if (!dir.exists(resources_path)) { # wrong path
-      stop("The path ", resources_path, " does not exist!")
+    versions_path <- resources_versions_path(resources_path)
+  }
+  # without data, stop unless asked to start with empty versions (this used
+  # to create them silently, e.g. when resources_path was mistyped)
+  if (!dir.exists(versions_path)) {
+    if (!create) {
+      stop(
+        "There are no versions in ", versions_path, ". Give resources_path, ",
+        "the directory that holds 'versions', or use create = TRUE to ",
+        "start with empty versions."
+      )
     }
-    # resources_path can hold the "versions" directory (as made by
-    # version_setup() with resources_path), or be the directory that holds
-    # the versions themselves
-    if (dir.exists(file.path(resources_path, "versions"))) {
-      versions_path <- file.path(resources_path, "versions")
-    } else {
-      versions_path <- file.path(resources_path)
-    }
-
-    # create a link from the repository to the resources path
+    dir.create(versions_path, recursive = TRUE)
+  }
+  # the versions in use must be there (or be created if create = TRUE)
+  check_versions_in_use(versions_path, create = create)
+  # link versions/ to the external versions directory
+  if (!is.null(resources_path)) {
     data_dir_link(
       link_dir = "/versions",
-      target_dir = file.path(versions_path)
+      target_dir = versions_path
     )
   }
 
-  # need to create links to 'data/raw' and 'data/intermediate' in versions
-  # create links
+  # create links to 'data/raw' and 'data/intermediate' in versions
   # check the version in use
   raw_in_use <- readLines(con = path_resrepo(
     "data/version_meta/raw_in_use.meta"
@@ -242,12 +208,6 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
   intermediate_in_use <- readLines(con = path_resrepo(
     "data/version_meta/intermediate_in_use.meta"
   ))
-  # create substructure
-  fs::dir_create(path_resrepo(paste0("versions/", raw_in_use, "/raw")))
-  fs::dir_create(path_resrepo(paste0(
-    "versions/", intermediate_in_use,
-    "/intermediate"
-  )))
   data_dir_link(
     target_dir = path_resrepo(paste0("versions/", raw_in_use, "/raw")),
     link_dir = "data/raw"
@@ -262,4 +222,40 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
   # run git hooks
   add_git_hooks()
   return(TRUE)
+}
+
+#' Check that the versions in use are in a versions directory
+#'
+#' Reads the versions in use from `data/version_meta/raw_in_use.meta` and
+#' `intermediate_in_use.meta`, and checks that `<versions_path>/<raw>/raw`
+#' and `<versions_path>/<intermediate>/intermediate` exist. Missing ones are
+#' created (empty) if `create` is TRUE; otherwise this stops, naming them.
+#'
+#' @param versions_path the versions directory
+#' @param create whether to create missing versions
+#' @returns TRUE, or an error
+#' @keywords internal
+#' @noRd
+
+check_versions_in_use <- function(versions_path, create = FALSE) {
+  raw_in_use <- readLines(path_resrepo("data/version_meta/raw_in_use.meta"))
+  intermediate_in_use <- readLines(path_resrepo(
+    "data/version_meta/intermediate_in_use.meta"
+  ))
+  needed <- c(
+    file.path(versions_path, raw_in_use, "raw"),
+    file.path(versions_path, intermediate_in_use, "intermediate")
+  )
+  missing_versions <- needed[!dir.exists(needed)]
+  if (length(missing_versions) > 0) {
+    if (!create) {
+      stop(
+        "The versions in use are missing: ",
+        paste(missing_versions, collapse = ", "),
+        ". Check resources_path, or use create = TRUE to create them empty."
+      )
+    }
+    fs::dir_create(missing_versions)
+  }
+  TRUE
 }

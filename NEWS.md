@@ -44,6 +44,10 @@
   last, and undoes its changes if it fails before the push
 * the links from `data/` to `versions/` are relative (except on Windows), so
   that a repository keeps working when moved
+* `version_relink()` stops if the versions in use are missing, instead of
+  creating them empty (new `create = TRUE` does that)
+* `resources_path` is always the directory that holds `versions/` (or
+  `versions/` itself), and cannot be inside the repository
 
 # resrepo 0.3.1
 

@@ -4,15 +4,16 @@
 \alias{version_reset}
 \title{Reset versions}
 \usage{
-version_reset(quiet = FALSE, resources_path = NULL)
+version_reset(quiet = FALSE, resources_path = NULL, create = FALSE)
 }
 \arguments{
 \item{quiet}{If TRUE, the user will not be prompted to backup their data.
 Default is FALSE.}
 
-\item{resources_path}{The path to the directory where the "versions", the
-directory containing versioned data, will be stored. If NULL (the default),
-"versions" is placed at the root of the repository.}
+\item{resources_path}{The path to the directory that holds "versions", the
+directory containing versioned data (or to "versions" itself).}
+
+\item{create}{If TRUE, create the versions in use if they are missing.}
 }
 \value{
 TRUE if the relink was successful
