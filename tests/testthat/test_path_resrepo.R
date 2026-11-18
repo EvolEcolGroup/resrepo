@@ -74,3 +74,15 @@ test_that("version argument", {
     path_resrepo("versions/starting/raw/original")
   )
 })
+
+test_that("path_relative compares whole directory names", {
+  expect_identical(path_relative("/home/user/abc/x/y", "/home/user/abc"), "x/y")
+  expect_identical(path_relative("/home/user/z", "/home/user/abc/d"), "../../z")
+  # directories that share the start of their name (this used to give
+  # "../d/file")
+  expect_identical(
+    path_relative("/home/user/abd/file", "/home/user/abc"), "../abd/file"
+  )
+  # characters that have a meaning in regular expressions (this used to fail)
+  expect_identical(path_relative("/home/a(b/x", "/home/a(b"), "x")
+})

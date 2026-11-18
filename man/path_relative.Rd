@@ -12,7 +12,16 @@ path_relative(path, base = getwd())
 \item{base}{optional, the base with respect to which the relative path is
 built. It defaults to the current working directory in R.}
 }
+\value{
+a character string with the relative path (\code{"."} if \code{path} is
+\code{base})
+}
 \description{
 Given an absolute path, it returns the relative path with respect to a base
 (by default, the working directory in R)
+}
+\details{
+The relative path is built by \code{\link[fs:path_rel]{fs::path_rel()}}, which compares whole
+directory names, so that e.g. \verb{/home/user/abd/file} relative to
+\verb{/home/user/abc} is \code{../abd/file}.
 }

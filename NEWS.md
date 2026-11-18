@@ -24,6 +24,8 @@
 * `knit_to_results()`: fix moving other files whose names end with the name of
   the `.Rmd` file (e.g. `notes_test.md` for `test.Rmd`)
 * `create_rmd()`: fix the template, which could only be knitted in RStudio
+* `path_relative()`: fix paths to directories that share the start of their
+  name (e.g. `abc` and `abd`), and to names with `(` or `[`
 
 # resrepo 0.3.1
 
