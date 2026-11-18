@@ -13,5 +13,5 @@ Notes for developers and Claude sessions. Start with `summary.md` and
 ## Code review
 
 - [code_review_2026-11.md](code_review_2026-11.md): whole-package review of
-  `dev` (Nov 2026): 21 fix commits on `codereview`, and the findings that
-  need a decision.
+  `dev` (Nov 2026): 46 commits on `codereview` (review fixes, the 12
+  decisions and their corrections), and the minor findings left.

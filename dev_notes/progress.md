@@ -2,6 +2,20 @@
 
 <!-- Add new entries at the top of progress.md, under its title. Never rewrite old entries. -->
 
+## 2026-11-18 (laptopX1): the 12 decisions implemented
+
+- **Done:** implemented Andrea's 12 decisions (the recommended options;
+  for 12, refuse a folder called resrepo or a `DESCRIPTION` of resrepo), one
+  commit each with its test, plus 2 lint fixes; a verifying agent then found
+  problems, corrected in 10 more commits, which it checked again.
+- **Where:** `codereview`, `5ad3257`..`2bf57de` (pushed, no PR).
+- **Result:** full suite 211 expectations, 0 failures; lintr clean;
+  vignettes render. The agent caught a serious bug in the new undo of
+  `version_add()`: a reserved name ("aux") deleted every version
+  (fixed in `6e4f920`).
+- **Decisions:** the 12 decisions (Andrea, 18 Nov), all implemented.
+- **Notes changed:** `code_review_2026-11.md`, `summary.md`, `handover.md`.
+
 ## 2026-11-18 (laptopX1): branch pushed; decisions explained
 
 - **Done:** pushed `codereview` (no PR, at Andrea's request; CI does not run
