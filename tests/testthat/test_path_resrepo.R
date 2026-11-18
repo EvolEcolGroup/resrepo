@@ -54,14 +54,23 @@ test_that("version argument", {
     intermediate_source = "initial",
     intermediate_description = "a version to test the function", quiet = TRUE
   )
-  # we have a new version for intermediate
+  # we have a new version for intermediate (the paths used to keep data/,
+  # e.g. versions/test_version/data/intermediate, which does not exist)
   expect_equal(
     path_resrepo("/data/intermediate", version = "test_version"),
-    path_resrepo("versions/test_version/data/intermediate")
+    path_resrepo("versions/test_version/intermediate")
   )
+  expect_true(dir.exists(
+    path_resrepo("/data/intermediate", version = "test_version")
+  ))
   # the original path should not change for raw
   expect_equal(
     path_resrepo("/data/raw", version = "starting"),
-    path_resrepo("versions/starting/data/raw")
+    path_resrepo("versions/starting/raw")
+  )
+  # shortcuts and check_exists work with versions
+  expect_equal(
+    path_resrepo("/d/r/original", version = "starting", check_exists = TRUE),
+    path_resrepo("versions/starting/raw/original")
   )
 })

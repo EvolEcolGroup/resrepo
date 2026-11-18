@@ -12,6 +12,8 @@
   inside the existing version
 * `version_add()`: fix new intermediate versions also getting a copy of the
   raw data of their source version
+* `path_resrepo()`: fix paths with `version`, which pointed to
+  `versions/<version>/data/` instead of `versions/<version>/`
 
 # resrepo 0.3.1
 

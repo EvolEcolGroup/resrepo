@@ -9,7 +9,9 @@
 #'
 #' @param path directory within a resrepo
 #' @param version version of the data to use (only valid if the path starts with
-#'   "/data" or the relevant shortcut)
+#'   "/data" or the relevant shortcut). The path is then within that version in
+#'   `versions`, e.g. `/data/raw/original` with version `starting` becomes
+#'   `versions/starting/raw/original`.
 #' @param check_exists boolean whether we should check if it exists
 #'
 #' @export
@@ -35,8 +37,9 @@ path_resrepo <- function(path, version = NULL, check_exists = FALSE) {
     if (!grepl("^/data", path)) {
       stop("version can only be specified for paths starting with /data")
     }
-    # remove the data prefix
-    version_file_path <- stringr::str_remove(path, "^data/")
+    # remove the data prefix (versions/<version>/ holds raw/ and
+    # intermediate/ directly, without data/)
+    version_file_path <- stringr::str_remove(path, "^/data/")
     # add the version prefix
     path <- fs::path("versions", version, version_file_path)
   }

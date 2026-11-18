@@ -10,7 +10,9 @@ path_resrepo(path, version = NULL, check_exists = FALSE)
 \item{path}{directory within a resrepo}
 
 \item{version}{version of the data to use (only valid if the path starts with
-"/data" or the relevant shortcut)}
+"/data" or the relevant shortcut). The path is then within that version in
+\code{versions}, e.g. \verb{/data/raw/original} with version \code{starting} becomes
+\code{versions/starting/raw/original}.}
 
 \item{check_exists}{boolean whether we should check if it exists}
 }
