@@ -8,6 +8,8 @@
   is incorrect" after a `git checkout` or `git merge`
 * `version_add()` checks its arguments before creating the git branch, and
   needs `raw_description` with `raw_new_version`
+* `version_add()`: fix adding a version that already exists, which nested it
+  inside the existing version
 
 # resrepo 0.3.1
 

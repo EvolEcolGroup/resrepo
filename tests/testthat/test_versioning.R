@@ -325,6 +325,28 @@ test_that("versioning with resources_path argument", {
   ))
   expect_true(git2r::is_head(git2r::branches()$new_filtering))
   expect_true(git_is_clean())
+
+  # an existing version cannot be added again, even on a new branch (it used
+  # to be copied inside the existing version, overwriting its meta file)
+  expect_error(
+    version_add(
+      intermediate_new_version = "initial", git_branch = "initial_again",
+      intermediate_description = "An existing version", quiet = TRUE
+    ),
+    "version initial already exists"
+  )
+  expect_error(
+    version_add(
+      intermediate_new_version = "new_intermediate",
+      raw_new_version = "starting", raw_description = "An existing version",
+      intermediate_description = "A new version", quiet = TRUE
+    ),
+    "version starting already exists"
+  )
+  expect_false(any(
+    c("initial_again", "new_intermediate") %in% names(git2r::branches())
+  ))
+  expect_false(dir.exists(path_resrepo("versions/initial/initial")))
 })
 
 test_that(paste0(

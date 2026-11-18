@@ -53,5 +53,5 @@ links to the new directories. The new version will be called \code{version_name}
 \code{intermediate_new_version} and \code{raw_new_version} will be sanitised to remove
 spaces and other characters that are not allowed in directory names. If the
 sanitised version is different from the original version, a warning will be
-issued.
+issued. The new versions must not exist already in \code{versions}.
 }

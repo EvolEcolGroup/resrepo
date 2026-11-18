@@ -7,7 +7,7 @@
 #' `intermediate_new_version` and `raw_new_version` will be sanitised to remove
 #' spaces and other characters that are not allowed in directory names. If the
 #' sanitised version is different from the original version, a warning will be
-#' issued.
+#' issued. The new versions must not exist already in `versions`.
 #'
 #' @param path The path to the resrepo directory
 #' @param intermediate_new_version The name of the new version for the
@@ -63,11 +63,9 @@ version_add <- function(path = ".",
 
   intermediate_new_version <- sanitise_version(intermediate_new_version)
 
-  # TODO check that this is new
   if (!is.null(raw_new_version)) {
     raw_new_version <- sanitise_version(raw_new_version)
     create_raw <- TRUE
-    # TODO check that this is new
     # a new raw version needs its own description (its meta file could not
     # be written without one)
     if (is.null(raw_description)) {
@@ -109,6 +107,14 @@ version_add <- function(path = ".",
     if (!dir.exists(path_resrepo(paste0("versions/", intermediate_source)))) {
       stop("source version ", intermediate_source, " does not exist")
     }
+  }
+  # the new versions must not exist yet (copying onto an existing version
+  # would nest the source inside it, and overwrite its meta file)
+  if (version_exists(intermediate_new_version)) {
+    stop("version ", intermediate_new_version, " already exists")
+  }
+  if (create_raw && version_exists(raw_new_version)) {
+    stop("version ", raw_new_version, " already exists")
   }
   # if no name for the git branch was given, use the same name as the version
   if (is.null(git_branch)) {
