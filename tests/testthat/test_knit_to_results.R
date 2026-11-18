@@ -24,6 +24,9 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   # a file whose name ends with the name of an output (it used to be moved
   # to results/top/ and renamed README.md when knitting top.Rmd)
   writeLines("My notes", file.path(example_dir, "code", "notes_top.md"))
+  # a name with a dot (it used to be knitted to "top.v2", with no extension,
+  # which stayed in code/)
+  writeLines(rmd_lines, file.path(example_dir, "code", "top.v2.Rmd"))
   ############
   # a relative path starting with "code/" (it used to lose analysis/)
   withr::with_dir(example_dir, {
@@ -55,10 +58,28 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   expect_true(file.exists(
     file.path(example_dir, "results", "analysis", "sub", "deep", "deep.html")
   ))
+  withr::with_dir(example_dir, {
+    suppressMessages(capture.output(
+      knit_to_results("code/top.v2.Rmd", encoding = "UTF-8")
+    ))
+  })
+  expect_true(file.exists(
+    file.path(example_dir, "results", "top.v2", "top.v2.html")
+  ))
   # nothing went anywhere else in results/, and nothing is left in code/
   expect_setequal(
     list.files(file.path(example_dir, "results"), recursive = TRUE),
-    c("analysis/mid/mid.html", "top/top.html", "analysis/sub/deep/deep.html")
+    c(
+      "analysis/mid/mid.html", "top/top.html", "analysis/sub/deep/deep.html",
+      "top.v2/top.v2.html"
+    )
+  )
+  expect_setequal(
+    list.files(file.path(example_dir, "code"), recursive = TRUE),
+    c(
+      "top.Rmd", "top.v2.Rmd", "notes_top.md", "analysis/mid.Rmd",
+      "analysis/sub/deep.Rmd"
+    )
   )
   expect_false(any(grepl(
     "\\.html$", list.files(file.path(example_dir, "code"), recursive = TRUE)

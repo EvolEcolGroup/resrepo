@@ -23,6 +23,8 @@
   holds `versions/`, which were linked to new, empty directories
 * `knit_to_results()`: fix moving other files whose names end with the name of
   the `.Rmd` file (e.g. `notes_test.md` for `test.Rmd`)
+* `knit_to_results()`: fix `.Rmd` files with a dot in their name (e.g.
+  `s01.v2.Rmd`), whose output was left in `code/` without an extension
 * `create_rmd()`: fix the template, which could only be knitted in RStudio
 * `path_relative()`: fix paths to directories that share the start of their
   name (e.g. `abc` and `abd`), and to names with `(` or `[`

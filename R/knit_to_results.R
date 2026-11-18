@@ -62,12 +62,13 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   )
   # code from file_path_sans_ext in the {tools} package.
 
-  ## run the rmarkdown render function
+  ## run the rmarkdown render function; the output keeps the name of the
+  ## input file and goes to its folder (output_file is not given, as
+  ## rmarkdown would read the last part of a name with a dot, e.g. ".v2" in
+  ## "s01.v2", as its extension, and write a file "s01.v2" with no extension)
   rmarkdown::render(
     input = input_file,
-    envir = envir,
-    output_file = input_file_no_ext # file name stays the same,
-    # folder stays the same
+    envir = envir
   )
 
   ## Now we need to move the output files to the /results/fname folder
