@@ -104,7 +104,10 @@ test_that("find_git_root refuses the source of the resrepo package", {
   git2r::init(named_dir)
   expect_error(find_git_root(named_dir), "source of the resrepo package")
   # a repository holding another package is fine
-  writeLines(c("Package: mypkg", "Version: 0.1"), file.path(src_dir, "DESCRIPTION"))
+  writeLines(
+    c("Package: mypkg", "Version: 0.1"),
+    file.path(src_dir, "DESCRIPTION")
+  )
   expect_identical(find_git_root(src_dir), src_dir)
   # clean up
   fs::dir_delete(c(file.path(tempdir(), "named_repo"), src_dir))
