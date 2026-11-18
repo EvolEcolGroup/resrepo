@@ -18,6 +18,9 @@ test_that("initialise repository", {
   expect_true(init_resrepo())
   # check that directories and some files are there
   expect_true(length(dir(test_dir)) > 4)
+  # a second call keeps everything, and commits nothing (it used to fail
+  # with "Nothing added to commit")
+  expect_message(expect_true(init_resrepo()), "were kept")
 })
 
 test_that("init_resrepo keeps the files of an existing project", {
@@ -44,9 +47,14 @@ test_that("init_resrepo keeps the files of an existing project", {
     writeLines("x", "big_data/huge.csv")
     writeLines("work in progress", "analysis.R")
     writeLines(c("# My project", "An edit"), "README.md")
+    # an uncommitted change to .gitignore
+    writeLines(c(".Renviron", "big_data/", "*.log"), ".gitignore")
     # the existing files are kept (they used to be overwritten, and
     # everything was committed, the secret included)
-    expect_message(init_resrepo(), "were kept: README.md")
+    expect_message(
+      expect_message(init_resrepo(), "were kept: README.md"),
+      "please commit it"
+    )
     expect_identical(readLines("README.md"), c("# My project", "An edit"))
     gitignore_lines <- readLines(".gitignore")
     expect_true(all(c(".Renviron", "big_data/") %in% gitignore_lines))
@@ -59,6 +67,9 @@ test_that("init_resrepo keeps the files of an existing project", {
       c(".Renviron", "big_data/huge.csv", "analysis.R") %in% tracked
     ))
     expect_true("README.md" %in% unlist(git2r::status()$unstaged))
+    # .gitignore, which had an uncommitted change, is left to the user (it
+    # used to be committed, with the user's change)
+    expect_true(".gitignore" %in% unlist(git2r::status()$unstaged))
   })
   fs::dir_delete(existing_dir)
 })

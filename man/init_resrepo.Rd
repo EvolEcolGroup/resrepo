@@ -22,5 +22,6 @@ files of the template that exist already (e.g. \code{README.md}) are kept (and
 listed in a message), and the rules of the template's \code{.gitignore} that
 are missing are appended to the existing \code{.gitignore}. Only the files
 that \code{init_resrepo()} created or changed are committed, so that other
-files (data, secrets, work in progress) are left as they were.
+files (data, secrets, work in progress) are left as they were; a
+\code{.gitignore} that had uncommitted changes is left for the user to commit.
 }

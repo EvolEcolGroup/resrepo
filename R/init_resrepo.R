@@ -7,7 +7,8 @@
 #' listed in a message), and the rules of the template's `.gitignore` that
 #' are missing are appended to the existing `.gitignore`. Only the files
 #' that `init_resrepo()` created or changed are committed, so that other
-#' files (data, secrets, work in progress) are left as they were.
+#' files (data, secrets, work in progress) are left as they were; a
+#' `.gitignore` that had uncommitted changes is left for the user to commit.
 #'
 #' @param path the path of the git repository to initialise (or of a
 #'   directory inside it); by default, the working directory
@@ -33,6 +34,10 @@ init_resrepo <- function(path = ".") {
       "unstage them before initialising the resrepo"
     )
   }
+  # uncommitted changes to .gitignore are the user's: .gitignore is then
+  # left for the user to commit
+  gitignore_changed <- ".gitignore" %in%
+    unlist(git2r::status(untracked = FALSE)$unstaged)
   template_dir <- system.file("template", package = "resrepo")
   # the files of the template, and where they go in the repository (the
   # template holds "gitignore", which becomes ".gitignore")
@@ -61,7 +66,14 @@ init_resrepo <- function(path = ".") {
           c(existing_lines, "", "## added by resrepo", missing_rules),
           repo_file
         )
-        changed_files <- c(changed_files, repo_files[i])
+        if (gitignore_changed) {
+          message(
+            "The rules of resrepo were added to .gitignore, which had ",
+            "uncommitted changes: please commit it"
+          )
+        } else {
+          changed_files <- c(changed_files, repo_files[i])
+        }
       }
       copy_results <- c(copy_results, TRUE)
     } else if (file.exists(repo_file)) {
@@ -93,7 +105,10 @@ init_resrepo <- function(path = ".") {
     # commit initial repository, with only the files created or changed
     # (without any commits version_setup will give an error)
     git2r::add(path = path_resrepo(changed_files))
-    git2r::commit(message = "Initialise resrepo")
+    # commit, unless there is nothing new (e.g. a second call)
+    if (length(git2r::status(untracked = FALSE)$staged) > 0) {
+      git2r::commit(message = "Initialise resrepo")
+    }
     return(TRUE)
   } else {
     warning("something went wrong; not all files were included in the template")

@@ -336,10 +336,14 @@ And now we have successfully versioned and updated our repository.
 In this section, we demonstrate how to use the `version_setup` function to outsource your data. 
 
 ```{r recreate_example_repo_02, include = FALSE}
-# start again from a new, empty repository (deleting the hidden files too,
-# such as .git)
-unlink(list.files(all.files = TRUE, no.. = TRUE), recursive = TRUE)
-example_repo <- git2r::init(".", branch = "main")
+# start again from a new, empty repository in sub_dir (deleting the hidden
+# files too, such as .git; the path is explicit, so that running this chunk
+# by hand elsewhere deletes nothing else)
+unlink(
+  list.files(sub_dir, all.files = TRUE, no.. = TRUE, full.names = TRUE),
+  recursive = TRUE
+)
+example_repo <- git2r::init(sub_dir, branch = "main")
 git2r::config(example_repo, user.name = "Test", user.email = "test@example.org")
 git2r::branches()
 ```
