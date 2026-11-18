@@ -385,6 +385,11 @@ test_that("versioning with resources_path argument", {
     raw_description = "New raw", quiet = TRUE
   ))
   expect_true(dir.exists(path_resrepo("versions/both/raw")))
+  # both versions are described in the shared meta file (the raw row used to
+  # overwrite the intermediate one)
+  both_meta <- utils::read.csv(path_resrepo("data/version_meta/both.meta"))
+  expect_identical(both_meta$data, c("intermediate", "raw"))
+  expect_identical(both_meta$description, c("New intermediate", "New raw"))
   expect_true(version_add(
     intermediate_new_version = "from_both",
     intermediate_description = "From both", quiet = TRUE

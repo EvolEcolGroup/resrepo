@@ -9,6 +9,10 @@
 #' sanitised version is different from the original version, a warning will be
 #' issued. The new versions must not exist already in `versions`.
 #'
+#' Each version is described in `data/version_meta/<version>.meta`. If the
+#' raw and intermediate versions have the same name, that file has one row
+#' for each.
+#'
 #' @param path The path to the resrepo directory
 #' @param intermediate_new_version The name of the new version for the
 #'   intermediate data
@@ -152,14 +156,14 @@ version_add <- function(path = ".",
     path_resrepo(paste0("versions/", intermediate_new_version, "/intermediate"))
   )
   # add meta information on the version
-  version_meta <- data.frame(
+  intermediate_meta <- data.frame(
     data = "intermediate",
     version = intermediate_new_version,
     date_created = Sys.Date(),
     description = intermediate_description,
     stringsAsFactors = FALSE
   )
-  utils::write.csv(version_meta,
+  utils::write.csv(intermediate_meta,
     file = path_resrepo(paste0(
       "data/version_meta/",
       intermediate_new_version, ".meta"
@@ -180,6 +184,11 @@ version_add <- function(path = ".",
       description = raw_description,
       stringsAsFactors = FALSE
     )
+    # a raw version with the same name as the new intermediate version shares
+    # its meta file: keep both rows (the column data tells them apart)
+    if (raw_new_version == intermediate_new_version) {
+      version_meta <- rbind(intermediate_meta, version_meta)
+    }
     utils::write.csv(version_meta,
       file = path_resrepo(paste0(
         "data/version_meta/",

@@ -36,6 +36,8 @@
   `DESCRIPTION`, not only by the name of its folder
 * `version_setup()` ignores only the `versions` directory at the root (it
   ignored any directory called `versions`); `version_relink()` corrects this
+* `version_add()`: fix the meta file of raw and intermediate versions with the
+  same name, which kept only the raw one
 
 # resrepo 0.3.1
 

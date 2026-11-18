@@ -54,4 +54,8 @@ links to the new directories. The new version will be called \code{version_name}
 spaces and other characters that are not allowed in directory names. If the
 sanitised version is different from the original version, a warning will be
 issued. The new versions must not exist already in \code{versions}.
+
+Each version is described in \verb{data/version_meta/<version>.meta}. If the
+raw and intermediate versions have the same name, that file has one row
+for each.
 }
