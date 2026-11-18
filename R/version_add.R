@@ -20,7 +20,9 @@
 #' raw and intermediate versions have the same name, that file has one row
 #' for each.
 #'
-#' @param path The path to the resrepo directory
+#' @param path Deprecated, and ignored: `version_add()` works on the repository
+#'   of the working directory, like the other versioning functions. It will be
+#'   removed, so that the name of the new version can come first.
 #' @param intermediate_new_version The name of the new version for the
 #'   intermediate data
 #' @param raw_new_version The name of the new version for the raw data. If NULL,
@@ -50,6 +52,14 @@ version_add <- function(path = ".",
                         intermediate_description = NULL,
                         raw_description = NULL,
                         git_branch = NULL, push = TRUE, quiet = FALSE) {
+  # path was never used; warn, as a positional name lands in it
+  if (!missing(path)) {
+    warning(
+      "The argument 'path' of version_add() is deprecated and ignored: ",
+      "version_add() works on the repository of the working directory",
+      call. = FALSE
+    )
+  }
   # check for git credentials (only needed to push)
   if (push) {
     creds <- get_resrepo_git_creds()

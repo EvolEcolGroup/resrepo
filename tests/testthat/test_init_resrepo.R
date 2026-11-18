@@ -63,3 +63,22 @@ test_that("init_resrepo keeps the files of an existing project", {
   fs::dir_delete(existing_dir)
 })
 
+test_that("init_resrepo works on the repository at path", {
+  other_dir <- file.path(tempdir(), "resrepo_at_path")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(other_dir)) {
+    fs::dir_delete(other_dir)
+  }
+  dir.create(other_dir)
+  other_repo <- git2r::init(other_dir, branch = "main")
+  git2r::config(other_repo, user.name = "Test", user.email = "test@example.org")
+  # from a working directory outside it (path used to be ignored, and the
+  # repository of the working directory initialised instead)
+  withr::with_dir(tempdir(), {
+    expect_true(init_resrepo(other_dir))
+    expect_identical(normalizePath(getwd()), normalizePath(tempdir()))
+  })
+  expect_true(file.exists(file.path(other_dir, "code", "README.md")))
+  fs::dir_delete(other_dir)
+})
+

@@ -506,6 +506,15 @@ test_that(paste0(
     raw_description = "A new version of raw data",
     quiet = TRUE
   ), "You must provide a name for the new intermediate version")
+  # path is deprecated, and says so (a positional name used to land there
+  # silently)
+  expect_warning(
+    expect_error(
+      version_add("v2", intermediate_description = "Positional", quiet = TRUE),
+      "You must provide a name"
+    ),
+    "'path' of version_add\\(\\) is deprecated"
+  )
 })
 
 

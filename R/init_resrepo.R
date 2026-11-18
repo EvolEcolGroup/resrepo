@@ -9,13 +9,21 @@
 #' that `init_resrepo()` created or changed are committed, so that other
 #' files (data, secrets, work in progress) are left as they were.
 #'
-#' @param path optional path for the a resrepo; by default, we use the current
-#' working directory
+#' @param path the path of the git repository to initialise (or of a
+#'   directory inside it); by default, the working directory
 #' @returns TRUE if all the files of the template were created or kept
 #'
 #' @export
 
 init_resrepo <- function(path = ".") {
+  if (!dir.exists(path)) {
+    stop("The path ", path, " does not exist!")
+  }
+  # work in the repository at path (it used to be ignored, and the
+  # repository of the working directory initialised instead), and return to
+  # the working directory at the end
+  old_wd <- setwd(path)
+  on.exit(setwd(old_wd), add = TRUE)
   git_root <- find_git_root()
   # the commit must hold only what init_resrepo() creates: stop if other
   # changes are staged already

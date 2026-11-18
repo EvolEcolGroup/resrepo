@@ -52,6 +52,8 @@
   `core.hooksPath`), and existing hooks are kept and run (e.g. git-lfs)
 * `init_resrepo()` on an existing project keeps its files and `.gitignore`,
   and commits only the files it creates (it used to commit everything)
+* `init_resrepo(path)` initialises the repository at `path` (it used the working
+  directory); `path` in `version_add()` is deprecated (it was ignored)
 
 # resrepo 0.3.1
 

@@ -18,7 +18,9 @@ version_add(
 )
 }
 \arguments{
-\item{path}{The path to the resrepo directory}
+\item{path}{Deprecated, and ignored: \code{version_add()} works on the repository
+of the working directory, like the other versioning functions. It will be
+removed, so that the name of the new version can come first.}
 
 \item{intermediate_new_version}{The name of the new version for the
 intermediate data}

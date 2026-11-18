@@ -7,8 +7,8 @@
 init_resrepo(path = ".")
 }
 \arguments{
-\item{path}{optional path for the a resrepo; by default, we use the current
-working directory}
+\item{path}{the path of the git repository to initialise (or of a
+directory inside it); by default, the working directory}
 }
 \value{
 TRUE if all the files of the template were created or kept
