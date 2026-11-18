@@ -92,22 +92,28 @@ version_add <- function(path = ".",
   # if source versions not given, use the current one,
   # else check that they exist and hold the data to copy (before creating the
   # git branch, so that a wrong source leaves the repository untouched)
-  # for raw
+  # for raw (only used, and so only checked, if we create a new raw version)
   if (is.null(raw_source)) {
     raw_source <- in_use$raw
-  } else {
-    if (!dir.exists(path_resrepo(paste0("versions/", raw_source, "/raw")))) {
+  } else if (create_raw) {
+    if (!version_exists(raw_source)) {
       stop("source version ", raw_source, " does not exist")
+    }
+    if (!dir.exists(path_resrepo(paste0("versions/", raw_source, "/raw")))) {
+      stop("source version ", raw_source, " has no raw data")
     }
   }
   # same for intermediate
   if (is.null(intermediate_source)) {
     intermediate_source <- in_use$intermediate
   } else {
+    if (!version_exists(intermediate_source)) {
+      stop("source version ", intermediate_source, " does not exist")
+    }
     if (!dir.exists(path_resrepo(paste0(
       "versions/", intermediate_source, "/intermediate"
     )))) {
-      stop("source version ", intermediate_source, " does not exist")
+      stop("source version ", intermediate_source, " has no intermediate data")
     }
   }
   # the new versions must not exist yet (copying onto an existing version

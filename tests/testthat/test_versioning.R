@@ -354,6 +354,21 @@ test_that("versioning with resources_path argument", {
     "the initial version intermediate data"
   )
 
+  # the source must hold the data to copy (starting holds only raw data)
+  expect_error(
+    version_add(
+      intermediate_new_version = "from_raw", intermediate_source = "starting",
+      intermediate_description = "From a raw version", quiet = TRUE
+    ),
+    "source version starting has no intermediate data"
+  )
+  # raw_source is ignored without raw_new_version (it used to be checked for
+  # raw data, and an intermediate version was refused)
+  expect_true(version_add(
+    intermediate_new_version = "ignored_raw_source", raw_source = "initial",
+    intermediate_description = "raw_source is ignored", quiet = TRUE
+  ))
+
   # a version can hold both raw and intermediate data; a new intermediate
   # version made from it gets only the intermediate data (the raw data used
   # to be copied too)
