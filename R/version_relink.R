@@ -7,8 +7,10 @@
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#' @param resources_path The path to the directory where the "versions", the
-#'   directory containing versioned data, will be stored. If NULL (the default),
+#' @param resources_path The path to the directory that holds "versions", the
+#'   directory containing versioned data, or to "versions" itself. For a
+#'   cloned repository, it can also be the directory that holds the versions
+#'   (e.g. `starting` and `initial`) directly. If NULL (the default),
 #'   "versions" is placed at the root of the repository.
 #' @returns TRUE if the relink was successful
 #' @export
@@ -101,9 +103,10 @@ version_reset <- function(quiet = FALSE, resources_path = NULL) {
 #'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
-#' @param resources_path The path to the directory where the "versions", the
-#'   directory containing versioned data, will be stored. If NULL (the default),
-#'   "versions" is placed at the root of the repository.
+#' @param resources_path The path to the directory that holds "versions", the
+#'   directory containing versioned data, or to the directory that holds the
+#'   versions directly. If NULL (the default), "versions" is placed at the
+#'   root of the repository.
 #' @returns TRUE if the relink was successful
 #' @keywords internal
 
@@ -149,7 +152,14 @@ version_setup_cloned <- function(quiet = FALSE, resources_path = NULL) {
     if (!dir.exists(resources_path)) { # wrong path
       stop("The path ", resources_path, " does not exist!")
     }
-    versions_path <- file.path(resources_path)
+    # resources_path can hold the "versions" directory (as made by
+    # version_setup() with resources_path), or be the directory that holds
+    # the versions themselves
+    if (dir.exists(file.path(resources_path, "versions"))) {
+      versions_path <- file.path(resources_path, "versions")
+    } else {
+      versions_path <- file.path(resources_path)
+    }
 
     # create a link from the repository to the resources path
     data_dir_link(

@@ -680,6 +680,12 @@ test_that("version_relink for a cloned repo", {
     resources_path = versions_loc
   ))
 
+  # the data copied with versions/ are found through the links (resources_path
+  # holds versions/; it used to be taken as the versions themselves, and the
+  # links pointed to new, empty directories)
+  expect_true(file.exists(
+    path_resrepo("/data/raw/original/tux_measurements.csv")
+  ))
   # check the links work
   write.csv("blah", path_resrepo("/data/intermediate/my_new_file1.csv"))
   blah <- read.csv(path_resrepo("data/intermediate/my_new_file1.csv"))

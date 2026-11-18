@@ -19,6 +19,8 @@
 * `version_add()`: fix `ssh://` remote urls, which were not supported
 * `version_add()`: fix empty https credentials when the token is in `GITHUB_PAT`
   or the remote is not on GitHub
+* `version_relink()`: fix cloned repositories with a `resources_path` that
+  holds `versions/`, which were linked to new, empty directories
 
 # resrepo 0.3.1
 
