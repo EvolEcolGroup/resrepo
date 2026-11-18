@@ -9,6 +9,13 @@
 #' sanitised version is different from the original version, a warning will be
 #' issued. The new versions must not exist already in `versions`.
 #'
+#' The data are copied first; then the git branch is created, the links are
+#' updated and the meta files committed; the branch is pushed last. If any
+#' step before the push fails, `version_add()` undoes what it did: it
+#' returns to the branch it started from, deletes the new branch, and
+#' removes the new version directories and meta files. If the push fails,
+#' the version is kept, with a warning, and the branch can be pushed later.
+#'
 #' Each version is described in `data/version_meta/<version>.meta`. If the
 #' raw and intermediate versions have the same name, that file has one row
 #' for each.
@@ -142,86 +149,134 @@ version_add <- function(path = ".",
   # check that the branch does not exist on git already
   if (git_branch %in% names(git2r::branches())) {
     stop("branch ", git_branch, " already exists")
-  } else {
-    git2r::branch_create(name = git_branch)
-    git2r::checkout(branch = git_branch)
-    if (creds$type != "none") {
-      git2r::push(
-        name = "origin",
-        refspec = paste0("refs/heads/", git_branch),
-        set_upstream = TRUE,
-        credentials = creds$github_pat
+  }
+
+  # what to undo if anything fails: the branch we start from (to return to),
+  # and the version directories and meta files this call creates
+  old_branch <- git2r::repository_head()$name
+  new_versions <- unique(c(
+    intermediate_new_version,
+    if (create_raw) raw_new_version
+  ))
+  new_dirs <- path_resrepo(paste0("versions/", new_versions))
+  new_meta_files <- path_resrepo(paste0(
+    "data/version_meta/", new_versions, ".meta"
+  ))
+  branch_created <- FALSE
+
+  tryCatch(
+    {
+      # 1. copy the data first, before changing anything in git, as the copy
+      # is the step most likely to fail (e.g. on a full disk). Copy only the
+      # intermediate data of the source version (a version can also hold
+      # raw data, which would otherwise be duplicated in the new version)
+      fs::dir_copy(
+        path_resrepo(paste0(
+          "versions/", intermediate_source, "/intermediate"
+        )),
+        path_resrepo(paste0(
+          "versions/", intermediate_new_version, "/intermediate"
+        ))
+      )
+      # if we need to create a new raw version
+      if (create_raw) {
+        fs::dir_copy(
+          path_resrepo(paste0("versions/", raw_source, "/raw")),
+          path_resrepo(paste0("versions/", raw_new_version, "/raw"))
+        )
+      }
+
+      # 2. create the new branch, and switch to it
+      git2r::branch_create(name = git_branch)
+      branch_created <- TRUE
+      git2r::checkout(branch = git_branch)
+
+      # 3. add meta information on the versions
+      intermediate_meta <- data.frame(
+        data = "intermediate",
+        version = intermediate_new_version,
+        date_created = Sys.Date(),
+        description = intermediate_description,
+        stringsAsFactors = FALSE
+      )
+      utils::write.csv(intermediate_meta,
+        file = path_resrepo(paste0(
+          "data/version_meta/",
+          intermediate_new_version, ".meta"
+        )),
+        row.names = FALSE
+      )
+      if (create_raw) {
+        version_meta <- data.frame(
+          data = "raw",
+          version = raw_new_version,
+          date_created = Sys.Date(),
+          description = raw_description,
+          stringsAsFactors = FALSE
+        )
+        # a raw version with the same name as the new intermediate version
+        # shares its meta file: keep both rows (the column data tells them
+        # apart)
+        if (raw_new_version == intermediate_new_version) {
+          version_meta <- rbind(intermediate_meta, version_meta)
+        }
+        utils::write.csv(version_meta,
+          file = path_resrepo(paste0(
+            "data/version_meta/",
+            raw_new_version, ".meta"
+          )),
+          row.names = FALSE
+        )
+      }
+
+      # 4. update the links
+      # first delete the old ones
+      fs::link_delete(path_resrepo("data/raw"))
+      fs::link_delete(path_resrepo("data/intermediate"))
+      # then create the new ones
+      data_dir_link(
+        target_dir = path_resrepo(paste0(
+          "versions/", raw_new_version, "/raw"
+        )),
+        link_dir = "data/raw"
+      )
+      data_dir_link(
+        target_dir = path_resrepo(paste0(
+          "versions/", intermediate_new_version, "/intermediate"
+        )),
+        link_dir = "data/intermediate"
+      )
+      # write the versions in use to file
+      writeLines(raw_new_version,
+        con = path_resrepo("data/version_meta/raw_in_use.meta"),
+        sep = "\n", useBytes = FALSE
+      )
+      writeLines(intermediate_new_version,
+        con = path_resrepo("data/version_meta/intermediate_in_use.meta"),
+        sep = "\n", useBytes = FALSE
+      )
+
+      # 5. commit the meta files
+      git2r::add(path = path_resrepo("data/version_meta/*"))
+      commit_message <- paste("Add version", intermediate_new_version)
+      if (create_raw) {
+        commit_message <- paste(commit_message, "and", raw_new_version)
+      }
+      git2r::commit(message = commit_message, all = TRUE)
+    },
+    error = function(e) {
+      # undo what was done, so that the repository is as before the call
+      version_add_undo(
+        old_branch = old_branch, new_branch = git_branch,
+        branch_created = branch_created, new_dirs = new_dirs,
+        new_meta_files = new_meta_files
+      )
+      stop(
+        "version_add() failed, and its changes were undone: ",
+        conditionMessage(e),
+        call. = FALSE
       )
     }
-  }
-
-  # create a new intermediate version, copying only the intermediate data of
-  # the source version (a version can also hold raw data, which would
-  # otherwise be duplicated in the new version)
-  fs::dir_copy(
-    path_resrepo(paste0("versions/", intermediate_source, "/intermediate")),
-    path_resrepo(paste0("versions/", intermediate_new_version, "/intermediate"))
-  )
-  # add meta information on the version
-  intermediate_meta <- data.frame(
-    data = "intermediate",
-    version = intermediate_new_version,
-    date_created = Sys.Date(),
-    description = intermediate_description,
-    stringsAsFactors = FALSE
-  )
-  utils::write.csv(intermediate_meta,
-    file = path_resrepo(paste0(
-      "data/version_meta/",
-      intermediate_new_version, ".meta"
-    )),
-    row.names = FALSE
-  )
-
-  # if we need to create a new raw version
-  if (create_raw) {
-    fs::dir_copy(
-      path_resrepo(paste("versions/", raw_source, "/raw", sep = "")),
-      path_resrepo(paste("versions/", raw_new_version, "/raw", sep = ""))
-    )
-    version_meta <- data.frame(
-      data = "raw",
-      version = raw_new_version,
-      date_created = Sys.Date(),
-      description = raw_description,
-      stringsAsFactors = FALSE
-    )
-    # a raw version with the same name as the new intermediate version shares
-    # its meta file: keep both rows (the column data tells them apart)
-    if (raw_new_version == intermediate_new_version) {
-      version_meta <- rbind(intermediate_meta, version_meta)
-    }
-    utils::write.csv(version_meta,
-      file = path_resrepo(paste0(
-        "data/version_meta/",
-        raw_new_version, ".meta"
-      )),
-      row.names = FALSE
-    )
-  }
-
-  # update the links
-  # first delete the old ones
-  fs::link_delete(path_resrepo("data/raw"))
-  fs::link_delete(path_resrepo("data/intermediate"))
-  # then create the new ones
-  data_dir_link(
-    target_dir = path_resrepo(paste("versions/", raw_new_version, "/raw",
-      sep = ""
-    )),
-    link_dir = "data/raw"
-  )
-  data_dir_link(
-    target_dir = path_resrepo(paste("versions/", intermediate_new_version,
-      "/intermediate",
-      sep = ""
-    )),
-    link_dir = "data/intermediate"
   )
   if (!quiet) {
     message("version ", intermediate_new_version, " created")
@@ -229,28 +284,63 @@ version_add <- function(path = ".",
       message("raw version ", raw_new_version, " created")
     }
   }
-  # write the versions to file
-  writeLines(raw_new_version,
-    con = path_resrepo("data/version_meta/raw_in_use.meta"),
-    sep = "\n", useBytes = FALSE
-  )
-  writeLines(intermediate_new_version,
-    con = path_resrepo("data/version_meta/intermediate_in_use.meta"),
-    sep = "\n", useBytes = FALSE
-  )
-  # add the meta files to git
-  git2r::add(path = path_resrepo("data/version_meta/*"))
-  commit_message <- paste("Add version", intermediate_new_version)
-  if (create_raw) {
-    commit_message <- paste(commit_message, "and", raw_new_version)
-  }
-  git2r::commit(message = commit_message, all = TRUE)
+
+  # 6. push the new branch, once, at the end; if that fails, the version is
+  # complete locally, and can be pushed later
   if (creds$type != "none") {
-    git2r::push(
-      name = "origin",
-      refspec = paste0("refs/heads/", git_branch),
-      credentials = creds$github_pat
+    tryCatch(
+      git2r::push(
+        name = "origin",
+        refspec = paste0("refs/heads/", git_branch),
+        set_upstream = TRUE,
+        credentials = creds$github_pat
+      ),
+      error = function(e) {
+        warning(
+          "version ", intermediate_new_version, " was created, but branch ",
+          git_branch, " could not be pushed to origin: ",
+          conditionMessage(e), "\nPush it later, e.g. with ",
+          "'git push -u origin ", git_branch, "'",
+          call. = FALSE
+        )
+      }
     )
   }
   return(TRUE)
+}
+
+#' Undo a failed version_add()
+#'
+#' Returns to the branch `version_add()` started from (discarding the changes
+#' it made to the meta files), deletes the branch it created, removes the
+#' version directories and meta files it created, and restores the links to
+#' the versions in use. Branches already pushed are never deleted on the
+#' remote (`version_add()` pushes only at the end, once all else succeeded).
+#'
+#' @param old_branch the name of the branch `version_add()` started from
+#' @param new_branch the name of the branch it created
+#' @param branch_created whether the new branch was created
+#' @param new_dirs the version directories it created
+#' @param new_meta_files the meta files it created
+#' @returns NULL, invisibly
+#' @keywords internal
+#' @noRd
+
+version_add_undo <- function(old_branch, new_branch, branch_created,
+                             new_dirs, new_meta_files) {
+  if (branch_created) {
+    # back to the old branch; force discards the changes to the meta files
+    # (the working directory was clean when version_add() started)
+    git2r::checkout(branch = old_branch, force = TRUE)
+    # and delete the new branch
+    git2r::branch_delete(git2r::branches(flags = "local")[[new_branch]])
+  }
+  # remove the new version directories and meta files
+  for (new_dir in new_dirs[dir.exists(new_dirs)]) {
+    fs::dir_delete(new_dir)
+  }
+  unlink(new_meta_files)
+  # restore the links to the versions in use on the old branch
+  update_links(quiet = TRUE)
+  invisible(NULL)
 }

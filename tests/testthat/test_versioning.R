@@ -422,6 +422,47 @@ test_that("versioning with resources_path argument", {
   ))
   expect_true(git2r::is_head(git2r::branches()$not_pushed))
   expect_false("not_pushed" %in% bare_branches())
+
+  # an error half-way is undone: back on the branch we started from, with
+  # no new branch, version directory or meta file, and the links restored
+  # (it used to leave us on the new branch, already pushed, with a partial
+  # version)
+  local({
+    local_mocked_bindings(
+      data_dir_link = function(...) stop("simulated failure")
+    )
+    expect_error(
+      version_add(
+        intermediate_new_version = "failed",
+        intermediate_description = "Fails half-way", quiet = TRUE
+      ),
+      "simulated failure"
+    )
+  })
+  expect_true(git2r::is_head(git2r::branches()$not_pushed))
+  expect_false("failed" %in% names(git2r::branches()))
+  expect_false("failed" %in% bare_branches())
+  expect_false(dir.exists(path_resrepo("versions/failed")))
+  expect_false(file.exists(path_resrepo("data/version_meta/failed.meta")))
+  expect_true(git_is_clean())
+  expect_identical(get_versions_in_use()$intermediate, "not_pushed")
+
+  # a failed push keeps the version, with a warning (the branch used to be
+  # pushed first, so a failed push stopped version_add() on the new branch)
+  git2r::remote_set_url(
+    name = "origin", url = file.path(tempdir(), "no_such_remote.git")
+  )
+  expect_warning(
+    version_add(
+      intermediate_new_version = "push_fails",
+      intermediate_description = "The push fails", quiet = TRUE
+    ),
+    "could not be pushed"
+  )
+  expect_true(git2r::is_head(git2r::branches()$push_fails))
+  expect_true(dir.exists(path_resrepo("versions/push_fails/intermediate")))
+  expect_identical(get_versions_in_use()$intermediate, "push_fails")
+  expect_true(git_is_clean())
 })
 
 test_that(paste0(

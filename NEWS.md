@@ -40,6 +40,8 @@
   same name, which kept only the raw one
 * `version_add()` gains `push`: `push = FALSE` creates the version locally,
   without credentials; remotes on a local path or `http://` are now pushed to
+* `version_add()` copies the data before changing anything in git, pushes
+  last, and undoes its changes if it fails before the push
 
 # resrepo 0.3.1
 

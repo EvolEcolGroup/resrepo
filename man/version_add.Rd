@@ -60,6 +60,13 @@ spaces and other characters that are not allowed in directory names. If the
 sanitised version is different from the original version, a warning will be
 issued. The new versions must not exist already in \code{versions}.
 
+The data are copied first; then the git branch is created, the links are
+updated and the meta files committed; the branch is pushed last. If any
+step before the push fails, \code{version_add()} undoes what it did: it
+returns to the branch it started from, deletes the new branch, and
+removes the new version directories and meta files. If the push fails,
+the version is kept, with a warning, and the branch can be pushed later.
+
 Each version is described in \verb{data/version_meta/<version>.meta}. If the
 raw and intermediate versions have the same name, that file has one row
 for each.
