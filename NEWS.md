@@ -42,6 +42,8 @@
   without credentials; remotes on a local path or `http://` are now pushed to
 * `version_add()` copies the data before changing anything in git, pushes
   last, and undoes its changes if it fails before the push
+* `version_add()` refuses version names reserved by the file system (e.g.
+  `aux`, `con`, `..`), which became empty
 * the links from `data/` to `versions/` are relative (except on Windows), so
   that a repository keeps working when moved
 * `version_relink()` stops if the versions in use are missing, instead of

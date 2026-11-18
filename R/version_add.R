@@ -74,6 +74,11 @@ version_add <- function(path = ".",
     x_orig <- x
     x <- fs::path_sanitize(x)
     x <- gsub(" ", "_", x)
+    # names reserved by the file system ("aux", "con", ".", "..", ...) give
+    # an empty name, which would point to versions/ itself
+    if (!nzchar(x)) {
+      stop("'", x_orig, "' is not a valid name for a version")
+    }
     # give a warning if the name was changed
     if (x != x_orig) {
       warning(x_orig, " has been sanitised to ", x)
@@ -169,6 +174,9 @@ version_add <- function(path = ".",
     if (create_raw) raw_new_version
   ))
   new_dirs <- path_resrepo(paste0("versions/", new_versions))
+  # only directories that do not exist yet are ever removed by the undo
+  # (e.g. on a case-insensitive file system, "V2" is the existing "v2")
+  new_dirs <- new_dirs[!dir.exists(new_dirs)]
   new_meta_files <- path_resrepo(paste0(
     "data/version_meta/", new_versions, ".meta"
   ))
@@ -345,9 +353,15 @@ version_add_undo <- function(old_branch, new_branch, branch_created,
     # and delete the new branch
     git2r::branch_delete(git2r::branches(flags = "local")[[new_branch]])
   }
-  # remove the new version directories and meta files
+  # remove the new version directories, only if they are strictly inside
+  # versions/ (never versions/ itself, nor anything outside it)
+  versions_root <- fs::path_norm(path_resrepo("versions"))
   for (new_dir in new_dirs[dir.exists(new_dirs)]) {
-    fs::dir_delete(new_dir)
+    new_dir_norm <- fs::path_norm(new_dir)
+    if (new_dir_norm != versions_root &&
+      fs::path_has_parent(new_dir_norm, versions_root)) { # nolint
+      fs::dir_delete(new_dir)
+    }
   }
   unlink(new_meta_files)
   # restore the links to the versions in use on the old branch

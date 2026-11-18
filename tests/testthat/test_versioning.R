@@ -447,6 +447,21 @@ test_that("versioning with resources_path argument", {
   expect_true(git_is_clean())
   expect_identical(get_versions_in_use()$intermediate, "not_pushed")
 
+  # names that the file system reserves give an empty name, and are refused
+  # (they used to point to versions/ itself, which the undo then deleted,
+  # with all the data)
+  for (reserved in c("aux", "con", "..")) {
+    expect_error(
+      suppressWarnings(version_add(
+        intermediate_new_version = reserved,
+        intermediate_description = "A reserved name", quiet = TRUE
+      )),
+      "is not a valid name for a version"
+    )
+  }
+  expect_true(dir.exists(path_resrepo("versions/starting/raw")))
+  expect_true(dir.exists(path_resrepo("versions/initial/intermediate")))
+
   # a failed push keeps the version, with a warning (the branch used to be
   # pushed first, so a failed push stopped version_add() on the new branch)
   git2r::remote_set_url(
