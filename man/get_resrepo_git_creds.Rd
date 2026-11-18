@@ -13,6 +13,8 @@ GitHub PAT if applicable.
 \description{
 This function checks the URL of the \code{origin} remote (the one resrepo pushes
 to) and determines if the credentials are set up for SSH or HTTPS access.
-Without an \code{origin} remote, the type is "none".
+Without an \code{origin} remote, the type is "none"; for other urls (a local
+path, \verb{file://} or \verb{http://}), the type is "other" and no credentials are
+used.
 }
 \keyword{internal}

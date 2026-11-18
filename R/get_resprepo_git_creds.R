@@ -2,7 +2,9 @@
 #'
 #' This function checks the URL of the `origin` remote (the one resrepo pushes
 #' to) and determines if the credentials are set up for SSH or HTTPS access.
-#' Without an `origin` remote, the type is "none".
+#' Without an `origin` remote, the type is "none"; for other urls (a local
+#' path, `file://` or `http://`), the type is "other" and no credentials are
+#' used.
 #' @return A list containing the type of credentials, the URL, and the
 #' GitHub PAT if applicable.
 #' @keywords internal
@@ -63,7 +65,13 @@ get_resrepo_git_creds <- function() {
       )
     )
   } else {
-    stop("Unsupported Git URL format.")
+    # other urls (a local path or file:// for a repository on a shared
+    # drive, http://, ...) are pushed to without credentials
+    creds <- list(
+      type = "other",
+      url = git_url,
+      github_pat = NULL
+    )
   }
   return(creds)
 }

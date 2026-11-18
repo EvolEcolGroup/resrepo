@@ -396,6 +396,32 @@ test_that("versioning with resources_path argument", {
   ))
   expect_true(dir.exists(path_resrepo("versions/from_both/intermediate")))
   expect_false(dir.exists(path_resrepo("versions/from_both/raw")))
+
+  # a remote on a local path (e.g. a bare repository on a shared drive) is
+  # pushed to without credentials (it used to stop with "Unsupported Git URL
+  # format")
+  bare_dir <- file.path(tempdir(), "resrepo_bare.git")
+  if (dir.exists(bare_dir)) {
+    fs::dir_delete(bare_dir)
+  }
+  dir.create(bare_dir)
+  git2r::init(bare_dir, bare = TRUE)
+  git2r::remote_add(name = "origin", url = bare_dir)
+  expect_true(version_add(
+    intermediate_new_version = "pushed",
+    intermediate_description = "Pushed to a local remote", quiet = TRUE
+  ))
+  bare_branches <- function() {
+    names(git2r::branches(git2r::repository(bare_dir), flags = "local"))
+  }
+  expect_true("pushed" %in% bare_branches())
+  # with push = FALSE, the version is created but not pushed
+  expect_true(version_add(
+    intermediate_new_version = "not_pushed",
+    intermediate_description = "Kept local", push = FALSE, quiet = TRUE
+  ))
+  expect_true(git2r::is_head(git2r::branches()$not_pushed))
+  expect_false("not_pushed" %in% bare_branches())
 })
 
 test_that(paste0(

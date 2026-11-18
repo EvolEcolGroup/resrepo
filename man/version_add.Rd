@@ -13,6 +13,7 @@ version_add(
   intermediate_description = NULL,
   raw_description = NULL,
   git_branch = NULL,
+  push = TRUE,
   quiet = FALSE
 )
 }
@@ -38,6 +39,10 @@ it will be the current version. Ignored if \code{raw_new_version} is NULL.}
 
 \item{git_branch}{The name of the git branch to create. If NULL, it will be
 the same as \code{intermediate_new_version}}
+
+\item{push}{If TRUE (the default), push the new branch to the \code{origin}
+remote, if there is one. If FALSE, the version is created locally only,
+and no git credentials are needed.}
 
 \item{quiet}{If TRUE, suppress messages}
 }

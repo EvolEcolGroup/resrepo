@@ -27,6 +27,9 @@
 #'   `raw_new_version` is given. Ignored if `raw_new_version` is NULL.
 #' @param git_branch The name of the git branch to create. If NULL, it will be
 #'   the same as `intermediate_new_version`
+#' @param push If TRUE (the default), push the new branch to the `origin`
+#'   remote, if there is one. If FALSE, the version is created locally only,
+#'   and no git credentials are needed.
 #' @param quiet If TRUE, suppress messages
 #' @returns TRUE if the version was successfully added
 #' @export
@@ -39,9 +42,13 @@ version_add <- function(path = ".",
                         raw_source = NULL,
                         intermediate_description = NULL,
                         raw_description = NULL,
-                        git_branch = NULL, quiet = FALSE) {
-  # check for git credentials
-  creds <- get_resrepo_git_creds()
+                        git_branch = NULL, push = TRUE, quiet = FALSE) {
+  # check for git credentials (only needed to push)
+  if (push) {
+    creds <- get_resrepo_git_creds()
+  } else {
+    creds <- list(type = "none", url = NULL, github_pat = NULL)
+  }
 
   # check version in use
   in_use <- get_versions_in_use()
@@ -138,7 +145,7 @@ version_add <- function(path = ".",
   } else {
     git2r::branch_create(name = git_branch)
     git2r::checkout(branch = git_branch)
-    if (creds$type == "ssh" || creds$type == "https") {
+    if (creds$type != "none") {
       git2r::push(
         name = "origin",
         refspec = paste0("refs/heads/", git_branch),
@@ -238,7 +245,7 @@ version_add <- function(path = ".",
     commit_message <- paste(commit_message, "and", raw_new_version)
   }
   git2r::commit(message = commit_message, all = TRUE)
-  if (creds$type == "ssh" || creds$type == "https") {
+  if (creds$type != "none") {
     git2r::push(
       name = "origin",
       refspec = paste0("refs/heads/", git_branch),

@@ -38,6 +38,8 @@
   ignored any directory called `versions`); `version_relink()` corrects this
 * `version_add()`: fix the meta file of raw and intermediate versions with the
   same name, which kept only the raw one
+* `version_add()` gains `push`: `push = FALSE` creates the version locally,
+  without credentials; remotes on a local path or `http://` are now pushed to
 
 # resrepo 0.3.1
 
