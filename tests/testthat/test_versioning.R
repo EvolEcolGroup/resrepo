@@ -617,6 +617,51 @@ test_that("links inside the repository survive moving it", {
   fs::dir_delete(moved_dir)
 })
 
+test_that("git hooks keep existing hooks, and work in worktrees", {
+  # the hooks are bash scripts; not checked on Windows
+  skip_on_os("windows")
+  hooks_example <- file.path(tempdir(), "resrepo_hooks")
+  worktree_dir <- file.path(tempdir(), "resrepo_hooks_worktree")
+  # wipe the directories in case they have been left behind
+  for (old_dir in c(hooks_example, worktree_dir)) {
+    if (dir.exists(old_dir)) {
+      fs::dir_delete(old_dir)
+    }
+  }
+  dir.create(hooks_example)
+  example_repo <- git2r::init(hooks_example, branch = "main")
+  git2r::config(example_repo,
+    user.name = "Test",
+    user.email = "test@example.org"
+  )
+  withr::with_dir(hooks_example, {
+    init_resrepo()
+    # a worktree, versioned below (its .git is a file)
+    system2("git", c("worktree", "add", "-q", "-b", "wt", worktree_dir))
+    # a post-checkout hook from another tool (e.g. git-lfs) is kept, and run
+    # (it used to be overwritten)
+    other_hook <- c("#!/bin/bash", "echo ran > other_hook_ran.txt")
+    writeLines(other_hook, ".git/hooks/post-checkout")
+    Sys.chmod(".git/hooks/post-checkout", mode = "0755")
+    expect_message(version_setup(quiet = TRUE), "post-checkout.local")
+    expect_identical(readLines(".git/hooks/post-checkout.local"), other_hook)
+    expect_true(resrepo:::is_resrepo_hook(".git/hooks/post-checkout"))
+    system2("git", c("checkout", "-q", "-b", "other"))
+    expect_true(file.exists("other_hook_ran.txt"))
+    expect_true(dir.exists("data/raw"))
+  })
+  # in a worktree, where .git is a file, version_setup() installs the hooks
+  # where git looks for them (it used to fail at the end, after moving the
+  # data)
+  withr::with_dir(worktree_dir, {
+    expect_true(version_setup(quiet = TRUE))
+  })
+  expect_true(resrepo:::is_resrepo_hook(
+    file.path(hooks_example, ".git", "hooks", "post-merge")
+  ))
+  fs::dir_delete(c(worktree_dir, hooks_example))
+})
+
 test_that("get_resrepo_git_creds reads the origin remote", {
   creds_dir <- file.path(tempdir(), "resrepo_creds")
   # wipe the directory in case it has been left behind from previous tests

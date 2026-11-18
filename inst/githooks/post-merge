@@ -1,6 +1,15 @@
 #!/bin/bash
+# installed by resrepo: keeps data/raw and data/intermediate linked to the
+# versions in use
 
 set -e  # Exit immediately if a command exits with a non-zero status.
+
+# run the hook that was here before resrepo installed its own (e.g. one from
+# git-lfs), kept as <hook>.local; its exit status is returned at the end
+local_status=0
+if [[ -x "$0.local" ]]; then
+  "$0.local" "$@" || local_status=$?
+fi
 
 # test whether we are on windows
 windows() { [[ -n "$WINDIR" ]]; }
@@ -50,4 +59,4 @@ else
 fi
 
 echo "Links updated"
-exit 0
+exit $local_status

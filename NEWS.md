@@ -48,6 +48,8 @@
   creating them empty (new `create = TRUE` does that)
 * `resources_path` is always the directory that holds `versions/` (or
   `versions/` itself), and cannot be inside the repository
+* the git hooks are installed where git looks for them (worktrees, submodules,
+  `core.hooksPath`), and existing hooks are kept and run (e.g. git-lfs)
 
 # resrepo 0.3.1
 

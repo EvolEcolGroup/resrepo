@@ -254,21 +254,97 @@ resources_versions_path <- function(resources_path) {
   }
 }
 
+#' Install the git hooks that keep the data links up to date
+#'
+#' Copies resrepo's `post-checkout` and `post-merge` hooks to the directory
+#' where git looks for hooks (found with `git rev-parse --git-path hooks`, so
+#' that worktrees, submodules and `core.hooksPath` work). A different hook
+#' already there (e.g. from git-lfs) is kept as `<hook>.local`, which
+#' resrepo's hook runs first.
+#'
+#' @returns NULL, invisibly
+#' @keywords internal
+#' @noRd
+
 add_git_hooks <- function() {
-  # create the githooks
-  # copy the githooks from the package
-  fs::dir_copy(system.file("githooks", package = "resrepo"),
-    path_resrepo(".git/hooks"),
-    overwrite = TRUE
+  hooks_dir <- git_hooks_dir()
+  dir.create(hooks_dir, recursive = TRUE, showWarnings = FALSE)
+  for (hook in c("post-checkout", "post-merge")) {
+    hook_path <- file.path(hooks_dir, hook)
+    # keep a hook installed by another tool, which resrepo's hook will run
+    if (file.exists(hook_path) && !is_resrepo_hook(hook_path)) {
+      local_path <- paste0(hook_path, ".local")
+      if (!file.exists(local_path)) {
+        file.rename(hook_path, local_path)
+        message(
+          "The existing ", hook, " hook was kept as ", basename(local_path),
+          ", which resrepo's ", hook, " hook runs first"
+        )
+      } else {
+        # a .local hook is there already: back this one up, without running
+        # it, rather than lose it
+        backup_path <- paste0(
+          hook_path, ".backup-", format(Sys.time(), "%Y%m%d%H%M%S")
+        )
+        file.rename(hook_path, backup_path)
+        warning(
+          "The existing ", hook, " hook was moved to ",
+          basename(backup_path), " and will not be run, as ",
+          basename(local_path), " exists already",
+          call. = FALSE
+        )
+      }
+    }
+    # copy resrepo's hook and make it executable
+    file.copy(
+      system.file("githooks", hook, package = "resrepo"),
+      hook_path,
+      overwrite = TRUE
+    )
+    fs::file_chmod(hook_path, mode = "755")
+  }
+  invisible(NULL)
+}
+
+#' The directory where git looks for hooks
+#'
+#' Asks git (`git rev-parse --git-path hooks`), which gives the hooks of the
+#' main repository for a worktree, those of the module for a submodule, and
+#' honours `core.hooksPath`. Without git on the command line (which the hooks
+#' need anyway), falls back to `.git/hooks`.
+#'
+#' @returns the path of the hooks directory
+#' @keywords internal
+#' @noRd
+
+git_hooks_dir <- function() {
+  repo_root <- normalizePath(find_git_root(), winslash = "/")
+  hooks_dir <- tryCatch(
+    suppressWarnings(system2(
+      "git", c("-C", shQuote(repo_root), "rev-parse", "--git-path", "hooks"),
+      stdout = TRUE, stderr = FALSE
+    )),
+    error = function(e) character(0)
   )
-  # change permissions to make them executable
-  fs::file_chmod(
-    path_resrepo(".git/hooks/post-checkout"),
-    mode = "755"
-  )
-  # change permissions to make them executable
-  fs::file_chmod(
-    path_resrepo(".git/hooks/post-merge"),
-    mode = "755"
-  )
+  if (length(hooks_dir) == 1 && is.null(attr(hooks_dir, "status")) &&
+    nzchar(hooks_dir)) { # nolint
+    # a relative path is relative to the root of the repository
+    return(as.character(fs::path_abs(hooks_dir, start = repo_root)))
+  }
+  file.path(repo_root, ".git", "hooks")
+}
+
+#' Is this hook resrepo's?
+#'
+#' @param hook_path the path of a hook
+#' @returns TRUE if the hook is resrepo's (any version)
+#' @keywords internal
+#' @noRd
+
+is_resrepo_hook <- function(hook_path) {
+  any(grepl(
+    "version_meta/raw_in_use.meta",
+    readLines(hook_path, warn = FALSE),
+    fixed = TRUE
+  ))
 }
