@@ -681,6 +681,33 @@ test_that("links inside the repository survive moving it", {
   fs::dir_delete(moved_dir)
 })
 
+test_that("links to external storage are absolute", {
+  example_dir <- file.path(tempdir(), "resrepo_relative_storage")
+  storage_dir <- file.path(tempdir(), "resrepo_storage_rel")
+  for (old_dir in c(example_dir, storage_dir)) {
+    if (dir.exists(old_dir)) {
+      fs::dir_delete(old_dir)
+    }
+  }
+  dir.create(example_dir)
+  dir.create(storage_dir)
+  example_repo <- git2r::init(example_dir, branch = "main")
+  git2r::config(example_repo,
+    user.name = "Test",
+    user.email = "test@example.org"
+  )
+  withr::with_dir(example_dir, {
+    init_resrepo()
+    # a resources_path given relative to the working directory (the link
+    # used to keep it as given, which breaks when the repository moves, and
+    # is read from the wrong place when run from a subdirectory)
+    version_setup(quiet = TRUE, resources_path = "../resrepo_storage_rel")
+    expect_true(fs::is_absolute_path(fs::link_path("versions")))
+    expect_true(dir.exists("data/raw"))
+  })
+  fs::dir_delete(c(example_dir, storage_dir))
+})
+
 test_that("git hooks keep existing hooks, and work in worktrees", {
   # the hooks are bash scripts; not checked on Windows
   skip_on_os("windows")

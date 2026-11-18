@@ -58,16 +58,19 @@ data_dir_link <- function(link_dir, target_dir) {
 #' @noRd
 
 link_target <- function(target_dir, link_path) {
+  # the target as an absolute path (a relative target_dir is relative to the
+  # working directory, but a relative link is read from the link's directory)
+  target_abs <- as.character(fs::path_abs(target_dir))
   # Windows junctions are always absolute
   if (.Platform$OS.type == "windows") {
-    return(target_dir)
+    return(target_abs)
   }
   # compare normalised paths (no "//" or ".."), without resolving links
   repo_root <- fs::path_norm(normalizePath(find_git_root(), winslash = "/"))
   target_norm <- fs::path_norm(fs::path_abs(target_dir))
-  # targets outside the repository stay absolute
+  # targets outside the repository are absolute
   if (!fs::path_has_parent(target_norm, repo_root)) {
-    return(target_dir)
+    return(target_abs)
   }
   # targets inside it are relative to the directory of the link
   as.character(fs::path_rel(

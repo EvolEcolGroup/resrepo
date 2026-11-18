@@ -47,7 +47,8 @@
 * `version_add()` refuses a detached HEAD, and its undo also runs on interrupts
   and keeps the original error
 * the links from `data/` to `versions/` are relative (except on Windows), so
-  that a repository keeps working when moved
+  that a repository keeps working when moved; links to external storage are
+  absolute, even when `resources_path` is given as a relative path
 * `version_relink()` stops if the versions in use are missing, instead of
   creating them empty (new `create = TRUE` does that)
 * `resources_path` is always the directory that holds `versions/` (or
