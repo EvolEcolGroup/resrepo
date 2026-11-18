@@ -146,78 +146,274 @@ the commits, which keep the 7.3.3 output.
 
 ### Decision needed
 
-- **`path` arguments that are ignored.** `init_resrepo(path = ".")` and
-  `version_add(path = ".")` never use `path`: both work on the repository of
-  the working directory, so `init_resrepo("other/repo")` silently initialises
-  the current one. **Decision needed:** implement `path` (switch to it for
-  the call, with `on.exit()`), or deprecate it? Suggested: implement it in
-  `init_resrepo()`, deprecate it in `version_add()` (the other versioning
-  functions all use the working directory).
-- **`init_resrepo()` in an existing repository** copies the template with
-  `overwrite = TRUE` (replacing the user's `README.md`, `code/README.md`, etc.),
-  renames the template `gitignore` over an existing `.gitignore`, then runs
-  `git2r::add(path = ".")` and commits everything, including any untracked
-  data or secrets under the working directory. **Decision needed:** refuse
-  to run in a repository that already has files, or skip existing files and
-  add only the template's files?
-- **Absolute and relative links.** R makes absolute links
-  (`data/raw -> /home/.../versions/starting/raw`), the git hooks relative ones
-  (`../versions/starting/raw`). Absolute links break when the repository is
-  moved, or opened through another mount point. After `b564e56` both are
-  accepted. **Decision needed:** make R create relative links too?
-- **A raw and an intermediate version with the same name** (allowed by
-  `version_add(intermediate_new_version = "v2", raw_new_version = "v2")`)
-  share `data/version_meta/v2.meta`: the raw row overwrites the intermediate
-  one. **Decision needed:** refuse equal names, or write both rows to the
-  meta file?
-- **Remotes that are local paths, `file://` or `http://` urls** (e.g. a bare
-  repository on a shared drive) stop `version_add()` with "Unsupported Git
-  URL format",
-  and an https remote without a token stops it even if no push is wanted.
-  **Decision needed:** push to such remotes without credentials, and/or add a
-  `push = TRUE` argument?
-- **`version_add()` is not atomic.** If the push, or a copy, fails after the
-  branch is created, the user is left on the new branch with a partial
-  version (`1bf52cc` moved the argument checks before this point, but I/O
-  and network errors remain). **Decision needed:** roll back on error
-  (return to the old branch, delete the new branch and directories)?
-- **What `resources_path` means.** `version_setup()` creates
-  `<resources_path>/versions`; `version_reset()` (relink with existing links)
-  accepts `<resources_path>/versions` or a directory named `versions`;
-  `version_setup_cloned()` (after `5c6c900`) accepts `<resources_path>/versions`
-  or the directory of the versions under any name, as in the sharing
-  vignette. A `resources_path` inside the repository (other than its root)
-  is accepted. **Decision needed:** one rule for all three, documented once?
-- **Git hooks.** `add_git_hooks()` overwrites any existing `post-checkout` and
-  `post-merge` hooks of the user; it assumes `.git` is a directory (wrong in
-  worktrees and submodules, where `.git` is a file); the hooks print an
-  error when checking out a commit from before versioning (no meta files);
-  meta files with Windows line endings would give version names ending in
-  `\r` in bash. (On Windows, the hooks remove the junctions with `rm -rf`;
-  the Windows CI run of `dev` on 16 Nov passes the "versioning" test, which
-  reads the data of the version the junction pointed to after the hook ran,
-  so `rm -rf` removes only the junction.) **Decision needed:** append to
-  existing hooks rather than overwrite them?
-- **`data_dir_ignore()`, `data_dir_follow()`, `is_data_dir()`.** Their tests
-  are skipped (`skip()` at the top of `test_data_dir_follow_ignore.R`); the
-  guard in `data_dir_ignore()` sees only files directly in the directory, and
-  never matches a path with a leading slash (as used in its tests), because
-  `git2r::ls_tree()` paths have none; `is_data_dir("/data")` fails with
-  "missing value where TRUE/FALSE needed"; `data_dir_follow()` and
-  `is_data_dir()` are not used by the package. **Decision needed:** fix them
-  and enable the tests, or remove the unused functions?
-- **`versions` in `.gitignore`.** `version_setup()` adds `versions` (not
-  `/versions`) to `.gitignore`, which ignores any file or directory named
-  `versions` anywhere in the repository (e.g. `code/versions/`).
-  **Decision needed:** write `/versions` for new set-ups?
-- **Outputs left in `code/`.** `knit_to_results()` moves only `.html`, `.pdf`,
-  `.md`, `.docx` and `<name>_files/`; other outputs (`.tex` with `keep_tex`,
-  `.pptx`, `.odt`, `.rtf`, `.epub`) stay next to the Rmd. **Decision needed:**
-  move whatever `rmarkdown::render()` reports as its output?
-- **Repositories named `resrepo`.** `find_git_root()` refuses any repository
-  whose directory is called `resrepo` (to protect the package's own source),
-  so users cannot name a project so. **Decision needed:** keep, and document
-  it?
+Each decision says what happens now (the consequences marked "tested" were
+reproduced on `codereview` on 18 Nov 2026), who is affected, the options
+with their consequences, and a recommendation. The first five can lose,
+expose or misplace data.
+
+#### 1. `init_resrepo()` on a project that already has files
+
+**Now (tested).** In a repository with its own `README.md`, a `.gitignore`
+that ignores `.Renviron` and `big_data/`, an uncommitted edit and an
+untracked script, `init_resrepo()`:
+
+- replaced `README.md` (and the other `README.md` files) with the template's;
+- replaced `.gitignore` entirely, so the user's ignore rules were lost;
+- committed everything in one "Initialise resrepo" commit: `.Renviron` with
+  its token, `big_data/huge.csv`, the half-edited `README.md` and the
+  work-in-progress script. Once pushed, the token is in the remote history.
+
+**Who.** Anyone converting an existing project, a natural use; a new, empty
+repository is unaffected.
+
+**Options.**
+
+- **a. Refuse** unless the repository is empty. Safest and simplest;
+  converting a project means starting a new repository and moving the
+  files in.
+- **b. Merge without destroying anything:** copy only the template files
+  that do not exist, append the template's `.gitignore` lines to an
+  existing `.gitignore`, and add and commit only the files `init_resrepo()`
+  created. Converting works; the user's files and work in progress are left
+  alone.
+- **c. Keep, and warn** (or ask, interactively). Still dangerous in scripts.
+
+**Recommended:** b, with a message listing the files that were kept.
+
+#### 2. `path` is ignored by `init_resrepo()` and `version_add()`
+
+**Now.** `init_resrepo("~/new_project")` initialises the repository of the
+working directory instead (with the consequences of decision 1 if it has
+files), or stops with "not a git repository". In `version_add()`, `path` is
+unused, and as the first argument it catches a positional name:
+`version_add("v2", intermediate_description = "...")` stops with "You must
+provide a name for the new intermediate version" (tested).
+
+**Options.**
+
+- **a. Implement `path` in both** (work in that repository for the call).
+- **b. Implement it in `init_resrepo()`, deprecate it in `version_add()`**:
+  warn when it is given, remove it later, so that the version name can come
+  first. All the other versioning functions work on the working directory.
+- **c. Remove both now**: breaks code that names `path =`.
+
+**Recommended:** b.
+
+#### 3. What `resources_path` means, and empty folders made silently
+
+**Now.** Three rules for one argument:
+
+- `version_setup()` creates `<resources_path>/versions`;
+- `version_relink()` on a repository with links needs
+  `<resources_path>/versions`, or `resources_path` itself named `versions`;
+- `version_relink()` on a fresh clone uses `<resources_path>/versions` if it
+  exists, otherwise `resources_path` itself, and **creates the versions in
+  use if they are missing**.
+
+Consequences:
+
+- **Tested:** relinking a clone to an empty folder (a typo, or the wrong
+  drive) returns `TRUE` and creates empty `starting/raw` and
+  `initial/intermediate` in it. Scripts then read no data, or write their
+  outputs to the wrong place, without any warning.
+- The layout of the sharing vignette (the versions directly in the folder)
+  is accepted for a clone, but a later relink of the same repository
+  rejects it ("…/versions does not exist").
+- A `resources_path` inside the repository is accepted, where the data
+  would not be ignored by git.
+
+**Options.**
+
+- **a. One rule:** `resources_path` holds `versions/` (a folder named
+  `versions` is also accepted). Relinking stops if a version in use is
+  missing, unless asked to create it (e.g. `create = TRUE`, for new empty
+  storage). Refuse folders inside the repository, and update the sharing
+  vignette. Users who followed the vignette's layout need to add a
+  `versions/` level.
+- **b. One rule the other way:** `resources_path` is the versions folder
+  itself.
+- **c. Keep the flexible rules**, but stop instead of creating missing
+  versions.
+
+**Recommended:** a; at least the stop of c.
+
+#### 4. `version_add()` can stop half-way
+
+**Now.** The steps run in this order:
+
+1. create the branch, switch to it and push it;
+2. copy the data (possibly gigabytes; can fail on a full disk or
+   permissions);
+3. write the meta files, delete and recreate the links;
+4. commit and push.
+
+An error after step 1 leaves the user on the new branch, perhaps with an
+empty branch on GitHub, a partial copy in `versions/`, and possibly no
+`data/raw` link at all (it is deleted before being recreated). Running it
+again with the same name fails ("branch already exists" or "version already
+exists"). Recovery is by hand: switch back, delete the branch locally and
+on GitHub, delete `versions/<name>`, run `update_links()`.
+
+**Options.**
+
+- **a. Document the recovery.**
+- **b. Reorder:** checks, then the copy, before touching git; then the branch,
+  links and commit; push once, at the end. Most failures then happen
+  before anything in git changes.
+- **c. b, plus undo on error:** switch back to the old branch, delete the new
+  local branch and folders, restore the links (never delete a branch on
+  GitHub automatically).
+
+**Recommended:** c (b is most of the work).
+
+#### 5. Git hooks: other tools' hooks, and worktrees
+
+**Now.**
+
+- `version_setup()` and `version_relink()` copy `post-checkout` and
+  `post-merge` into `.git/hooks`, replacing what is there. git-lfs installs
+  hooks with these names (as do other tools), which then silently stop
+  running.
+- **Tested:** in a git worktree or a submodule, where `.git` is a file,
+  `version_setup()` fails at its very last step ("Failed to make directory
+  …/.git: file already exists"), after moving the data and making its two
+  commits. The set-up is otherwise complete, but without the hooks later
+  checkouts do not update the links.
+- A custom `core.hooksPath` is ignored.
+
+**Options.**
+
+- **a.** Find the hooks folder with `git rev-parse --git-path hooks`
+  (handles worktrees, submodules and `core.hooksPath`).
+- **b.** When a different hook is already there, keep it: rename it (e.g.
+  `post-checkout.local`) and have resrepo's hook call it.
+- **c.** Back up the existing hook and warn.
+
+**Recommended:** a and b.
+
+#### 6. Absolute links
+
+**Now.** R makes absolute links (`data/raw -> /home/me/proj/versions/starting/raw`),
+the git hooks relative ones (`../versions/starting/raw`); which kind a
+repository has depends on the last command run.
+
+**Tested:** after moving or renaming the repository's folder, `data/raw`
+points nowhere: scripts no longer find the data, and `version_add()` stops
+with "The link to the raw data is incorrect" until `update_links()` is run,
+which repairs the links. The same happens when the folder is reached through
+another path (a container, a drive mounted elsewhere). This concerns macOS
+and Linux only: Windows junctions are always absolute.
+
+**Options.**
+
+- **a. Keep absolute links;** document "run `update_links()` after moving the
+  repository", and say so in the error message.
+- **b. Relative links in R too,** for `data/raw` and `data/intermediate` only
+  (the link from `versions` to external storage stays absolute). Moving the
+  repository then just works.
+
+**Recommended:** b, plus the clearer error message.
+
+#### 7. Remotes and pushing in `version_add()`
+
+**Now.** `version_add()` always pushes the new branch to `origin`, and first
+needs credentials for it:
+
+- an `origin` that is a local path or `file://` (a bare repository on a shared
+  drive), or `http://`, stops it with "Unsupported Git URL format": it cannot
+  be used at all;
+- an `https://` origin without a token stops it with "You don't have a PAT
+  set up", even when only a local version is wanted (offline, or no right to
+  push);
+- branches are always pushed, e.g. to a public repository.
+
+**Options.**
+
+- **a.** Add `push = TRUE`; with `FALSE`, no credentials and no push.
+- **b.** For other urls, push without credentials (works for local and
+  `file://` remotes; `http://` fails with a clear git error).
+- **c.** Both.
+
+**Recommended:** c; the default stays as now.
+
+#### 8. Raw and intermediate versions with the same name
+
+**Now.** `version_add(intermediate_new_version = "v2", raw_new_version = "v2")`
+is accepted. Both descriptions go to `data/version_meta/v2.meta`, and the raw
+one overwrites the intermediate one, which loses its description and date.
+Nothing in the package reads these files, so only the record is lost; the
+vignette already discourages new raw versions.
+
+**Options.**
+
+- **a.** Refuse equal names.
+- **b.** Write both rows to `v2.meta` (same columns; the `data` column tells
+  them apart).
+- **c.** Separate files (`v2_raw.meta`): a new format.
+
+**Recommended:** b (or a, if distinct names are preferred).
+
+#### 9. `versions` in `.gitignore`
+
+**Now.** `version_setup()` adds the line `versions`, which matches a file or
+folder called `versions` anywhere. **Tested:** `results/versions/table.csv` is
+invisible to git: never committed, with no warning.
+
+**Options.**
+
+- **a.** Write `/versions` (the root only) in new set-ups: a one-character
+  change.
+- **b.** Also correct existing repositories (e.g. when relinking).
+
+**Recommended:** a, and b (cheap).
+
+#### 10. Outputs left in `code/`
+
+**Now.** `knit_to_results()` moves `.html`, `.pdf`, `.md`, `.docx` and the
+`_files` folder. **Tested:** with `keep_tex`, the `.tex` stays in `code/`;
+`.pptx`, `.odt`, `.rtf` and `.epub` outputs are not moved at all, so
+`results/<name>/` stays empty and the outputs pile up in `code/`, where they
+get committed.
+
+**Options.**
+
+- **a.** Move the file that `render()` returns (its path is now known, since
+  `5dff711`), plus the `.md` (`keep_md`), the `.tex` (`keep_tex`) and the
+  `_files` folder.
+- **b.** Add extensions to the list.
+
+**Recommended:** a.
+
+#### 11. `data_dir_follow()`, `data_dir_ignore()`, `is_data_dir()`
+
+**Now.** Internal functions. `data_dir_ignore()` works for the three calls
+`version_setup()` makes, but its check for tracked files is broken in
+general; `data_dir_follow()` and `is_data_dir()` are unused; their test file
+is skipped. Nothing visible to users today, but misleading code and tests.
+
+**Options.**
+
+- **a.** Delete the unused functions and the skipped test; keep
+  `data_dir_ignore()` as `version_setup()` needs it.
+- **b.** Fix them and enable the tests, if tracking subfolders of `data/` is a
+  planned feature.
+
+**Recommended:** a, unless the feature is planned.
+
+#### 12. Repositories named `resrepo`
+
+**Now.** Every function stops with "this name is reserved" when the
+repository's folder is called `resrepo` (meant to protect the package's own
+source). A user who names a project `resrepo`, e.g. following a tutorial,
+cannot use the package at all.
+
+**Options.**
+
+- **a.** Keep, and document it.
+- **b.** Recognise the package's source itself (a `DESCRIPTION` with
+  `Package: resrepo` at the root) instead of the folder's name.
+
+**Recommended:** b.
 
 ### Minor
 
