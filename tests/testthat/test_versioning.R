@@ -452,6 +452,28 @@ test_that("resources_path cannot be set to git root", {
   )
 })
 
+test_that("get_resrepo_git_creds reads the origin remote", {
+  creds_dir <- file.path(tempdir(), "resrepo_creds")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(creds_dir)) {
+    fs::dir_delete(creds_dir)
+  }
+  dir.create(creds_dir)
+  git2r::init(creds_dir, branch = "main")
+  # delete the repository at the end (after leaving it)
+  withr::defer(fs::dir_delete(creds_dir))
+  withr::local_dir(creds_dir)
+  # without remotes there is nothing to push to
+  expect_identical(get_resrepo_git_creds()$type, "none")
+  # with several remotes, only origin is used (it used to fail with "the
+  # condition has length > 1")
+  git2r::remote_add(name = "origin", url = "git@github.com:user/repo.git")
+  git2r::remote_add(name = "upstream", url = "git@github.com:other/repo.git")
+  creds <- get_resrepo_git_creds()
+  expect_identical(creds$type, "ssh")
+  expect_identical(creds$url, "git@github.com:user/repo.git")
+})
+
 test_that("clone a versioned repo", {
   directory_penguins <- file.path(tempdir(), "resrepo_penguins")
   if (!dir.exists(directory_penguins)) dir.create(directory_penguins)

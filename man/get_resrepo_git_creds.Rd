@@ -11,7 +11,8 @@ A list containing the type of credentials, the URL, and the
 GitHub PAT if applicable.
 }
 \description{
-This function checks the current git remote URL and determines if the
-credentials are set up for SSH or HTTPS access.
+This function checks the URL of the \code{origin} remote (the one resrepo pushes
+to) and determines if the credentials are set up for SSH or HTTPS access.
+Without an \code{origin} remote, the type is "none".
 }
 \keyword{internal}

@@ -1,15 +1,22 @@
 #' Get git credentials if they are available
 #'
-#' This function checks the current git remote URL and determines if the
-#' credentials are set up for SSH or HTTPS access.
+#' This function checks the URL of the `origin` remote (the one resrepo pushes
+#' to) and determines if the credentials are set up for SSH or HTTPS access.
+#' Without an `origin` remote, the type is "none".
 #' @return A list containing the type of credentials, the URL, and the
 #' GitHub PAT if applicable.
 #' @keywords internal
 
 get_resrepo_git_creds <- function() {
-  # figure out if we are using ssh or https
-  git_url <- git2r::remote_url()
-  # @TODO is this correct?????
+  # figure out if we are using ssh or https; resrepo pushes to "origin", so
+  # only the url of that remote matters (git2r::remote_url() without a remote
+  # returns one url per remote)
+  if ("origin" %in% git2r::remotes()) {
+    git_url <- git2r::remote_url(remote = "origin")
+  } else {
+    git_url <- character(0)
+  }
+  # without an origin there is nothing to push to
   if (length(git_url) == 0) {
     creds <- list(
       type = "none",

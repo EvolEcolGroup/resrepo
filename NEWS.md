@@ -14,6 +14,8 @@
   raw data of their source version
 * `path_resrepo()`: fix paths with `version`, which pointed to
   `versions/<version>/data/` instead of `versions/<version>/`
+* `version_add()`: fix repositories with more than one git remote (only
+  `origin` is used)
 
 # resrepo 0.3.1
 
