@@ -81,4 +81,3 @@ test_that("init_resrepo works on the repository at path", {
   expect_true(file.exists(file.path(other_dir, "code", "README.md")))
   fs::dir_delete(other_dir)
 })
-
