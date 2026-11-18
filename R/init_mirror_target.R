@@ -20,8 +20,10 @@ init_mirror <- function(path) {
     dir.create(mirror_path)
   } else {
     if (length(list.files(mirror_path) != 0)) {
-      stop("the mirror directory ", mirror_path, " already exists and contains
-           files!")
+      stop(
+        "the mirror directory ", mirror_path,
+        " already exists and contains files!"
+      )
     }
   }
   template_dir <- system.file("template_mirror", package = "resrepo")

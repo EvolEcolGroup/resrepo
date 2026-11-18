@@ -22,14 +22,14 @@ data_dir_ignore <- function(path) {
     # form this directory
     if (path %in% git2r::ls_tree()$path) {
       stop(
-        "git has tracked files in this directory.",
+        "git has tracked files in this directory. ",
         "To start ignoring this directory:\n",
-        "1) move all the files within the directory",
+        "1) move all the files within the directory ",
         "to another temporary location\n",
-        "2) commit your changes so that git will forget",
+        "2) commit your changes so that git will forget ",
         "about those files, as it will\n",
         "   see them as deleted\n",
-        "3) re-run data_dir_ingore('", path, "') in R\n",
+        "3) re-run data_dir_ignore('", path, "') in R\n",
         "4) move back your files into ", path
       )
     }

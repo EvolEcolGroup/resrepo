@@ -22,7 +22,7 @@ data_dir_link <- function(link_dir, target_dir) {
   if (dir.exists(abs_data_path)) {
     if (length(list.files(abs_data_path)) != 0) {
       stop(
-        "the data_dir ", abs_data_path, " already exist and is not empty!/n",
+        "the data_dir ", abs_data_path, " already exists and is not empty!\n",
         "Before creating a link, move all files to the target_dir first."
       )
     } else {
