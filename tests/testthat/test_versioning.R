@@ -250,6 +250,13 @@ test_that("versioning with resources_path argument", {
     resources_path = external_data_storage,
     quiet = TRUE
   ))
+  # only the versions directory at the root is ignored (the line used to be
+  # "versions", which ignored any directory called versions)
+  expect_true("/versions" %in% readLines(path_resrepo(".gitignore")))
+  dir.create(path_resrepo("results/versions"))
+  write.csv("blah", path_resrepo("results/versions/table.csv"))
+  expect_length(git2r::status()$untracked, 1)
+  fs::dir_delete(path_resrepo("results/versions"))
   # copy in some data
   file.copy(
     from = system.file("vignette_example/tux_measurements.csv",

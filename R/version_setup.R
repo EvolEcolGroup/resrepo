@@ -105,8 +105,9 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
   dir.create(path_resrepo("versions/initial"), recursive = TRUE)
 
 
-  # ingore the versions directory
-  data_dir_ignore("versions")
+  # ignore the versions directory at the root of the repository ("/versions";
+  # a plain "versions" would ignore any file or directory called versions)
+  data_dir_ignore("/versions")
   # copy all raw, intermediate contents
   fs::dir_copy(
     path_resrepo("data/raw"),

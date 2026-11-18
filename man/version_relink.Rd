@@ -25,3 +25,10 @@ If a repository has been cloned, relinks the "versions" directory to the
 the "versions" directory to a different location, this function will also
 update the links accordingly.
 }
+\details{
+Repositories versioned with older versions of resrepo ignore any file or
+directory called \code{versions} (the line \code{versions} in \code{.gitignore}):
+\code{version_relink()} replaces that line with \verb{/versions}, which ignores only
+the directory at the root, and commits \code{.gitignore} when that change can
+be committed on its own.
+}

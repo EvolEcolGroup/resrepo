@@ -34,6 +34,8 @@
   answered "No"
 * the source of the resrepo package is also recognised, and refused, by its
   `DESCRIPTION`, not only by the name of its folder
+* `version_setup()` ignores only the `versions` directory at the root (it
+  ignored any directory called `versions`); `version_relink()` corrects this
 
 # resrepo 0.3.1
 

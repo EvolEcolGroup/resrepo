@@ -5,6 +5,12 @@
 #' the "versions" directory to a different location, this function will also
 #' update the links accordingly.
 #'
+#' Repositories versioned with older versions of resrepo ignore any file or
+#' directory called `versions` (the line `versions` in `.gitignore`):
+#' `version_relink()` replaces that line with `/versions`, which ignores only
+#' the directory at the root, and commits `.gitignore` when that change can
+#' be committed on its own.
+#'
 #' @param quiet If TRUE, the user will not be prompted to backup their data.
 #'   Default is FALSE.
 #' @param resources_path The path to the directory that holds "versions", the
@@ -39,10 +45,66 @@ version_relink <- function(quiet = FALSE, resources_path = NULL) {
   } else if (!fs::is_link(path_resrepo("data/raw")) || !fs::is_link(path_resrepo("data/intermediate"))) { # nolint
     # if data/raw and data/intermediate aren't links, then
     # this is a cloned versioned
-    version_setup_cloned(quiet = quiet, resources_path = resources_path)
+    relinked <- version_setup_cloned(
+      quiet = quiet, resources_path = resources_path
+    )
   } else {
-    version_reset(quiet = quiet, resources_path = resources_path)
+    relinked <- version_reset(quiet = quiet, resources_path = resources_path)
   }
+  # older set-ups ignored any file or directory called versions: ignore only
+  # the one at the root
+  fix_versions_ignore(quiet = quiet)
+  relinked
+}
+
+#' Ignore only the versions directory at the root of the repository
+#'
+#' Repositories versioned with resrepo up to 0.3.1 have the line `versions`
+#' in `.gitignore`, which ignores any file or directory called `versions`
+#' anywhere in the repository (e.g. `results/versions/`). This replaces it
+#' with `/versions`, and commits `.gitignore` if nothing else was staged and
+#' `.gitignore` had no other changes; otherwise it leaves the change for the
+#' user to commit.
+#'
+#' @param quiet If TRUE, do not print messages
+#' @returns TRUE if `.gitignore` was changed, invisibly
+#' @keywords internal
+#' @noRd
+
+fix_versions_ignore <- function(quiet = FALSE) {
+  gitignore <- path_resrepo(".gitignore")
+  # nothing to do without a .gitignore, or without the old line
+  if (!file.exists(gitignore)) {
+    return(invisible(FALSE))
+  }
+  gitignore_lines <- readLines(gitignore)
+  if (!"versions" %in% gitignore_lines) {
+    return(invisible(FALSE))
+  }
+  # check that the commit would hold only this change: nothing staged, and
+  # no other change to .gitignore
+  git_status <- git2r::status()
+  can_commit <- length(git_status$staged) == 0 &&
+    !".gitignore" %in% unlist(git_status$unstaged)
+  # replace the line
+  gitignore_lines[gitignore_lines == "versions"] <- "/versions"
+  writeLines(gitignore_lines, gitignore)
+  if (can_commit) {
+    git2r::add(path = gitignore)
+    git2r::commit(message = "Ignore only the versions directory at the root")
+    if (!quiet) {
+      message(
+        "'versions' in .gitignore was replaced with '/versions' (only the ",
+        "directory at the root is ignored), and committed"
+      )
+    }
+  } else {
+    message(
+      "'versions' in .gitignore was replaced with '/versions' (only the ",
+      "directory at the root is ignored); please commit .gitignore"
+    )
+  }
+  invisible(TRUE)
 }
 
 

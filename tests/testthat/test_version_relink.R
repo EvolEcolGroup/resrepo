@@ -67,7 +67,15 @@ test_that("version_relink works correctly", {
 
 
   version_setup(quiet = TRUE, resources_path = NULL)
-
+  # turn this into an older set-up, which ignored any directory called
+  # versions
+  gitignore_lines <- readLines(path_resrepo(".gitignore"))
+  if ("/versions" %in% gitignore_lines) {
+    gitignore_lines[gitignore_lines == "/versions"] <- "versions"
+    writeLines(gitignore_lines, path_resrepo(".gitignore"))
+    git2r::add(path = path_resrepo(".gitignore"))
+    git2r::commit(message = "An older set-up")
+  }
 
   # create new data directory where we want to move our data
   new_data_dir <- file.path(example_dir, "new_data_dir")
@@ -83,6 +91,10 @@ test_that("version_relink works correctly", {
   version_relink(
     quiet = TRUE, resources_path = new_data_dir
   )
+  # relinking corrected .gitignore, and committed it
+  expect_true("/versions" %in% readLines(path_resrepo(".gitignore")))
+  expect_false("versions" %in% readLines(path_resrepo(".gitignore")))
+  expect_true(git_is_clean())
 
   expect_true(version_add(
     intermediate_new_version = "new_filtering",
