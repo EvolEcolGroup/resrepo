@@ -44,6 +44,8 @@
   last, and undoes its changes if it fails before the push
 * `version_add()` refuses version names reserved by the file system (e.g.
   `aux`, `con`, `..`), which became empty
+* `version_add()` refuses a detached HEAD, and its undo also runs on interrupts
+  and keeps the original error
 * the links from `data/` to `versions/` are relative (except on Windows), so
   that a repository keeps working when moved
 * `version_relink()` stops if the versions in use are missing, instead of

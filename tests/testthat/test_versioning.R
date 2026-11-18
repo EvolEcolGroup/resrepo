@@ -431,12 +431,15 @@ test_that("versioning with resources_path argument", {
     local_mocked_bindings(
       data_dir_link = function(...) stop("simulated failure")
     )
-    expect_error(
-      version_add(
-        intermediate_new_version = "failed",
-        intermediate_description = "Fails half-way", quiet = TRUE
+    expect_message(
+      expect_error(
+        version_add(
+          intermediate_new_version = "failed",
+          intermediate_description = "Fails half-way", quiet = TRUE
+        ),
+        "simulated failure"
       ),
-      "simulated failure"
+      "changes were undone"
     )
   })
   expect_true(git2r::is_head(git2r::branches()$not_pushed))
@@ -478,6 +481,43 @@ test_that("versioning with resources_path argument", {
   expect_true(dir.exists(path_resrepo("versions/push_fails/intermediate")))
   expect_identical(get_versions_in_use()$intermediate, "push_fails")
   expect_true(git_is_clean())
+
+  # on a detached HEAD there is no branch to return to: refused before any
+  # change (the undo used to fail, losing the original error)
+  system2("git", c("checkout", "-q", "--detach"), stdout = FALSE)
+  expect_error(
+    version_add(
+      intermediate_new_version = "detached",
+      intermediate_description = "On a detached HEAD", quiet = TRUE
+    ),
+    "detached HEAD"
+  )
+  expect_false(dir.exists(path_resrepo("versions/detached")))
+  system2("git", c("checkout", "-q", "push_fails"), stdout = FALSE)
+
+  # if a step of the undo fails, the others still run, the original error is
+  # kept, and a warning lists what could not be undone (an error in the undo
+  # used to replace the original one, and skip the other steps)
+  local({
+    local_mocked_bindings(
+      data_dir_link = function(...) stop("simulated failure"),
+      update_links = function(...) stop("simulated undo failure")
+    )
+    expect_warning(
+      expect_error(
+        version_add(
+          intermediate_new_version = "failed_undo",
+          intermediate_description = "Fails, and so does the undo",
+          quiet = TRUE
+        ),
+        "simulated failure"
+      ),
+      "could not be undone: restore the links"
+    )
+  })
+  expect_true(git2r::is_head(git2r::branches()$push_fails))
+  expect_false("failed_undo" %in% names(git2r::branches()))
+  expect_false(dir.exists(path_resrepo("versions/failed_undo")))
 })
 
 test_that(paste0(
