@@ -9,7 +9,7 @@
 #'
 #' @param check_links If TRUE, check that the links in the `data` directory are
 #'   correct
-#' @return A data.frame with columns, `raw` and `intermediate`, which are the
+#' @return A list with elements `raw` and `intermediate`, which are the
 #'   versions of the raw and intermediate data currently in use.
 #' @export
 

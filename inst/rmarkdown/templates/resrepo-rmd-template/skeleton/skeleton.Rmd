@@ -98,7 +98,8 @@ printing of the R code that generated the plot.
 ## Recording R environment
 
 Part of ensuring our workflow is reproducible is to keep track of the R environment.
-We will automatically save our R environment into a file called `r_environment.json`.
+We will automatically save our R environment into a file called
+`renv_<name of this file>.json` in `output_dir`.
 
 ```{r save-r-environment}
 # the name of the Rmd being knitted (this also works outside RStudio)

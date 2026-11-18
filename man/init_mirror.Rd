@@ -2,14 +2,16 @@
 % Please edit documentation in R/init_mirror_target.R
 \name{init_mirror}
 \alias{init_mirror}
-\title{Initialise a resrepo}
+\title{Initialise a mirror of a resrepo}
 \usage{
 init_mirror(path)
 }
 \arguments{
-\item{path}{optional path for the a resrepo; by default, we use the current
-working directory}
+\item{path}{the path of the directory in which the mirror is created (it
+must exist)}
 }
 \description{
-Initialise a resrepo, creating all the necessary files and directories.
+Initialise a mirror directory for the resrepo of the working directory: a
+directory named after the repository is created in \code{path}, with the
+structure of the data directories.
 }

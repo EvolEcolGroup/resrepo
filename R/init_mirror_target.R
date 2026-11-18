@@ -1,9 +1,11 @@
-#' Initialise a resrepo
+#' Initialise a mirror of a resrepo
 #'
-#' Initialise a resrepo, creating all the necessary files and directories.
+#' Initialise a mirror directory for the resrepo of the working directory: a
+#' directory named after the repository is created in `path`, with the
+#' structure of the data directories.
 #'
-#' @param path optional path for the a resrepo; by default, we use the current
-#' working directory
+#' @param path the path of the directory in which the mirror is created (it
+#'   must exist)
 #'
 #' @export
 

@@ -11,7 +11,7 @@ get_versions_in_use(check_links = TRUE)
 correct}
 }
 \value{
-A data.frame with columns, \code{raw} and \code{intermediate}, which are the
+A list with elements \code{raw} and \code{intermediate}, which are the
 versions of the raw and intermediate data currently in use.
 }
 \description{

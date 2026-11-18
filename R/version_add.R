@@ -22,7 +22,7 @@
 #' @param raw_description A description of the new raw version, required if
 #'   `raw_new_version` is given. Ignored if `raw_new_version` is NULL.
 #' @param git_branch The name of the git branch to create. If NULL, it will be
-#'   the same as `new_version`
+#'   the same as `intermediate_new_version`
 #' @param quiet If TRUE, suppress messages
 #' @returns TRUE if the version was successfully added
 #' @export

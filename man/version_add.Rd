@@ -37,7 +37,7 @@ it will be the current version. Ignored if \code{raw_new_version} is NULL.}
 \code{raw_new_version} is given. Ignored if \code{raw_new_version} is NULL.}
 
 \item{git_branch}{The name of the git branch to create. If NULL, it will be
-the same as \code{new_version}}
+the same as \code{intermediate_new_version}}
 
 \item{quiet}{If TRUE, suppress messages}
 }
