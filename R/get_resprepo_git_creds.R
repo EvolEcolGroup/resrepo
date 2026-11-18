@@ -33,26 +33,25 @@ get_resrepo_git_creds <- function() {
       github_pat = NULL # pat is null as we are using ssh
     )
   } else if (grepl("^https://", git_url)) {
-    # copy to the PAT to an env variable
+    # get the PAT for the host of the remote (which is not always
+    # github.com); gitcreds finds it in the git credential store or in env
+    # variables such as GITHUB_PAT
     # catch the error if we don't have one
-    tryCatch(
-      gitcreds::gitcreds_get()$host,
+    git_creds <- tryCatch(
+      gitcreds::gitcreds_get(url = git_url),
       error = function(e) {
         stop(
-          "You don't have a PAT set up with `gitcreds`.",
+          "You don't have a PAT set up with `gitcreds`. ",
           "Please set it using gitcreds::gitcreds_set()."
         )
       }
     )
-    git_env_var <- gitcreds::gitcreds_cache_envvar(url = git_url)
-    github_pat_full <- Sys.getenv(git_env_var)
-    github_pat_full <- strsplit(github_pat_full, ":")
-    token <- github_pat_full[[1]][which(
-      github_pat_full[[1]] == "password"
-    ) + 1]
-    username <- github_pat_full[[1]][which(
-      github_pat_full[[1]] == "username"
-    ) + 1]
+    # a token given on its own (e.g. in GITHUB_PAT) has no username; the
+    # hosts accept any username with a token
+    username <- git_creds$username
+    if (is.null(username) || is.na(username) || !nzchar(username)) {
+      username <- "PersonalAccessToken"
+    }
 
     # HTTPS URL
     creds <- list(
@@ -60,7 +59,7 @@ get_resrepo_git_creds <- function() {
       url = git_url,
       github_pat = git2r::cred_user_pass(
         username = username,
-        password = token
+        password = git_creds$password
       )
     )
   } else {

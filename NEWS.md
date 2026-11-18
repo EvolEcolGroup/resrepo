@@ -17,6 +17,8 @@
 * `version_add()`: fix repositories with more than one git remote (only
   `origin` is used)
 * `version_add()`: fix `ssh://` remote urls, which were not supported
+* `version_add()`: fix empty https credentials when the token is in `GITHUB_PAT`
+  or the remote is not on GitHub
 
 # resrepo 0.3.1
 

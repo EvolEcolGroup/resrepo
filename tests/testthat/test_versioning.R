@@ -475,6 +475,19 @@ test_that("get_resrepo_git_creds reads the origin remote", {
   # ssh urls can also use the ssh:// scheme (they used to be unsupported)
   git2r::remote_set_url(name = "origin", url = "ssh://git@github.com/u/r.git")
   expect_identical(get_resrepo_git_creds()$type, "ssh")
+  # https: the token is found however gitcreds stores it, for any host (it
+  # used to be parsed from the gitcreds cache variable, so a token given on
+  # its own, or for a host other than github.com, gave empty credentials)
+  git2r::remote_set_url(name = "origin", url = "https://github.com/u/r.git")
+  withr::local_envvar(GITHUB_PAT_GITHUB_COM = "ghp_fake_token")
+  creds <- get_resrepo_git_creds()
+  expect_identical(creds$type, "https")
+  expect_identical(creds$github_pat$password, "ghp_fake_token")
+  git2r::remote_set_url(name = "origin", url = "https://gitlab.com/u/r.git")
+  withr::local_envvar(GITHUB_PAT_GITLAB_COM = "glpat_fake_token")
+  expect_identical(
+    get_resrepo_git_creds()$github_pat$password, "glpat_fake_token"
+  )
 })
 
 test_that("clone a versioned repo", {
