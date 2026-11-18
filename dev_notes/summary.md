@@ -5,7 +5,7 @@ dramanica/claude_jobs, with the single list of its tasks. Its first
 paragraph, status and next steps are copied into the issue
 (`scripts/sync_issue.py`).
 
-## resrepo: dramanica/claude_jobs#ISSUE
+## resrepo: dramanica/claude_jobs#20
 
 Code review of resrepo (research git repositories with versioned data), and the decisions it raised.
 
@@ -37,4 +37,4 @@ once it is pushed.
 - [ ] **P2** [decide] `init_resrepo()` in an existing repository overwrites README.md and .gitignore and commits every untracked file: refuse, or skip existing files? Recommended: skip existing files and add only the template's files.
 - [ ] **P2** [decide] The ignored `path` arguments of `init_resrepo()` and `version_add()`: implement or deprecate? Recommended: implement in `init_resrepo()`, deprecate in `version_add()`.
 - [ ] **P3** [decide] The other 9 decisions in the report (same-name raw and intermediate versions, local remotes, rollback in `version_add()`, one meaning for `resources_path`, existing git hooks, `data_dir_*()` functions, `/versions` in .gitignore, outputs left in `code/`, repositories named resrepo).
-- [ ] **P3** [cleanup] After the merge: delete `codereview` and `fix_knit_subdir`, the worktrees and `/media/andrea/annex/tmp/claude/resrepo/`.
+- [ ] **P3** [cleanup] After the merge: delete the branches `codereview` and `fix_knit_subdir`, and `/media/andrea/annex/tmp/claude/resrepo/` (logs and probe scripts).
