@@ -21,6 +21,9 @@ test_that("knit_to_results keeps the subdirectory of code/", {
     rmd_lines,
     file.path(example_dir, "code", "analysis", "sub", "deep.Rmd")
   )
+  # a file whose name ends with the name of an output (it used to be moved
+  # to results/top/ and renamed README.md when knitting top.Rmd)
+  writeLines("My notes", file.path(example_dir, "code", "notes_top.md"))
   ############
   # a relative path starting with "code/" (it used to lose analysis/)
   withr::with_dir(example_dir, {
@@ -60,6 +63,8 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   expect_false(any(grepl(
     "\\.html$", list.files(file.path(example_dir, "code"), recursive = TRUE)
   )))
+  # the other files in code/ stay where they are
+  expect_true(file.exists(file.path(example_dir, "code", "notes_top.md")))
   # clean up
   fs::dir_delete(file.path(tempdir(), "code"))
 })

@@ -97,10 +97,19 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   ## move the output file AND the associated folder
   # of images over to the output directory
 
+  ## escape the regular expression characters in the file name (e.g. the "."
+  ## in "s01.v2"), and anchor the patterns below at the start of the name, so
+  ## that only the outputs of this file are matched (not e.g. "notes_test.md"
+  ## when knitting "test.Rmd")
+  name_regex <- gsub(
+    "([.|()\\^{}+$*?\\[\\]\\\\])", "\\\\\\1", input_file_no_ext,
+    perl = TRUE
+  )
+
   ## FILES TO MOVE: fname.md or fname.pdf or fname.html etc
   # inputFile
   cur_file_regex <- paste0(
-    input_file_no_ext,
+    "^", name_regex,
     "(\\.html|\\.pdf|\\.md|\\.docx)$"
   )
   ## create a regexp to find the output file
@@ -122,7 +131,7 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   base::file.rename(cur_files, new_files) # MOVES files
 
   ## FOLDER TO MOVE: fname_files
-  cur_folder_regex <- paste0(input_file_no_ext, "_files$")
+  cur_folder_regex <- paste0("^", name_regex, "_files$")
   # cur_folder_regex
   cur_folder <- file.path(cur_dir, list.files(cur_dir,
     # folder to move
@@ -140,7 +149,7 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   # rename the md file to README for GitHub display
   if (rename_md == TRUE) {
     md_file <- list.files(new_dir,
-      pattern = paste0(input_file_no_ext, ".md")
+      pattern = paste0("^", name_regex, "\\.md$")
     )
     # check if there is a .md file in the new directory
     if (length(md_file) > 0) {
