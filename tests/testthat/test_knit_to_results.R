@@ -116,6 +116,11 @@ test_that("knit_to_results moves the output of any format", {
     c("---", "title: Test", "output: rtf_document", "---", "Hi."),
     file.path(example_dir, "code", "letter.Rmd")
   )
+  # a .tex written by the user, with the same name, is not an output (it
+  # used to be moved too)
+  user_tex <- file.path(example_dir, "code", "letter.tex")
+  writeLines("\\documentclass{article}", user_tex)
+  Sys.setFileTime(user_tex, Sys.time() - 3600)
   withr::with_dir(example_dir, {
     suppressMessages(capture.output(
       knit_to_results("code/letter.Rmd", encoding = "UTF-8")
@@ -124,7 +129,9 @@ test_that("knit_to_results moves the output of any format", {
   expect_true(
     file.exists(file.path(example_dir, "results", "letter", "letter.rtf"))
   )
-  expect_identical(list.files(file.path(example_dir, "code")), "letter.Rmd")
+  expect_setequal(
+    list.files(file.path(example_dir, "code")), c("letter.Rmd", "letter.tex")
+  )
   fs::dir_delete(example_dir)
 })
 

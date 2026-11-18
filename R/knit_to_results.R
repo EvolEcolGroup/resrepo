@@ -18,7 +18,8 @@
 #' The output of any format is moved (the file that
 #' \code{rmarkdown::render()} returns), together with the \code{.md} and
 #' \code{.tex} files kept by \code{keep_md} and \code{keep_tex}, and the
-#' folder of figures (\code{<name>_files}).
+#' folder of figures (\code{<name>_files}). Files with these names that the
+#' knitting did not write (older than its start) are left where they are.
 #' The repository is the one that holds the \code{.Rmd} file, so the result
 #' does not depend on the working directory, nor on whether the path is
 #' relative or absolute.
@@ -69,6 +70,13 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
   ## run the rmarkdown render function (output_file is not given, as
   ## rmarkdown would read the last part of a name with a dot, e.g. ".v2" in
   ## "s01.v2", as its extension, and write a file "s01.v2" with no extension)
+  ## note when the knitting started (to the second, as some file systems
+  ## store modification times to the second), to tell the files it writes
+  ## from older files with the same names
+  knit_start <- as.POSIXct(
+    floor(as.numeric(Sys.time())),
+    origin = "1970-01-01"
+  )
   output_path <- rmarkdown::render(
     input = input_file,
     envir = envir
@@ -124,10 +132,13 @@ knit_to_results <- function(input_file, encoding, envir = parent.frame(),
     "^", name_regex,
     "(\\.html|\\.pdf|\\.md|\\.docx|\\.tex)$"
   )
-  output_files <- union(
-    basename(output_path),
-    list.files(out_dir, pattern = cur_file_regex)
-  )
+  ## the other files are moved only if this knitting wrote them (not, e.g.,
+  ## a fname.tex written by the user)
+  extra_files <- list.files(out_dir, pattern = cur_file_regex)
+  extra_files <- extra_files[
+    file.mtime(file.path(out_dir, extra_files)) >= knit_start
+  ]
+  output_files <- union(basename(output_path), extra_files)
   output_files <- output_files[file.exists(file.path(out_dir, output_files))]
   cur_files <- file.path(out_dir, output_files) # current filepaths
   new_files <- file.path(new_dir, output_files) # where they should go to
