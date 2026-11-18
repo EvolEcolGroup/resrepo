@@ -11,13 +11,13 @@
 #' the directory at the root, and commits `.gitignore` when that change can
 #' be committed on its own.
 #'
-#' @param quiet If TRUE, the user will not be prompted to backup their data.
-#'   Default is FALSE.
 #' The versions in use (in `data/version_meta/raw_in_use.meta` and
 #' `intermediate_in_use.meta`) must be in the versions directory: if any is
 #' missing (e.g. a mistyped `resources_path`, or data not yet copied there),
 #' `version_relink()` stops, unless `create = TRUE`, which creates them empty.
 #'
+#' @param quiet If TRUE, the user will not be prompted to backup their data.
+#'   Default is FALSE.
 #' @param resources_path The path to a directory outside the repository that
 #'   holds "versions", the directory containing versioned data (or to
 #'   "versions" itself). If NULL (the default), "versions" is at the root of

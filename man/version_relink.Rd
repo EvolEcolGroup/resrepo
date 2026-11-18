@@ -8,11 +8,7 @@ version_relink(quiet = FALSE, resources_path = NULL, create = FALSE)
 }
 \arguments{
 \item{quiet}{If TRUE, the user will not be prompted to backup their data.
-Default is FALSE.
-The versions in use (in \code{data/version_meta/raw_in_use.meta} and
-\code{intermediate_in_use.meta}) must be in the versions directory: if any is
-missing (e.g. a mistyped \code{resources_path}, or data not yet copied there),
-\code{version_relink()} stops, unless \code{create = TRUE}, which creates them empty.}
+Default is FALSE.}
 
 \item{resources_path}{The path to a directory outside the repository that
 holds "versions", the directory containing versioned data (or to
@@ -37,4 +33,9 @@ directory called \code{versions} (the line \code{versions} in \code{.gitignore})
 \code{version_relink()} replaces that line with \verb{/versions}, which ignores only
 the directory at the root, and commits \code{.gitignore} when that change can
 be committed on its own.
+
+The versions in use (in \code{data/version_meta/raw_in_use.meta} and
+\code{intermediate_in_use.meta}) must be in the versions directory: if any is
+missing (e.g. a mistyped \code{resources_path}, or data not yet copied there),
+\code{version_relink()} stops, unless \code{create = TRUE}, which creates them empty.
 }
