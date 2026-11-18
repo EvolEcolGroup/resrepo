@@ -300,6 +300,31 @@ test_that("versioning with resources_path argument", {
   )
   # the repo should still have a clean working directory
   expect_true(git_is_clean())
+
+  # wrong arguments are caught before the git branch is created (they used
+  # to leave us on a new branch, with a half-made version)
+  expect_error(
+    version_add(
+      intermediate_new_version = "bad_source",
+      intermediate_source = "not_a_version",
+      intermediate_description = "A wrong source", quiet = TRUE
+    ),
+    "source version not_a_version does not exist"
+  )
+  expect_error(
+    version_add(
+      intermediate_new_version = "no_raw_description",
+      raw_new_version = "new_raw",
+      intermediate_description = "No description for raw", quiet = TRUE
+    ),
+    "description for the new raw version"
+  )
+  # no branch was created, and we are still on new_filtering
+  expect_false(any(
+    c("bad_source", "no_raw_description") %in% names(git2r::branches())
+  ))
+  expect_true(git2r::is_head(git2r::branches()$new_filtering))
+  expect_true(git_is_clean())
 })
 
 test_that(paste0(

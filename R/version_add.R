@@ -19,8 +19,8 @@
 #' @param raw_source The name of the raw version to copy from. If NULL,
 #'   it will be the current version. Ignored if `raw_new_version` is NULL.
 #' @param intermediate_description A description of the new intermediate version
-#' @param raw_description A description of the new raw version. Ignored if
-#'  `raw_new_version` is NULL.
+#' @param raw_description A description of the new raw version, required if
+#'   `raw_new_version` is given. Ignored if `raw_new_version` is NULL.
 #' @param git_branch The name of the git branch to create. If NULL, it will be
 #'   the same as `new_version`
 #' @param quiet If TRUE, suppress messages
@@ -68,6 +68,11 @@ version_add <- function(path = ".",
     raw_new_version <- sanitise_version(raw_new_version)
     create_raw <- TRUE
     # TODO check that this is new
+    # a new raw version needs its own description (its meta file could not
+    # be written without one)
+    if (is.null(raw_description)) {
+      stop("You must provide a description for the new raw version")
+    }
   } else {
     # if null, use the current raw version
     raw_new_version <- in_use$raw
@@ -86,6 +91,25 @@ version_add <- function(path = ".",
   if (!dir.exists(path_resrepo("versions"))) {
     stop("versions does not exist; you need to use setup_version() first")
   }
+  # if source versions not given, use the current one,
+  # else check that they exist (before creating the git branch, so that
+  # a wrong source leaves the repository untouched)
+  # for raw
+  if (is.null(raw_source)) {
+    raw_source <- in_use$raw
+  } else {
+    if (!dir.exists(path_resrepo(paste0("versions/", raw_source)))) {
+      stop("source version ", raw_source, " does not exist")
+    }
+  }
+  # same for intermediate
+  if (is.null(intermediate_source)) {
+    intermediate_source <- in_use$intermediate
+  } else {
+    if (!dir.exists(path_resrepo(paste0("versions/", intermediate_source)))) {
+      stop("source version ", intermediate_source, " does not exist")
+    }
+  }
   # if no name for the git branch was given, use the same name as the version
   if (is.null(git_branch)) {
     git_branch <- intermediate_new_version
@@ -103,25 +127,6 @@ version_add <- function(path = ".",
         set_upstream = TRUE,
         credentials = creds$github_pat
       )
-    }
-  }
-
-  # if source versions not given, use the current one,
-  # else check that they exist
-  # for raw
-  if (is.null(raw_source)) {
-    raw_source <- in_use$raw
-  } else {
-    if (!dir.exists(path_resrepo(paste0("versions/", raw_source)))) {
-      stop("source version ", raw_source, " does not exist")
-    }
-  }
-  # same for intermediate
-  if (is.null(intermediate_source)) {
-    intermediate_source <- in_use$intermediate
-  } else {
-    if (!dir.exists(path_resrepo(paste0("versions/", intermediate_source)))) {
-      stop("source version ", intermediate_source, " does not exist")
     }
   }
 

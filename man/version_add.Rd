@@ -33,8 +33,8 @@ it will be the current version. Ignored if \code{raw_new_version} is NULL.}
 
 \item{intermediate_description}{A description of the new intermediate version}
 
-\item{raw_description}{A description of the new raw version. Ignored if
-\code{raw_new_version} is NULL.}
+\item{raw_description}{A description of the new raw version, required if
+\code{raw_new_version} is given. Ignored if \code{raw_new_version} is NULL.}
 
 \item{git_branch}{The name of the git branch to create. If NULL, it will be
 the same as \code{new_version}}

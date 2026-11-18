@@ -6,6 +6,8 @@
   subdirectories of `code/` given with a relative path (#62)
 * `get_versions_in_use()` and `version_add()`: fix "The link to the raw data
   is incorrect" after a `git checkout` or `git merge`
+* `version_add()` checks its arguments before creating the git branch, and
+  needs `raw_description` with `raw_new_version`
 
 # resrepo 0.3.1
 
