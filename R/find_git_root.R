@@ -2,6 +2,10 @@
 #'
 #' Returns the path of the current git repository
 #'
+#' The source of the resrepo package itself is refused, to avoid turning it
+#' into a resrepo by mistake: a repository whose folder is called `resrepo`,
+#' or whose `DESCRIPTION` file says `Package: resrepo`.
+#'
 #' @param path option string giving the path to use a starting point (i.e. that
 #'   is part of the repository)
 #'
@@ -28,8 +32,24 @@ find_git_root <- function(path = ".") {
       "(and none found in any of the parent directories)"
     )
   }
-  if (basename(normalizePath(path)) == "resrepo") {
-    stop("You are in a git repository called resrepo; this name is reserved\n")
+  # refuse to work in the source of the resrepo package itself: a repository
+  # called resrepo, or one whose DESCRIPTION is that of the package (e.g. a
+  # copy of the source in a folder with another name)
+  desc_file <- file.path(path, "DESCRIPTION")
+  is_resrepo_source <- FALSE
+  if (file.exists(desc_file)) {
+    desc_package <- tryCatch(
+      read.dcf(desc_file, fields = "Package")[1, 1],
+      error = function(e) NA_character_
+    )
+    is_resrepo_source <- isTRUE(desc_package == "resrepo")
+  }
+  if (basename(normalizePath(path)) == "resrepo" || is_resrepo_source) {
+    stop(
+      "You are in the source of the resrepo package (a git repository ",
+      "called resrepo, or with 'Package: resrepo' in its DESCRIPTION); ",
+      "this repository is reserved\n"
+    )
   }
   path <- gsub("\\\\", "/", path) ## changed by Lizzie 1st Feb 2023:
   # sanitize path: convert any double backslashes to single forward slashes

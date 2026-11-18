@@ -32,6 +32,8 @@
   is not the root of the repository when run from a subdirectory
 * `version_setup()` stops if the backup question is cancelled, not only if
   answered "No"
+* the source of the resrepo package is also recognised, and refused, by its
+  `DESCRIPTION`, not only by the name of its folder
 
 # resrepo 0.3.1
 

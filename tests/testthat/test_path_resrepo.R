@@ -86,3 +86,26 @@ test_that("path_relative compares whole directory names", {
   # characters that have a meaning in regular expressions (this used to fail)
   expect_identical(path_relative("/home/a(b/x", "/home/a(b"), "x")
 })
+
+test_that("find_git_root refuses the source of the resrepo package", {
+  # a copy of the package source in a folder with another name (it used to
+  # be accepted)
+  src_dir <- file.path(tempdir(), "resrepo_copy")
+  dir.create(src_dir, showWarnings = FALSE)
+  git2r::init(src_dir)
+  writeLines(
+    c("Package: resrepo", "Version: 0.3.1"),
+    file.path(src_dir, "DESCRIPTION")
+  )
+  expect_error(find_git_root(src_dir), "resrepo")
+  # a repository called resrepo is still refused
+  named_dir <- file.path(tempdir(), "named_repo", "resrepo")
+  dir.create(named_dir, recursive = TRUE, showWarnings = FALSE)
+  git2r::init(named_dir)
+  expect_error(find_git_root(named_dir), "source of the resrepo package")
+  # a repository holding another package is fine
+  writeLines(c("Package: mypkg", "Version: 0.1"), file.path(src_dir, "DESCRIPTION"))
+  expect_identical(find_git_root(src_dir), src_dir)
+  # clean up
+  fs::dir_delete(c(file.path(tempdir(), "named_repo"), src_dir))
+})

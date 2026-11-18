@@ -13,3 +13,8 @@ is part of the repository)}
 \description{
 Returns the path of the current git repository
 }
+\details{
+The source of the resrepo package itself is refused, to avoid turning it
+into a resrepo by mistake: a repository whose folder is called \code{resrepo},
+or whose \code{DESCRIPTION} file says \code{Package: resrepo}.
+}
