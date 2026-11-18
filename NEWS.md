@@ -28,6 +28,8 @@
   name (e.g. `abc` and `abd`), and to names with `(` or `[`
 * `version_setup()` and `version_relink()`: fix the check that `resources_path`
   is not the root of the repository when run from a subdirectory
+* `version_setup()` stops if the backup question is cancelled, not only if
+  answered "No"
 
 # resrepo 0.3.1
 

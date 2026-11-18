@@ -74,7 +74,8 @@ version_setup_first <- function(quiet = FALSE, resources_path = NULL) {
         "backed up your data?"
       )
     )
-    if (choice == 2) {
+    # stop unless the user answered "Yes" (menu() gives 0 when cancelled)
+    if (choice != 1) {
       stop("Please backup your data before versioning")
     }
   } else {
