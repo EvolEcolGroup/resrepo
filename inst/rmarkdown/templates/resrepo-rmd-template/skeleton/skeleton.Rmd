@@ -101,7 +101,8 @@ Part of ensuring our workflow is reproducible is to keep track of the R environm
 We will automatically save our R environment into a file called `r_environment.json`.
 
 ```{r save-r-environment}
-filename_rmd <- rstudioapi::getSourceEditorContext()$path
+# the name of the Rmd being knitted (this also works outside RStudio)
+filename_rmd <- knitr::current_input()
 filename_renv <- paste0(output_dir, "/renv_",
                         tools::file_path_sans_ext(basename(filename_rmd)),
                         ".json")

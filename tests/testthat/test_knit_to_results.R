@@ -68,3 +68,32 @@ test_that("knit_to_results keeps the subdirectory of code/", {
   # clean up
   fs::dir_delete(file.path(tempdir(), "code"))
 })
+
+test_that("the create_rmd() template knits outside RStudio", {
+  skip_if_not(rmarkdown::pandoc_available())
+  example_dir <- file.path(tempdir(), "resrepo_template")
+  # wipe the directory in case it has been left behind from previous tests
+  if (dir.exists(example_dir)) {
+    fs::dir_delete(example_dir)
+  }
+  # the template writes to data/intermediate/plots
+  dir.create(file.path(example_dir, "data", "intermediate"), recursive = TRUE)
+  dir.create(file.path(example_dir, "code"))
+  git2r::init(example_dir, branch = "main")
+  # delete the repository at the end (after leaving it)
+  withr::defer(fs::dir_delete(example_dir))
+  withr::local_dir(example_dir)
+  create_rmd("code/s01_template")
+  # knit to html, so that LaTeX is not needed (the template knits to pdf); it
+  # used to fail with "RStudio not running" when saving the R environment
+  suppressMessages(capture.output(rmarkdown::render(
+    path_resrepo("code/s01_template.Rmd"),
+    output_format = rmarkdown::html_document(),
+    output_dir = file.path(example_dir, "results"), quiet = TRUE,
+    envir = new.env()
+  )))
+  # the R environment is saved, named after the Rmd
+  expect_true(file.exists(
+    path_resrepo("data/intermediate/plots/renv_s01_template.json")
+  ))
+})
