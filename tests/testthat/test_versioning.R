@@ -450,6 +450,18 @@ test_that("resources_path cannot be set to git root", {
     version_setup(root_full_path, quiet = TRUE),
     "resources_path cannot be the root directory of the repository"
   )
+  # the root is also refused when the working directory is a subdirectory of
+  # the repository (it used to be compared with the working directory)
+  withr::with_dir(path_resrepo("code"), {
+    expect_error(
+      version_setup(resources_path = root_full_path, quiet = TRUE),
+      "resources_path cannot be the root directory of the repository"
+    )
+    expect_error(
+      version_relink(resources_path = root_full_path, quiet = TRUE),
+      "resources_path cannot be the root directory of the repository"
+    )
+  })
 })
 
 test_that("get_resrepo_git_creds reads the origin remote", {

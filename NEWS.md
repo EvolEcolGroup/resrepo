@@ -26,6 +26,8 @@
 * `create_rmd()`: fix the template, which could only be knitted in RStudio
 * `path_relative()`: fix paths to directories that share the start of their
   name (e.g. `abc` and `abd`), and to names with `(` or `[`
+* `version_setup()` and `version_relink()`: fix the check that `resources_path`
+  is not the root of the repository when run from a subdirectory
 
 # resrepo 0.3.1
 

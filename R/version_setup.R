@@ -18,10 +18,13 @@ version_setup <- function(quiet = FALSE, resources_path = NULL) {
   # figure out if this repository already has data versioning
 
   if (!is.null(resources_path)) {
-    # check that path do not point to root directory
+    # check that path do not point to root directory (of the repository,
+    # which is not the working directory when this is run from a subdirectory)
     if (resources_path == ".") {
       stop("resources_path cannot be the root directory of the repository")
-    } else if (normalizePath(resources_path) == normalizePath(getwd())) {
+    } else if (
+      normalizePath(resources_path) == normalizePath(find_git_root())
+    ) {
       stop("resources_path cannot be the root directory of the repository")
     }
   }
