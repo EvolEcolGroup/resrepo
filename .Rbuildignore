@@ -6,3 +6,4 @@
 .lintr
 ^\.positai$
 ^\.claude$
+^dev_notes$
